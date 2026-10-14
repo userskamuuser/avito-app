@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Заказы Авито</title>
-  <script type="text/javascript" src="https://gc.kes.v2.scr.kaspersky-labs.com/7EA5E9BB-55E1-4C31-9C21-4943DDFED2E4/main.js?attr=xEKe5w1MGZFPFmDMHOL8S2bdeukchGhEyEbflyfDB4YJ3SGuMYnhm7wdaW8YdiCspSMS0LWapWNnN9zD3s3Rn6iPxHd-PioK2xMYDANmvPKS_HirwRuoJvSyKR0gpCvsnFed0AW-faorhBgoEFfFhF77Ct-L_r6yrOSA6ljW6Ji1GkR3IOxn89VF1nUGD9yj2lpR3fiy82KmnXKGSmx17bUVrX5OaZ1LHknJ9lPAwIqQB3BA4l2i_BIoCEUQmLIgCV2_hd85csmRONWm06X4-W3n-o5dHLHOU4zFRg4_GiboaqrPZuVEJUFTNo89Cnl9w9KaweyrdhmsV8mHq0FsYg" charset="UTF-8"></script><style>
+  <style>
     :root {
       --bg: #f0f4f9;
       --card: #ffffff;
@@ -57,7 +57,6 @@
       margin: 0 auto;
     }
 
-    /* Переключатель ролей */
     .role-switcher {
       display: flex;
       background: var(--card);
@@ -82,7 +81,6 @@
       color: var(--primary-text);
     }
 
-    /* Финансовое табло */
     .kpi-banner {
       background: var(--card);
       border-radius: 18px;
@@ -95,9 +93,7 @@
       align-items: center;
       gap: 10px;
     }
-    .kpi-banner.zero-debt {
-      border-left-color: var(--success);
-    }
+    .kpi-banner.zero-debt { border-left-color: var(--success); }
     .kpi-info { flex: 1; }
     .kpi-label {
       font-size: 11px;
@@ -112,13 +108,8 @@
       color: var(--danger);
       margin: 2px 0;
     }
-    .kpi-banner.zero-debt .kpi-amount {
-      color: var(--success);
-    }
-    .kpi-sub {
-      font-size: 12px;
-      color: var(--muted);
-    }
+    .kpi-banner.zero-debt .kpi-amount { color: var(--success); }
+    .kpi-sub { font-size: 12px; color: var(--muted); }
     .btn-pay-all {
       background: var(--success);
       color: #fff;
@@ -131,7 +122,6 @@
       white-space: nowrap;
     }
 
-    /* Вкладки фильтров */
     .filter-tabs {
       display: flex;
       gap: 6px;
@@ -165,7 +155,6 @@
       font-size: 11px;
     }
 
-    /* Карточка заказа */
     .task-card {
       background: var(--card);
       border-radius: 20px;
@@ -537,7 +526,7 @@
   </div>
 
   <script>
-    // 1. МГНОВЕННАЯ ИНИЦИАЛИЗАЦИЯ TELEGRAM MINI APP (без скачивания скрипта с заблокированного telegram.org)
+    // 1. МГНОВЕННАЯ ИНИЦИАЛИЗАЦИЯ TELEGRAM MINI APP (без обращения к заблокированному telegram.org)
     (function initTelegramInstant() {
       try {
         if (window.TelegramWebviewProxy) {
@@ -553,7 +542,7 @@
       } catch (e) {}
     })();
 
-    // 2. ПРЯМЫЕ НАСТРОЙКИ SUPABASE (0 внешних библиотек)
+    // 2. ПРЯМЫЕ НАСТРОЙКИ SUPABASE
     const SUPABASE_URL = 'https://vzsbdvwtwcvbqhcbssfi.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_yeu1O6x7OfgNi7sRhpV8SA_s3uxOGaU';
 
@@ -564,12 +553,10 @@
     let lbPhotos = [];
     let lbIndex = 0;
 
-    // 3. МГНОВЕННАЯ ОТРИСОВКА ИЗ ЛОКАЛЬНОГО КЭША (открытие за 0.01 сек)
+    // 3. МГНОВЕННАЯ ОТРИСОВКА ИЗ ЛОКАЛЬНОГО КЭША
     try {
       const cached = localStorage.getItem('avito_orders_cache');
-      if (cached) {
-        allOrders = JSON.parse(cached);
-      }
+      if (cached) allOrders = JSON.parse(cached);
     } catch (e) {}
 
     async function dbSelectOrders() {
@@ -855,7 +842,7 @@
                   ${priceChanged ? `<span class="price-old">${Number(o.initial_price || 0).toLocaleString('ru-RU')} ₽</span>` : ''}
                 </div>
                 ${(currentRole === 'worker' || currentRole === 'admin')
-                  ? `<button class="btn-small" onclick="changePrice(${o.id}, ${o.final_price})">Изм. цену</button>` : ''}
+                  ? `<button class="btn-small" onclick="changePrice(${o.id},${o.final_price})">Изм. цену</button>` : ''}
               </div>
               ${o.instruction ? `<div class="task-desc">${escapeHtml(o.instruction)}</div>` : ''}
               ${o.worker_comment ? `<div class="worker-note"><b>Исполнитель:</b> ${escapeHtml(o.worker_comment)}</div>` : ''}
@@ -943,7 +930,6 @@
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    // Старт без задержек
     setRole(currentRole);
     fetchOrders();
   </script>
