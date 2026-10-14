@@ -2,42 +2,47 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Заказы Авито</title>
-  <style>
+  <script type="text/javascript" src="https://gc.kes.v2.scr.kaspersky-labs.com/7EA5E9BB-55E1-4C31-9C21-4943DDFED2E4/main.js?attr=3y0jVNtCSdH--KmS-c6_lymUiedwGfcffFpDK5sWUZUl6oeRmcVGdR0j_VP1GtToQWbL1j0vTtOKFkUTCHGWObfYqNybnXfmQMKKm5zB8r06iywfj9hqcVyyDvbi_g906fgNFFDsP_asmoTkDgxzCI1oTwhcWGcW7m2ffzUFWqLeVKeq9w_1xGmS-latFjsOl7H6YtxXqiZHRA3X6-4EcFpH9_Fm8EoyEImrlytX-J6ri9dce3MvO5-A_SijVYSc64hBOgQPV3xpRuzhlvn9AfhbIKnQ0OYoLkfsSaTahq6WHos6WzGgby0Zsq2pCq905RTt7uVnJ2xjuPd6o1w8Gg" charset="UTF-8"></script><style>
     :root {
-      --bg: #f0f4f9;
-      --card: #ffffff;
-      --text: #1f1f1f;
-      --muted: #5f6368;
-      --primary: #1a73e8;
-      --primary-text: #ffffff;
-      --field-bg: #f1f3f4;
-      --border: #dadce0;
-      --danger: #dc2626;
-      --danger-bg: #fef2f2;
-      --success: #16a34a;
-      --success-bg: #dcfce7;
-      --warning: #d97706;
-      --warning-bg: #fef3c7;
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --primary-soft: rgba(37, 99, 235, 0.1);
+      --success: #10b981;
+      --success-soft: rgba(16, 185, 129, 0.12);
+      --warning: #f59e0b;
+      --warning-soft: rgba(245, 158, 11, 0.14);
+      --danger: #ef4444;
+      --danger-soft: rgba(239, 68, 68, 0.12);
+      --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #18181b;
-        --card: #27272a;
-        --text: #f4f4f5;
-        --muted: #a1a1aa;
+        --bg: #090d16;
+        --surface: #131b2e;
+        --surface-2: #1e293b;
+        --text: #f8fafc;
+        --muted: #94a3b8;
+        --border: rgba(255, 255, 255, 0.08);
         --primary: #3b82f6;
-        --primary-text: #ffffff;
-        --field-bg: #3f3f46;
-        --border: #52525b;
-        --danger: #f87171;
-        --danger-bg: rgba(239, 68, 68, 0.2);
-        --success: #4ade80;
-        --success-bg: rgba(34, 197, 94, 0.2);
+        --primary-soft: rgba(59, 130, 246, 0.16);
+        --success: #10b981;
+        --success-soft: rgba(16, 185, 129, 0.18);
         --warning: #fbbf24;
-        --warning-bg: rgba(245, 158, 11, 0.2);
+        --warning-soft: rgba(251, 191, 36, 0.16);
+        --danger: #f87171;
+        --danger-soft: rgba(248, 113, 113, 0.18);
+        --shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.4);
       }
     }
 
@@ -49,485 +54,897 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg);
       color: var(--text);
-      padding: 12px 12px 95px 12px;
-      max-width: 540px;
-      margin: 0 auto;
+      min-height: 100vh;
+      padding-bottom: calc(96px + env(safe-area-inset-bottom, 16px));
+      overflow-x: hidden;
     }
 
-    .role-switcher {
-      display: flex;
-      background: var(--card);
-      border-radius: 14px;
-      padding: 4px;
-      margin-bottom: 12px;
-      border: 1px solid var(--border);
+    .app-shell {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 12px 14px;
     }
-    .role-btn {
-      flex: 1;
+
+    /* ЭКРАН АВТОРИЗАЦИИ ПО РОЛЯМ */
+    .auth-screen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 500;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+    .auth-screen.open { display: flex; }
+    .auth-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 28px 22px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .auth-logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff;
+      font-size: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+    }
+    .auth-title { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+    .auth-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.4; }
+    .pin-input {
+      width: 100%;
+      background: var(--surface-2);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 8px;
+      text-align: center;
+      color: var(--text);
+      outline: none;
+      margin-bottom: 14px;
+      transition: border-color 0.2s;
+    }
+    .pin-input:focus { border-color: var(--primary); }
+    .auth-btn {
+      width: 100%;
+      background: var(--primary);
+      color: #fff;
       border: none;
-      background: transparent;
-      color: var(--muted);
-      padding: 9px 4px;
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: 10px;
+      border-radius: 16px;
+      padding: 15px;
+      font-size: 15px;
+      font-weight: 700;
       cursor: pointer;
     }
-    .role-btn.active {
-      background: var(--primary);
-      color: var(--primary-text);
+    .auth-hint {
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--surface-2);
+      padding: 10px 12px;
+      border-radius: 12px;
+      text-align: left;
+      line-height: 1.5;
     }
 
-    .kpi-banner {
-      background: var(--card);
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 12px;
-      border: 1px solid var(--border);
-      border-left: 5px solid var(--danger);
+    /* ВЕРХНЯЯ ШАПКА */
+    .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 14px;
+      padding: 4px 2px;
+    }
+    .user-chip {
+      display: flex;
+      align-items: center;
       gap: 10px;
     }
-    .kpi-banner.zero-debt { border-left-color: var(--success); }
-    .kpi-info { flex: 1; }
-    .kpi-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--muted);
-      font-weight: 700;
-    }
-    .kpi-amount {
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--danger);
-      margin: 2px 0;
-    }
-    .kpi-banner.zero-debt .kpi-amount { color: var(--success); }
-    .kpi-sub { font-size: 12px; color: var(--muted); }
-    .btn-pay-all {
-      background: var(--success);
+    .avatar-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), #6366f1);
       color: #fff;
+      font-weight: 800;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .user-meta { display: flex; flex-direction: column; }
+    .user-name { font-size: 15px; font-weight: 700; line-height: 1.2; }
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 2px;
+    }
+    .top-actions { display: flex; gap: 8px; }
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* ПЕРЕКЛЮЧАТЕЛЬ РЕЖИМА ПРОСМОТРА (ТОЛЬКО ДЛЯ АДМИНА) */
+    .admin-preview-bar {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 4px;
+      margin-bottom: 12px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+    .admin-preview-bar.visible { display: grid; }
+    .preview-tab {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      padding: 8px 4px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .preview-tab.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* ФИНАНСОВЫЙ ВИДЖЕТ (HERO CARD) */
+    .hero-card {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card.has-debt {
+      background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+      box-shadow: 0 10px 25px -5px rgba(185, 28, 28, 0.3);
+    }
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .hero-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      opacity: 0.8;
+      margin-bottom: 4px;
+    }
+    .hero-amount {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+    .hero-sub {
+      font-size: 12px;
+      opacity: 0.85;
+      margin-top: 4px;
+    }
+    .hero-pay-btn {
+      background: #ffffff;
+      color: #991b1b;
       border: none;
       border-radius: 12px;
       padding: 10px 14px;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
       white-space: nowrap;
-    }
-
-    .filter-tabs {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 14px;
-      overflow-x: auto;
-      padding-bottom: 2px;
-    }
-    .filter-tab {
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--muted);
-      padding: 8px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .filter-tab.active {
-      background: var(--primary);
-      color: var(--primary-text);
-      border-color: var(--primary);
-    }
-    .tab-count {
-      background: rgba(128,128,128,0.25);
-      padding: 1px 6px;
-      border-radius: 10px;
-      font-size: 11px;
-    }
-
-    .task-card {
-      background: var(--card);
-      border-radius: 20px;
-      padding: 16px;
-      margin-bottom: 12px;
-      border: 1px solid var(--border);
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-    }
-    .check-circle {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      border: 2px solid var(--muted);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       flex-shrink: 0;
-      margin-top: 2px;
+    }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.14);
+    }
+    .mini-stat-label { font-size: 11px; opacity: 0.75; }
+    .mini-stat-val { font-size: 14px; font-weight: 700; margin-top: 2px; }
+
+    /* РОВНЫЕ ВКЛАДКИ ФИЛЬТРОВ (3 КОЛОНКИ БЕЗ ОБРЕЗАНИЯ) */
+    .tabs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      background: var(--surface);
+      padding: 5px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      margin-bottom: 14px;
+    }
+    .seg-tab {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      padding: 9px 4px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
-      color: transparent;
+      gap: 5px;
+      transition: all 0.15s;
     }
-    .check-circle.done {
-      background: var(--success);
-      border-color: var(--success);
-      color: #fff;
+    .seg-tab.active {
+      background: var(--text);
+      color: var(--surface);
     }
-    .task-body { flex: 1; min-width: 0; }
-    .task-title {
+    .seg-badge {
+      font-size: 11px;
+      padding: 1px 6px;
+      border-radius: 8px;
+      background: rgba(128,128,128,0.2);
+    }
+
+    /* КАРТОЧКА ЗАКАЗА */
+    .order-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow);
+      transition: transform 0.15s;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .card-id-date {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+    .card-title {
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 800;
       line-height: 1.3;
-      margin-bottom: 6px;
       word-break: break-word;
     }
-    .task-title.done-text {
+    .card-title.done {
       text-decoration: line-through;
-      opacity: 0.6;
+      opacity: 0.65;
     }
-    .badges {
+    .status-pills {
       display: flex;
-      gap: 6px;
+      gap: 5px;
+      flex-shrink: 0;
       flex-wrap: wrap;
-      margin-bottom: 8px;
+      justify-content: flex-end;
     }
-    .badge {
+    .pill {
       font-size: 11px;
       font-weight: 700;
-      padding: 3px 8px;
+      padding: 4px 9px;
       border-radius: 8px;
+      white-space: nowrap;
     }
-    .badge-work { background: var(--warning-bg); color: var(--warning); }
-    .badge-done { background: rgba(59, 130, 246, 0.18); color: var(--primary); }
-    .badge-unpaid { background: var(--danger-bg); color: var(--danger); }
-    .badge-paid { background: var(--success-bg); color: var(--success); }
+    .pill-work { background: var(--warning-soft); color: var(--warning); }
+    .pill-done { background: var(--primary-soft); color: var(--primary); }
+    .pill-unpaid { background: var(--danger-soft); color: var(--danger); }
+    .pill-paid { background: var(--success-soft); color: var(--success); }
 
-    .price-box {
-      background: var(--field-bg);
-      border-radius: 12px;
-      padding: 8px 12px;
-      margin-bottom: 8px;
+    /* БЛОК ЦЕНЫ В КАРТОЧКЕ */
+    .price-banner {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .price-main { font-size: 16px; font-weight: 800; }
-    .price-old {
+    .price-label { font-size: 11px; color: var(--muted); font-weight: 600; }
+    .price-val { font-size: 18px; font-weight: 800; }
+    .price-initial {
       font-size: 12px;
       color: var(--muted);
       text-decoration: line-through;
       margin-left: 6px;
+      font-weight: 500;
     }
-    .btn-small {
-      border: 1px solid var(--border);
-      background: var(--card);
-      color: var(--text);
-      padding: 5px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .task-desc {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.4;
-      margin-bottom: 8px;
-      white-space: pre-wrap;
-    }
-    .worker-note {
-      font-size: 12px;
-      background: rgba(59, 130, 246, 0.12);
-      border-left: 3px solid var(--primary);
-      padding: 6px 10px;
+    .price-diff {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 7px;
       border-radius: 6px;
-      margin-bottom: 8px;
-    }
-    .avito-link {
-      display: inline-block;
-      font-size: 13px;
-      font-weight: 600;
+      background: var(--primary-soft);
       color: var(--primary);
-      text-decoration: none;
-      margin-bottom: 8px;
     }
 
-    .gallery-strip {
+    .desc-box {
+      font-size: 13px;
+      color: var(--text);
+      opacity: 0.88;
+      line-height: 1.45;
+      margin-bottom: 10px;
+      white-space: pre-wrap;
+      background: var(--surface-2);
+      padding: 10px 12px;
+      border-radius: 12px;
+    }
+    .worker-report {
+      font-size: 13px;
+      background: var(--primary-soft);
+      border-left: 3px solid var(--primary);
+      padding: 9px 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .avito-btn-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-soft);
+      padding: 7px 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      margin-bottom: 10px;
+    }
+
+    /* ГАЛЕРЕЯ ПРЕВЬЮ */
+    .photos-row {
       display: flex;
       gap: 8px;
       overflow-x: auto;
-      padding: 4px 0;
-      margin-bottom: 6px;
+      padding-bottom: 4px;
+      margin-bottom: 10px;
     }
-    .gallery-thumb {
-      width: 76px;
-      height: 76px;
-      border-radius: 10px;
-      object-fit: cover;
-      border: 1px solid var(--border);
+    .photo-thumb-wrap {
+      position: relative;
+      width: 84px;
+      height: 84px;
       flex-shrink: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
       cursor: pointer;
     }
+    .photo-thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-    .card-actions {
-      display: flex;
+    /* КНОПКИ ДЕЙСТВИЙ В КАРТОЧКЕ */
+    .card-footer {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
       gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 8px;
-      padding-top: 8px;
+      padding-top: 10px;
       border-top: 1px solid var(--border);
     }
-    .action-btn {
-      flex: 1;
-      min-width: 105px;
-      padding: 8px 10px;
-      border-radius: 10px;
+    .c-btn {
       border: 1px solid var(--border);
-      background: var(--field-bg);
+      background: var(--surface-2);
       color: var(--text);
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      text-align: center;
-    }
-    .action-btn.primary { background: var(--primary); color: var(--primary-text); border-color: var(--primary); }
-    .action-btn.success { background: var(--success); color: #fff; border-color: var(--success); }
-    .action-btn.danger { color: var(--danger); border-color: var(--danger); }
-
-    .fab {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: var(--primary);
-      color: var(--primary-text);
-      border: none;
-      border-radius: 28px;
-      padding: 14px 22px;
-      font-size: 15px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 13px;
       font-weight: 700;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 8px;
-      z-index: 50;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
     }
+    .c-btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .c-btn.success { background: var(--success); color: #fff; border-color: var(--success); }
+    .c-btn.danger { color: var(--danger); background: var(--danger-soft); border-color: transparent; }
 
-    .modal-backdrop {
+    /* НИЖНЯЯ ЗАКРЕПЛЕННАЯ ПАНЕЛЬ */
+    .bottom-bar {
       position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.65);
-      display: none;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 8px));
+      z-index: 60;
+      display: flex;
+      justify-content: center;
+    }
+    .bottom-bar-inner {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      gap: 10px;
+    }
+    .main-add-btn {
+      flex: 1;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
-      z-index: 100;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
     }
-    .modal-backdrop.open { display: flex; }
-    .google-modal {
-      background: var(--card);
+
+    /* ШТОРКИ (BOTTOM SHEETS) ВМЕСТО PROMPT */
+    .sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(3px);
+      z-index: 200;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .sheet-backdrop.open { display: flex; }
+    .bottom-sheet {
+      background: var(--surface);
       width: 100%;
-      max-width: 460px;
-      border-radius: 24px;
-      padding: 20px;
-      border: 1px solid var(--border);
-      max-height: 90vh;
+      max-width: 480px;
+      border-radius: 26px 26px 0 0;
+      padding: 18px 18px calc(22px + env(safe-area-inset-bottom, 12px));
+      max-height: 92vh;
       overflow-y: auto;
+      animation: slideUp 0.22s ease-out;
     }
-    .modal-header {
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .sheet-handle {
+      width: 40px;
+      height: 5px;
+      background: var(--border);
+      border-radius: 10px;
+      margin: 0 auto 14px;
+    }
+    .sheet-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
-    .modal-title { font-size: 18px; font-weight: 700; }
-    .close-btn { background: transparent; border: none; font-size: 22px; color: var(--muted); cursor: pointer; }
-    .gt-title-input {
-      width: 100%;
+    .sheet-title { font-size: 18px; font-weight: 800; }
+    .sheet-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
       border: none;
-      border-bottom: 2px solid var(--border);
-      background: transparent;
-      color: var(--text);
-      font-size: 17px;
-      font-weight: 600;
-      padding: 8px 0;
-      margin-bottom: 14px;
-      outline: none;
+      background: var(--surface-2);
+      color: var(--muted);
+      font-size: 16px;
+      cursor: pointer;
     }
-    .gt-row { display: flex; gap: 8px; margin-bottom: 10px; }
-    .gt-field {
-      width: 100%;
-      border: 1px solid var(--border);
-      background: var(--field-bg);
-      color: var(--text);
-      border-radius: 12px;
-      padding: 11px 13px;
-      font-size: 14px;
-      outline: none;
-      margin-bottom: 10px;
-    }
-    textarea.gt-field { min-height: 75px; resize: vertical; font-family: inherit; }
 
-    .upload-dropzone {
+    .form-group { margin-bottom: 12px; }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .f-input {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+      font-family: inherit;
+    }
+    .f-input:focus { border-color: var(--primary); }
+    textarea.f-input { min-height: 80px; resize: vertical; }
+    .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .drop-area {
       border: 2px dashed var(--border);
+      background: var(--surface-2);
       border-radius: 16px;
       padding: 16px;
       text-align: center;
       cursor: pointer;
       margin-bottom: 12px;
     }
-    .preview-list { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-    .preview-item { position: relative; width: 68px; height: 68px; }
-    .preview-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; border: 1px solid var(--border); }
-    .preview-del {
+    .staged-grid {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .staged-item {
+      position: relative;
+      width: 68px;
+      height: 68px;
+    }
+    .staged-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .staged-remove {
       position: absolute;
       top: -6px;
       right: -6px;
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
       background: var(--danger);
       color: #fff;
       border: none;
-      font-size: 11px;
-      cursor: pointer;
-    }
-    .gt-save-btn {
-      width: 100%;
-      background: var(--primary);
-      color: var(--primary-text);
-      border: none;
-      border-radius: 18px;
-      padding: 13px;
-      font-size: 15px;
-      font-weight: 700;
+      font-size: 12px;
+      font-weight: 800;
       cursor: pointer;
     }
 
+    /* СПИСОК ПОЛЬЗОВАТЕЛЕЙ В АДМИНКЕ */
+    .user-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      background: var(--surface-2);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .user-row-info { font-size: 13px; font-weight: 600; }
+    .user-row-sub { font-size: 11px; color: var(--muted); }
+    .role-select {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* ПРОСМОТР ФОТО (LIGHTBOX) */
     .lightbox {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.92);
+      background: rgba(0, 0, 0, 0.94);
+      z-index: 400;
       display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      z-index: 200;
       padding: 16px;
     }
     .lightbox.open { display: flex; }
-    .lightbox img { max-width: 100%; max-height: 80vh; border-radius: 8px; object-fit: contain; }
-    .lightbox-controls { margin-top: 16px; display: flex; gap: 10px; }
+    .lightbox img {
+      max-width: 100%;
+      max-height: 78vh;
+      border-radius: 12px;
+      object-fit: contain;
+    }
+    .lb-bar {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
     .lb-btn {
-      background: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.16);
       color: #fff;
       border: none;
-      padding: 10px 16px;
+      padding: 10px 18px;
       border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 700;
       cursor: pointer;
     }
-    .empty-box { text-align: center; padding: 36px 16px; color: var(--muted); font-size: 14px; line-height: 1.5; }
+
+    .empty-state {
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
 
-  <div class="role-switcher">
-    <button class="role-btn" id="role-agent" onclick="setRole('agent')">Посредник</button>
-    <button class="role-btn" id="role-worker" onclick="setRole('worker')">Исполнитель</button>
-    <button class="role-btn" id="role-admin" onclick="setRole('admin')">Админ</button>
-  </div>
-
-  <div class="kpi-banner zero-debt" id="kpiBanner">
-    <div class="kpi-info">
-      <div class="kpi-label" id="kpiLabel">К ВЫПЛАТЕ ИСПОЛНИТЕЛЮ</div>
-      <div class="kpi-amount" id="kpiAmount">0 ₽</div>
-      <div class="kpi-sub" id="kpiSub">Синхронизация...</div>
+  <!-- ЭКРАН ВХОДА ПО РОЛИ (ИЗОЛЯЦИЯ РОЛЕЙ) -->
+  <div class="auth-screen" id="authScreen">
+    <div class="auth-card">
+      <div class="auth-logo">📦</div>
+      <div class="auth-title">Заказы Авито</div>
+      <div class="auth-sub" id="authGreeting">Введите ваш персональный ПИН-код доступа, чтобы войти в свою роль</div>
+      <input type="tel" maxlength="6" class="pin-input" id="pinInput" placeholder="••••">
+      <button class="auth-btn" onclick="loginWithPin()">Войти в систему</button>
+      <div class="auth-hint">
+        🔑 <b>Стандартные коды (меняются у Админа):</b><br>
+        • Посредник: <b>1111</b><br>
+        • Исполнитель: <b>2222</b><br>
+        • Администратор: <b>9999</b>
+      </div>
     </div>
-    <button class="btn-pay-all" id="payAllBtn" style="display:none;" onclick="payAllCompleted()">💳 Выплатить всё</button>
   </div>
 
-  <div class="filter-tabs">
-    <button class="filter-tab active" id="tab-active" onclick="setFilter('active')">
-      🔥 В работе <span class="tab-count" id="cnt-active">0</span>
-    </button>
-    <button class="filter-tab" id="tab-unpaid" onclick="setFilter('unpaid')">
-      ⏳ Ждут выплаты <span class="tab-count" id="cnt-unpaid">0</span>
-    </button>
-    <button class="filter-tab" id="tab-all" onclick="setFilter('all')">
-      ✅ Все <span class="tab-count" id="cnt-all">0</span>
-    </button>
+  <!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
+  <div class="app-shell">
+    <!-- Шапка с профилем и зафиксированной ролью -->
+    <div class="top-bar">
+      <div class="user-chip">
+        <div class="avatar-circle" id="userAvatar">А</div>
+        <div class="user-meta">
+          <div class="user-name" id="userName">Пользователь</div>
+          <div class="role-badge" id="userRoleBadge">● Посредник</div>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn" id="adminSettingsBtn" style="display:none;" onclick="openAdminSheet()" title="Управление ролями и кодами">👑</button>
+        <button class="icon-btn" onclick="fetchOrders()" title="Обновить">🔄</button>
+        <button class="icon-btn" onclick="logoutRole()" title="Сменить аккаунт / Выйти">🚪</button>
+      </div>
+    </div>
+
+    <!-- Панель предпросмотра ролей (ВИДНА ТОЛЬКО АДМИНУ!) -->
+    <div class="admin-preview-bar" id="adminPreviewBar">
+      <button class="preview-tab active" id="prev-admin" onclick="switchAdminView('admin')">👑 Админ</button>
+      <button class="preview-tab" id="prev-agent" onclick="switchAdminView('agent')">👀 Посредник</button>
+      <button class="preview-tab" id="prev-worker" onclick="switchAdminView('worker')">👀 Исполнитель</button>
+    </div>
+
+    <!-- Финансовое табло -->
+    <div class="hero-card" id="heroCard">
+      <div class="hero-top">
+        <div>
+          <div class="hero-label" id="heroLabel">К ВЫПЛАТЕ ИСПОЛНИТЕЛЮ</div>
+          <div class="hero-amount" id="heroAmount">0 ₽</div>
+          <div class="hero-sub" id="heroSub">Все выполненные заказы оплачены</div>
+        </div>
+        <button class="hero-pay-btn" id="heroPayAllBtn" style="display:none;" onclick="openPayAllConfirm()">💳 Выплатить всё</button>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="mini-stat-label">Активно в работе</div>
+          <div class="mini-stat-val" id="statActiveSum">0 шт. • 0 ₽</div>
+        </div>
+        <div>
+          <div class="mini-stat-label">Всего выплачено</div>
+          <div class="mini-stat-val" id="statPaidSum">0 ₽</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Вкладки фильтрации (3 ровные колонки) -->
+    <div class="tabs-grid">
+      <button class="seg-tab active" id="tab-active" onclick="setFilter('active')">
+        🔥 В работе <span class="seg-badge" id="cnt-active">0</span>
+      </button>
+      <button class="seg-tab" id="tab-unpaid" onclick="setFilter('unpaid')">
+        ⏳ К оплате <span class="seg-badge" id="cnt-unpaid">0</span>
+      </button>
+      <button class="seg-tab" id="tab-all" onclick="setFilter('all')">
+        📁 Все <span class="seg-badge" id="cnt-all">0</span>
+      </button>
+    </div>
+
+    <!-- Список карточек -->
+    <div id="ordersList">
+      <div class="empty-state">Загрузка заказов...</div>
+    </div>
   </div>
 
-  <div id="ordersContainer">
-    <div class="empty-box">Загрузка списка...</div>
+  <!-- Нижняя панель с кнопкой добавления заказа (для Посредника и Админа) -->
+  <div class="bottom-bar" id="bottomBar">
+    <div class="bottom-bar-inner">
+      <button class="main-add-btn" onclick="openOrderSheet()">
+        <span>＋</span> Создать новый заказ с Авито
+      </button>
+    </div>
   </div>
 
-  <button class="fab" id="fabBtn" onclick="openCreateModal()">
-    <span>＋</span> Новый заказ
-  </button>
-
-  <div class="modal-backdrop" id="createModal">
-    <div class="google-modal">
-      <div class="modal-header">
-        <div class="modal-title">Новое задание с Авито</div>
-        <button class="close-btn" onclick="closeCreateModal()">✕</button>
+  <!-- ШТОРКА 1: СОЗДАНИЕ / РЕДАКТИРОВАНИЕ ЗАКАЗА (ДЛЯ ПОСРЕДНИКА И АДМИНА) -->
+  <div class="sheet-backdrop" id="orderSheet" onclick="closeOrderSheet()">
+    <div class="bottom-sheet" onclick="event.stopPropagation()">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header">
+        <div class="sheet-title" id="orderSheetTitle">Новый заказ с Авито</div>
+        <button class="sheet-close" onclick="closeOrderSheet()">✕</button>
       </div>
 
-      <input type="text" id="inpTitle" class="gt-title-input" placeholder="Добавьте название товара">
+      <input type="hidden" id="editOrderId" value="">
 
-      <div class="gt-row">
-        <input type="number" id="inpPrice" class="gt-field" style="margin-bottom:0;" placeholder="Цена / Бюджет (₽)">
-        <select id="inpPaidInit" class="gt-field" style="margin-bottom:0;">
-          <option value="Не выплачено">Не выплачено</option>
-          <option value="Выплачено">Сразу выплачено</option>
+      <div class="form-group">
+        <label class="form-label">Название товара / задачи *</label>
+        <input type="text" id="fTitle" class="f-input" placeholder="Например: Наушники Sony WH-1000XM4">
+      </div>
+
+      <div class="f-row">
+        <div class="form-group">
+          <label class="form-label">Цена / Бюджет (₽)</label>
+          <input type="number" id="fPrice" class="f-input" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Статус оплаты</label>
+          <select id="fPaid" class="f-input">
+            <option value="Не выплачено">Не выплачено</option>
+            <option value="Выплачено">Выплачено</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Ссылка на объявление Авито</label>
+        <input type="url" id="fUrl" class="f-input" placeholder="https://www.avito.ru/...">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Задание для исполнителя</label>
+        <textarea id="fDesc" class="f-input" placeholder="Что проверить, насколько сторговаться, как отправить..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Скриншоты с Авито (любое количество)</label>
+        <div class="drop-area" onclick="document.getElementById('fFiles').click()">
+          <div style="font-size:22px; margin-bottom:4px;">📷</div>
+          <div style="font-size:13px; color:var(--muted);">
+            Нажмите, чтобы выбрать фото из галереи<br>или вставьте через <b>Ctrl + V</b>
+          </div>
+          <input type="file" id="fFiles" multiple accept="image/*" style="display:none" onchange="handleFilesSelect(this.files)">
+        </div>
+        <div class="staged-grid" id="stagedGrid"></div>
+      </div>
+
+      <button class="main-add-btn" style="width:100%;" id="saveOrderBtn" onclick="saveOrder()">Сохранить заказ</button>
+    </div>
+  </div>
+
+  <!-- ШТОРКА 2: УПРАВЛЕНИЕ ЦЕНОЙ И ОТЧЕТОМ (ДЛЯ ИСПОЛНИТЕЛЯ И АДМИНА) -->
+  <div class="sheet-backdrop" id="workerSheet" onclick="closeWorkerSheet()">
+    <div class="bottom-sheet" onclick="event.stopPropagation()">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header">
+        <div class="sheet-title">Исполнение и корректировка цены</div>
+        <button class="sheet-close" onclick="closeWorkerSheet()">✕</button>
+      </div>
+
+      <input type="hidden" id="wOrderId">
+
+      <div class="form-group">
+        <label class="form-label">Итоговая цена выкупа (₽)</label>
+        <input type="number" id="wFinalPrice" class="f-input" placeholder="Введите финальную сумму">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Статус выполнения</label>
+        <select id="wStatus" class="f-input">
+          <option value="В работе">🔥 В работе</option>
+          <option value="Выполнен">✅ Выполнен</option>
         </select>
       </div>
 
-      <input type="url" id="inpUrl" class="gt-field" placeholder="Ссылка на объявление Авито (необязательно)">
-
-      <textarea id="inpDesc" class="gt-field" placeholder="Добавьте описание (что проверить, торг, доставка)"></textarea>
-
-      <div class="upload-dropzone" onclick="document.getElementById('inpFiles').click()">
-        <div style="font-size:24px; margin-bottom:4px;">📷</div>
-        <div style="font-size:13px; color:var(--muted);">
-          Выбрать скриншоты (любое кол-во)<br>или вставить через <b>Ctrl + V</b>
-        </div>
-        <input type="file" id="inpFiles" multiple accept="image/*" style="display:none" onchange="handleFilesSelect(this.files)">
+      <div class="form-group">
+        <label class="form-label">Отчёт исполнителя / Трек-номер / Заметка</label>
+        <textarea id="wComment" class="f-input" placeholder="Например: Сторговал 500 руб, заказал через Боксберри, трек 12345..."></textarea>
       </div>
 
-      <div class="preview-list" id="previewList"></div>
-
-      <button class="gt-save-btn" id="saveOrderBtn" onclick="submitNewOrder()">Сохранить</button>
+      <button class="main-add-btn" style="width:100%;" onclick="saveWorkerUpdate()">Сохранить изменения</button>
     </div>
   </div>
 
+  <!-- ШТОРКА 3: АДМИН-ПАНЕЛЬ (УПРАВЛЕНИЕ РОЛЯМИ И ПИН-КОДАМИ) -->
+  <div class="sheet-backdrop" id="adminSheet" onclick="closeAdminSheet()">
+    <div class="bottom-sheet" onclick="event.stopPropagation()">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header">
+        <div class="sheet-title">👑 Управление ролями и кодами</div>
+        <button class="sheet-close" onclick="closeAdminSheet()">✕</button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">ПИН-коды для входа по ролям</label>
+        <div class="f-row" style="grid-template-columns: repeat(3, 1fr);">
+          <div>
+            <small style="color:var(--muted); font-size:11px;">Посредник</small>
+            <input type="text" id="pinAgent" class="f-input" style="text-align:center; font-weight:700;">
+          </div>
+          <div>
+            <small style="color:var(--muted); font-size:11px;">Исполнитель</small>
+            <input type="text" id="pinWorker" class="f-input" style="text-align:center; font-weight:700;">
+          </div>
+          <div>
+            <small style="color:var(--muted); font-size:11px;">Админ</small>
+            <input type="text" id="pinAdmin" class="f-input" style="text-align:center; font-weight:700;">
+          </div>
+        </div>
+      </div>
+
+      <button class="c-btn primary" style="width:100%; margin-bottom:18px;" onclick="saveConfigPins()">💾 Сохранить ПИН-коды</button>
+
+      <div class="form-group">
+        <label class="form-label">Привязанные пользователи Telegram</label>
+        <div id="usersBindList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ГАЛЕРЕЯ НА ВЕСЬ ЭКРАН -->
   <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-    <img id="lightboxImg" src="" onclick="event.stopPropagation()">
-    <div class="lightbox-controls" onclick="event.stopPropagation()">
+    <img id="lbImg" src="" onclick="event.stopPropagation()">
+    <div class="lb-bar" onclick="event.stopPropagation()">
       <button class="lb-btn" onclick="prevPhoto()">◀</button>
-      <button class="lb-btn" id="lbCounter">1 / 1</button>
+      <button class="lb-btn" id="lbCount">1 / 1</button>
       <button class="lb-btn" onclick="nextPhoto()">▶</button>
-      <button class="lb-btn" onclick="closeLightbox()">✕</button>
+      <button class="lb-btn" onclick="closeLightbox()">✕ Закрыть</button>
     </div>
   </div>
 
   <script>
-    // 1. МГНОВЕННАЯ ИНИЦИАЛИЗАЦИЯ TELEGRAM MINI APP (без обращения к заблокированному telegram.org)
-    (function initTelegramInstant() {
+    // 1. Мгновенная инициализация Telegram Mini App
+    (function initTg() {
       try {
         if (window.TelegramWebviewProxy) {
           window.TelegramWebviewProxy.postEvent('web_app_ready', '');
@@ -542,71 +959,73 @@
       } catch (e) {}
     })();
 
-    // 2. ПРЯМЫЕ НАСТРОЙКИ SUPABASE
+    // 2. Извлечение данных пользователя из Telegram URL Hash (без внешних библиотек)
+    function getTelegramUser() {
+      try {
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+        const tgWebAppData = params.get('tgWebAppData');
+        if (tgWebAppData) {
+          const dataParams = new URLSearchParams(tgWebAppData);
+          const userStr = dataParams.get('user');
+          if (userStr) {
+            const u = JSON.parse(decodeURIComponent(userStr));
+            return {
+              id: String(u.id),
+              name: [u.first_name, u.last_name].filter(Boolean).join(' ') || u.username || 'User',
+              username: u.username ? '@' + u.username : ''
+            };
+          }
+        }
+      } catch (e) {}
+      let devId = localStorage.getItem('avito_device_id');
+      if (!devId) {
+        devId = 'dev_' + Math.random().toString(36).substring(2, 9);
+        localStorage.setItem('avito_device_id', devId);
+      }
+      return { id: devId, name: 'Устройство', username: '' };
+    }
+
+    const currentUser = getTelegramUser();
+
+    // 3. Подключение к Supabase
     const SUPABASE_URL = 'https://vzsbdvwtwcvbqhcbssfi.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_yeu1O6x7OfgNi7sRhpV8SA_s3uxOGaU';
+    const CONFIG_MARKER = '__SYSTEM_CONFIG__';
 
-    let currentRole = localStorage.getItem('avito_role') || 'agent';
+    let appConfig = {
+      rowId: null,
+      pins: { agent: '1111', worker: '2222', admin: '9999' },
+      users: {} // { [userId]: { name, username, role } }
+    };
+
+    let realUserRole = localStorage.getItem('avito_locked_role_' + currentUser.id) || null;
+    let activeViewRole = realUserRole || 'agent';
     let currentFilter = 'active';
     let allOrders = [];
+    let existingEditingPhotos = [];
     let stagedFiles = [];
     let lbPhotos = [];
     let lbIndex = 0;
 
-    // 3. МГНОВЕННАЯ ОТРИСОВКА ИЗ ЛОКАЛЬНОГО КЭША
+    // Кэш для мгновенного старта
     try {
-      const cached = localStorage.getItem('avito_orders_cache');
-      if (cached) allOrders = JSON.parse(cached);
+      const cachedOrders = localStorage.getItem('avito_orders_v3');
+      if (cachedOrders) allOrders = JSON.parse(cachedOrders);
     } catch (e) {}
 
-    async function dbSelectOrders() {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/orders?select=*&order=id.desc`, {
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`
-        }
-      });
-      if (!res.ok) throw new Error(`Код ${res.status}: ${await res.text()}`);
-      return await res.json();
-    }
-
-    async function dbInsertOrder(orderObj) {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/orders`, {
-        method: 'POST',
+    // Базовые вызовы к Supabase REST API
+    async function sbFetch(path, options = {}) {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+        ...options,
         headers: {
           'apikey': SUPABASE_KEY,
           'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify(orderObj)
-      });
-      if (!res.ok) throw new Error(await res.text());
-    }
-
-    async function dbUpdateOrder(queryFilter, updateObj) {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/orders?${queryFilter}`, {
-        method: 'PATCH',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify(updateObj)
-      });
-      if (!res.ok) throw new Error(await res.text());
-    }
-
-    async function dbDeleteOrder(id) {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/orders?id=eq.${id}`, {
-        method: 'DELETE',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`
+          ...(options.headers || {})
         }
       });
       if (!res.ok) throw new Error(await res.text());
+      return res;
     }
 
     async function storageUploadPhoto(fileName, blob) {
@@ -624,15 +1043,137 @@
       return `${SUPABASE_URL}/storage/v1/object/public/avito-screens/${fileName}`;
     }
 
-    function setRole(role) {
-      currentRole = role;
-      localStorage.setItem('avito_role', role);
-      ['agent', 'worker', 'admin'].forEach(r => {
-        document.getElementById('role-' + r).classList.toggle('active', r === role);
-      });
-      document.getElementById('fabBtn').style.display = (role === 'worker') ? 'none' : 'flex';
-      document.getElementById('kpiLabel').innerText = (role === 'worker') ? 'ОЖИДАЮ К ВЫПЛАТЕ' : 'К ВЫПЛАТЕ ИСПОЛНИТЕЛЮ';
+    // Синхронизация конфигурации ролей и заказов
+    async function fetchOrders() {
+      try {
+        const res = await sbFetch('orders?select=*&order=id.desc');
+        const rows = await res.json();
+
+        const cfgRow = rows.find(r => r.title === CONFIG_MARKER);
+        if (cfgRow) {
+          appConfig.rowId = cfgRow.id;
+          const stored = (Array.isArray(cfgRow.photos) && cfgRow.photos[0]) ? cfgRow.photos[0] : {};
+          if (stored.pins) appConfig.pins = { ...appConfig.pins, ...stored.pins };
+          if (stored.users) appConfig.users = stored.users;
+        }
+
+        // Проверяем, назначена ли пользователю роль на сервере
+        const serverUser = appConfig.users[currentUser.id];
+        if (serverUser && serverUser.role) {
+          realUserRole = serverUser.role;
+          localStorage.setItem('avito_locked_role_' + currentUser.id, realUserRole);
+        }
+
+        allOrders = rows.filter(r => r.title !== CONFIG_MARKER);
+        localStorage.setItem('avito_orders_v3', JSON.stringify(allOrders));
+
+        checkAuthAndRender();
+      } catch (err) {
+        checkAuthAndRender();
+      }
+    }
+
+    async function saveAppConfigToServer() {
+      const payload = {
+        title: CONFIG_MARKER,
+        status: CONFIG_MARKER,
+        photos: [{ pins: appConfig.pins, users: appConfig.users }]
+      };
+      if (appConfig.rowId) {
+        await sbFetch(`orders?id=eq.${appConfig.rowId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+          body: JSON.stringify({ photos: payload.photos })
+        });
+      } else {
+        await sbFetch('orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+          body: JSON.stringify(payload)
+        });
+      }
+    }
+
+    // Проверка авторизации и блокировка чужих ролей
+    function checkAuthAndRender() {
+      document.getElementById('userName').innerText = currentUser.name;
+      document.getElementById('userAvatar').innerText = (currentUser.name || 'U')[0].toUpperCase();
+
+      if (!realUserRole) {
+        document.getElementById('authGreeting').innerText =
+          `Привет, ${currentUser.name}! Введите ПИН-код вашей роли для входа:`;
+        document.getElementById('authScreen').classList.add('open');
+        return;
+      }
+
+      document.getElementById('authScreen').classList.remove('open');
+
+      if (realUserRole !== 'admin') {
+        activeViewRole = realUserRole;
+        document.getElementById('adminPreviewBar').classList.remove('visible');
+        document.getElementById('adminSettingsBtn').style.display = 'none';
+      } else {
+        document.getElementById('adminPreviewBar').classList.add('visible');
+        document.getElementById('adminSettingsBtn').style.display = 'flex';
+      }
+
+      const roleNames = {
+        agent: '● Роль: Посредник',
+        worker: '● Роль: Исполнитель',
+        admin: '👑 Роль: Администратор'
+      };
+      document.getElementById('userRoleBadge').innerText = roleNames[realUserRole] || '';
+
+      // Нижняя кнопка создания заказа доступна только Посреднику и Админу
+      document.getElementById('bottomBar').style.display = (activeViewRole === 'worker') ? 'none' : 'flex';
+      document.getElementById('heroLabel').innerText = (activeViewRole === 'worker')
+        ? 'ОЖИДАЮ К ВЫПЛАТЕ'
+        : 'К ВЫПЛАТЕ ИСПОЛНИТЕЛЮ';
+
       renderOrders();
+    }
+
+    async function loginWithPin() {
+      const pin = document.getElementById('pinInput').value.trim();
+      let matchedRole = null;
+      if (pin === appConfig.pins.agent) matchedRole = 'agent';
+      else if (pin === appConfig.pins.worker) matchedRole = 'worker';
+      else if (pin === appConfig.pins.admin) matchedRole = 'admin';
+
+      if (!matchedRole) {
+        alert('Неверный ПИН-код! Проверьте код у администратора.');
+        return;
+      }
+
+      realUserRole = matchedRole;
+      activeViewRole = matchedRole;
+      localStorage.setItem('avito_locked_role_' + currentUser.id, matchedRole);
+      document.getElementById('pinInput').value = '';
+
+      // Сохраняем привязку пользователя в Supabase
+      appConfig.users[currentUser.id] = {
+        name: currentUser.name,
+        username: currentUser.username,
+        role: matchedRole
+      };
+      checkAuthAndRender();
+      try { await saveAppConfigToServer(); } catch (e) {}
+    }
+
+    function logoutRole() {
+      localStorage.removeItem('avito_locked_role_' + currentUser.id);
+      realUserRole = null;
+      checkAuthAndRender();
+    }
+
+    // Переключение предпросмотра (только для Админа)
+    function switchAdminView(role) {
+      if (realUserRole !== 'admin') return;
+      activeViewRole = role;
+      ['admin', 'agent', 'worker'].forEach(r => {
+        document.getElementById('prev-' + r).classList.toggle('active', r === role);
+      });
+      checkAuthAndRender();
     }
 
     function setFilter(filter) {
@@ -643,22 +1184,176 @@
       renderOrders();
     }
 
-    function openCreateModal() { document.getElementById('createModal').classList.add('open'); }
-    function closeCreateModal() { document.getElementById('createModal').classList.remove('open'); }
+    // Отрисовка списка и метрик
+    function renderOrders() {
+      const activeOrders = allOrders.filter(o => o.status !== 'Выполнен');
+      const unpaidCompleted = allOrders.filter(o => o.status === 'Выполнен' && o.payment_status === 'Не выплачено');
+      const paidOrders = allOrders.filter(o => o.payment_status === 'Выплачено');
 
-    window.addEventListener('paste', async (e) => {
-      const items = e.clipboardData?.items || [];
-      const files = [];
-      for (let item of items) {
-        if (item.type.indexOf('image') !== -1) files.push(item.getAsFile());
-      }
-      if (files.length > 0) {
-        if (!document.getElementById('createModal').classList.contains('open')) openCreateModal();
-        await handleFilesSelect(files);
-      }
-    });
+      document.getElementById('cnt-active').innerText = activeOrders.length;
+      document.getElementById('cnt-unpaid').innerText = unpaidCompleted.length;
+      document.getElementById('cnt-all').innerText = allOrders.length;
 
-    function compressImage(file, maxWidth = 1280, quality = 0.8) {
+      const debtSum = unpaidCompleted.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+      const activeSum = activeOrders.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+      const paidSum = paidOrders.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+
+      const heroCard = document.getElementById('heroCard');
+      heroCard.classList.toggle('has-debt', debtSum > 0);
+      document.getElementById('heroAmount').innerText = debtSum.toLocaleString('ru-RU') + ' ₽';
+      document.getElementById('heroSub').innerText = unpaidCompleted.length > 0
+        ? `Не оплачено выполненных заказов: ${unpaidCompleted.length} шт.`
+        : 'Все выполненные заказы полностью оплачены ✨';
+
+      document.getElementById('statActiveSum').innerText = `${activeOrders.length} шт. • ${activeSum.toLocaleString('ru-RU')} ₽`;
+      document.getElementById('statPaidSum').innerText = `${paidSum.toLocaleString('ru-RU')} ₽`;
+
+      const payAllBtn = document.getElementById('heroPayAllBtn');
+      payAllBtn.style.display = (unpaidCompleted.length > 0 && (activeViewRole === 'agent' || activeViewRole === 'admin'))
+        ? 'block'
+        : 'none';
+
+      let list = allOrders;
+      if (currentFilter === 'active') list = activeOrders;
+      else if (currentFilter === 'unpaid') list = unpaidCompleted;
+
+      const container = document.getElementById('ordersList');
+      if (list.length === 0) {
+        container.innerHTML = `<div class="empty-state">В этой вкладке пока пусто ✨</div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(o => {
+        const isDone = o.status === 'Выполнен';
+        const isPaid = o.payment_status === 'Выплачено';
+        const photos = Array.isArray(o.photos) ? o.photos : [];
+        const initP = Number(o.initial_price) || 0;
+        const finP = Number(o.final_price) || 0;
+        const priceChanged = initP !== finP;
+        const diff = finP - initP;
+
+        const dateStr = o.created_at
+          ? new Date(o.created_at).toLocaleDateString('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+          : '';
+
+        const photosHtml = photos.length > 0
+          ? `<div class="photos-row">` +
+              photos.map((url, idx) => `
+                <div class="photo-thumb-wrap" onclick='openLightbox(${JSON.stringify(photos)}, ${idx})'>
+                  <img src="${url}" loading="lazy">
+                </div>
+              `).join('') +
+            `</div>`
+          : '';
+
+        let footerBtns = '';
+
+        // Кнопки Исполнителя
+        if (activeViewRole === 'worker' || activeViewRole === 'admin') {
+          footerBtns += `
+            <button class="c-btn ${isDone ? '' : 'primary'}" onclick="quickToggleDone(${o.id}, '${o.status}')">
+              ${isDone ? '↩ В работу' : '✅ Выполнено'}
+            </button>
+            <button class="c-btn" onclick="openWorkerSheet(${o.id})">
+              ✏️ Цена / Отчёт
+            </button>
+          `;
+        }
+
+        // Кнопки Посредника
+        if (activeViewRole === 'agent' || activeViewRole === 'admin') {
+          footerBtns += `
+            <button class="c-btn ${isPaid ? '' : 'success'}" onclick="quickTogglePaid(${o.id}, '${o.payment_status}')">
+              ${isPaid ? '🔄 Снять оплату' : '💳 Выплачено'}
+            </button>
+            <button class="c-btn" onclick="openEditOrderSheet(${o.id})">
+              ⚙️ Изменить / Фото
+            </button>
+          `;
+        }
+
+        // Удаление (для Админа и Посредника)
+        if (activeViewRole === 'admin' || activeViewRole === 'agent') {
+          footerBtns += `
+            <button class="c-btn danger" onclick="removeOrder(${o.id})">
+              🗑 Удалить
+            </button>
+          `;
+        }
+
+        return `
+          <div class="order-card">
+            <div class="card-header">
+              <div>
+                <div class="card-id-date">Заказ #${o.id} • ${dateStr}</div>
+                <div class="card-title ${isDone ? 'done' : ''}">${escapeHtml(o.title)}</div>
+              </div>
+              <div class="status-pills">
+                <span class="pill ${isDone ? 'pill-done' : 'pill-work'}">${o.status}</span>
+                <span class="pill ${isPaid ? 'pill-paid' : 'pill-unpaid'}">${o.payment_status}</span>
+              </div>
+            </div>
+
+            <div class="price-banner">
+              <div>
+                <div class="price-label">${priceChanged ? 'Итоговая цена выкупа' : 'Цена / Бюджет'}</div>
+                <div>
+                  <span class="price-val">${finP.toLocaleString('ru-RU')} ₽</span>
+                  ${priceChanged ? `<span class="price-initial">${initP.toLocaleString('ru-RU')} ₽</span>` : ''}
+                </div>
+              </div>
+              ${priceChanged ? `<span class="price-diff">${diff > 0 ? '+' + diff : diff} ₽</span>` : ''}
+            </div>
+
+            ${o.instruction ? `<div class="desc-box">${escapeHtml(o.instruction)}</div>` : ''}
+            ${o.worker_comment ? `<div class="worker-report"><b>Отчёт исполнителя:</b><br>${escapeHtml(o.worker_comment)}</div>` : ''}
+            ${o.avito_url ? `<a href="${o.avito_url}" target="_blank" class="avito-btn-link">🔗 Открыть объявление на Авито</a>` : ''}
+
+            ${photosHtml}
+
+            <div class="card-footer">${footerBtns}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Шторка создания и редактирования заказа
+    function openOrderSheet() {
+      document.getElementById('editOrderId').value = '';
+      document.getElementById('orderSheetTitle').innerText = 'Новый заказ с Авито';
+      document.getElementById('fTitle').value = '';
+      document.getElementById('fPrice').value = '';
+      document.getElementById('fPaid').value = 'Не выплачено';
+      document.getElementById('fUrl').value = '';
+      document.getElementById('fDesc').value = '';
+      existingEditingPhotos = [];
+      stagedFiles = [];
+      renderStagedPhotos();
+      document.getElementById('orderSheet').classList.add('open');
+    }
+
+    function openEditOrderSheet(orderId) {
+      const o = allOrders.find(x => x.id === orderId);
+      if (!o) return;
+      document.getElementById('editOrderId').value = o.id;
+      document.getElementById('orderSheetTitle').innerText = `Редактировать заказ #${o.id}`;
+      document.getElementById('fTitle').value = o.title || '';
+      document.getElementById('fPrice').value = o.final_price || '';
+      document.getElementById('fPaid').value = o.payment_status || 'Не выплачено';
+      document.getElementById('fUrl').value = o.avito_url || '';
+      document.getElementById('fDesc').value = o.instruction || '';
+      existingEditingPhotos = Array.isArray(o.photos) ? [...o.photos] : [];
+      stagedFiles = [];
+      renderStagedPhotos();
+      document.getElementById('orderSheet').classList.add('open');
+    }
+
+    function closeOrderSheet() {
+      document.getElementById('orderSheet').classList.remove('open');
+    }
+
+    // Сжатие и подготовка скриншотов
+    function compressImage(file, maxWidth = 1280, quality = 0.82) {
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -683,243 +1378,239 @@
       for (const file of Array.from(fileList)) {
         stagedFiles.push(await compressImage(file));
       }
-      renderPreviews();
+      renderStagedPhotos();
     }
 
-    function renderPreviews() {
-      document.getElementById('previewList').innerHTML = stagedFiles.map((item, idx) => `
-        <div class="preview-item">
-          <img src="${item.previewUrl}">
-          <button class="preview-del" onclick="removeStaged(${idx})">✕</button>
+    window.addEventListener('paste', async (e) => {
+      const items = e.clipboardData?.items || [];
+      const files = [];
+      for (let item of items) {
+        if (item.type.indexOf('image') !== -1) files.push(item.getAsFile());
+      }
+      if (files.length > 0 && activeViewRole !== 'worker') {
+        if (!document.getElementById('orderSheet').classList.contains('open')) openOrderSheet();
+        await handleFilesSelect(files);
+      }
+    });
+
+    function renderStagedPhotos() {
+      const box = document.getElementById('stagedGrid');
+      const existingHtml = existingEditingPhotos.map((url, idx) => `
+        <div class="staged-item">
+          <img src="${url}">
+          <button class="staged-remove" onclick="removeExistingPhoto(${idx})">✕</button>
         </div>
       `).join('');
+      const newHtml = stagedFiles.map((item, idx) => `
+        <div class="staged-item">
+          <img src="${item.previewUrl}">
+          <button class="staged-remove" onclick="removeNewPhoto(${idx})">✕</button>
+        </div>
+      `).join('');
+      box.innerHTML = existingHtml + newHtml;
     }
 
-    function removeStaged(idx) { stagedFiles.splice(idx, 1); renderPreviews(); }
+    function removeExistingPhoto(idx) {
+      existingEditingPhotos.splice(idx, 1);
+      renderStagedPhotos();
+    }
+    function removeNewPhoto(idx) {
+      stagedFiles.splice(idx, 1);
+      renderStagedPhotos();
+    }
 
-    async function submitNewOrder() {
-      const title = document.getElementById('inpTitle').value.trim();
-      const price = parseFloat(document.getElementById('inpPrice').value) || 0;
-      const paidInit = document.getElementById('inpPaidInit').value;
-      const avitoUrl = document.getElementById('inpUrl').value.trim();
-      const instruction = document.getElementById('inpDesc').value.trim();
+    async function saveOrder() {
+      const editId = document.getElementById('editOrderId').value;
+      const title = document.getElementById('fTitle').value.trim();
+      const price = parseFloat(document.getElementById('fPrice').value) || 0;
+      const paid = document.getElementById('fPaid').value;
+      const url = document.getElementById('fUrl').value.trim();
+      const desc = document.getElementById('fDesc').value.trim();
 
-      if (!title) return alert('Введите название заказа!');
+      if (!title) return alert('Укажите название товара!');
 
       const btn = document.getElementById('saveOrderBtn');
       btn.disabled = true;
       btn.innerText = 'Загрузка фото...';
 
       try {
-        const uploadedUrls = [];
+        const uploadedUrls = [...existingEditingPhotos];
         for (let i = 0; i < stagedFiles.length; i++) {
-          const fileName = `order_${Date.now()}_${i}_${Math.random().toString(36).substring(2, 7)}.jpg`;
-          const pubUrl = await storageUploadPhoto(fileName, stagedFiles[i].blob);
+          const fname = `order_${Date.now()}_${i}_${Math.random().toString(36).substring(2, 7)}.jpg`;
+          const pubUrl = await storageUploadPhoto(fname, stagedFiles[i].blob);
           uploadedUrls.push(pubUrl);
         }
 
         btn.innerText = 'Сохранение...';
-        await dbInsertOrder({
-          title,
-          avito_url: avitoUrl,
-          instruction,
-          initial_price: price,
-          final_price: price,
-          status: 'В работе',
-          payment_status: paidInit,
-          photos: uploadedUrls
-        });
+        if (editId) {
+          await sbFetch(`orders?id=eq.${editId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+            body: JSON.stringify({
+              title,
+              avito_url: url,
+              instruction: desc,
+              final_price: price,
+              payment_status: paid,
+              photos: uploadedUrls
+            })
+          });
+        } else {
+          await sbFetch('orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+            body: JSON.stringify({
+              title,
+              avito_url: url,
+              instruction: desc,
+              initial_price: price,
+              final_price: price,
+              status: 'В работе',
+              payment_status: paid,
+              photos: uploadedUrls
+            })
+          });
+        }
 
-        document.getElementById('inpTitle').value = '';
-        document.getElementById('inpPrice').value = '';
-        document.getElementById('inpUrl').value = '';
-        document.getElementById('inpDesc').value = '';
-        stagedFiles = [];
-        renderPreviews();
-        closeCreateModal();
+        closeOrderSheet();
         await fetchOrders();
       } catch (err) {
-        alert('Ошибка сохранения: ' + err.message);
+        alert('Ошибка: ' + err.message);
       } finally {
         btn.disabled = false;
-        btn.innerText = 'Сохранить';
+        btn.innerText = 'Сохранить заказ';
       }
     }
 
-    async function fetchOrders() {
-      try {
-        allOrders = await dbSelectOrders();
-        localStorage.setItem('avito_orders_cache', JSON.stringify(allOrders));
-        renderOrders();
-      } catch (err) {
-        if (!allOrders.length) {
-          document.getElementById('ordersContainer').innerHTML =
-            `<div class="empty-box">⚠️ Ошибка связи с базой:<br><small>${escapeHtml(err.message)}</small></div>`;
-        }
-      }
+    // Шторка Исполнителя (корректировка цены и отчёт без браузерного prompt)
+    function openWorkerSheet(orderId) {
+      const o = allOrders.find(x => x.id === orderId);
+      if (!o) return;
+      document.getElementById('wOrderId').value = o.id;
+      document.getElementById('wFinalPrice').value = o.final_price || 0;
+      document.getElementById('wStatus').value = o.status || 'В работе';
+      document.getElementById('wComment').value = o.worker_comment || '';
+      document.getElementById('workerSheet').classList.add('open');
+    }
+    function closeWorkerSheet() {
+      document.getElementById('workerSheet').classList.remove('open');
     }
 
-    function renderOrders() {
-      const activeOrders = allOrders.filter(o => o.status !== 'Выполнен');
-      const unpaidCompleted = allOrders.filter(o => o.status === 'Выполнен' && o.payment_status === 'Не выплачено');
+    async function saveWorkerUpdate() {
+      const id = document.getElementById('wOrderId').value;
+      const finalPrice = parseFloat(document.getElementById('wFinalPrice').value) || 0;
+      const status = document.getElementById('wStatus').value;
+      const comment = document.getElementById('wComment').value.trim();
 
-      document.getElementById('cnt-active').innerText = activeOrders.length;
-      document.getElementById('cnt-unpaid').innerText = unpaidCompleted.length;
-      document.getElementById('cnt-all').innerText = allOrders.length;
+      await sbFetch(`orders?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({
+          final_price: finalPrice,
+          status: status,
+          worker_comment: comment
+        })
+      });
+      closeWorkerSheet();
+      await fetchOrders();
+    }
 
-      const totalDebt = unpaidCompleted.reduce((acc, o) => acc + (Number(o.final_price) || 0), 0);
-      document.getElementById('kpiBanner').classList.toggle('zero-debt', totalDebt === 0);
-      document.getElementById('kpiAmount').innerText = totalDebt.toLocaleString('ru-RU') + ' ₽';
-      document.getElementById('kpiSub').innerText = unpaidCompleted.length > 0
-        ? `Выполнено и ждет оплаты: ${unpaidCompleted.length} шт.`
-        : 'Все выполненные заказы оплачены 🎉';
+    // Быстрые переключатели статусов
+    async function quickToggleDone(id, currentStatus) {
+      const next = currentStatus === 'Выполнен' ? 'В работе' : 'Выполнен';
+      await sbFetch(`orders?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ status: next })
+      });
+      await fetchOrders();
+    }
 
-      document.getElementById('payAllBtn').style.display =
-        (unpaidCompleted.length > 0 && (currentRole === 'agent' || currentRole === 'admin')) ? 'block' : 'none';
+    async function quickTogglePaid(id, currentPaid) {
+      const next = currentPaid === 'Выплачено' ? 'Не выплачено' : 'Выплачено';
+      await sbFetch(`orders?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ payment_status: next })
+      });
+      await fetchOrders();
+    }
 
-      let listToRender = allOrders;
-      if (currentFilter === 'active') listToRender = activeOrders;
-      else if (currentFilter === 'unpaid') listToRender = unpaidCompleted;
+    async function openPayAllConfirm() {
+      await sbFetch(`orders?status=eq.Выполнен&payment_status=eq.Не выплачено`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ payment_status: 'Выплачено' })
+      });
+      await fetchOrders();
+    }
 
-      const container = document.getElementById('ordersContainer');
-      if (listToRender.length === 0) {
-        container.innerHTML = `<div class="empty-box">В этой вкладке пока нет заказов ✨<br>Нажмите «＋ Новый заказ» внизу экрана</div>`;
-        return;
-      }
+    async function removeOrder(id) {
+      await sbFetch(`orders?id=eq.${id}`, { method: 'DELETE' });
+      await fetchOrders();
+    }
 
-      container.innerHTML = listToRender.map(o => {
-        const isDone = o.status === 'Выполнен';
-        const isPaid = o.payment_status === 'Выплачено';
-        const photos = Array.isArray(o.photos) ? o.photos : [];
-        const priceChanged = Number(o.initial_price) !== Number(o.final_price);
+    // Шторка Админа (управление ПИН-кодами и ролями пользователей)
+    function openAdminSheet() {
+      document.getElementById('pinAgent').value = appConfig.pins.agent;
+      document.getElementById('pinWorker').value = appConfig.pins.worker;
+      document.getElementById('pinAdmin').value = appConfig.pins.admin;
 
-        const galleryHtml = photos.length > 0
-          ? `<div class="gallery-strip">` +
-              photos.map((url, idx) =>
-                `<img src="${url}" class="gallery-thumb" onclick='openLightbox(${JSON.stringify(photos)}, ${idx})'>`
-              ).join('') +
-            `</div>`
-          : '';
-
-        let actionsHtml = '';
-        if (currentRole === 'worker' || currentRole === 'admin') {
-          actionsHtml += `
-            <button class="action-btn ${isDone ? '' : 'primary'}" onclick="toggleDone(${o.id}, '${o.status}')">
-              ${isDone ? '↩ В работу' : '✅ Выполнено'}
-            </button>
-            <button class="action-btn" onclick="changePrice(${o.id}, ${o.final_price})">
-              ✏️ Цена
-            </button>
-            <button class="action-btn" onclick="editWorkerNote(${o.id}, ${JSON.stringify(o.worker_comment || '')})">
-              💬 Заметка
-            </button>
-          `;
-        }
-        if (currentRole === 'agent' || currentRole === 'admin') {
-          actionsHtml += `
-            <button class="action-btn ${isPaid ? '' : 'success'}" onclick="togglePaid(${o.id}, '${o.payment_status}')">
-              ${isPaid ? '🔄 Снять оплату' : '💳 Выплачено'}
-            </button>
-            <button class="action-btn" onclick="triggerAddPhotos(${o.id})">➕ Фото</button>
-          `;
-        }
-        if (currentRole === 'admin') {
-          actionsHtml += `<button class="action-btn danger" onclick="deleteOrder(${o.id})">🗑 Удалить</button>`;
-        }
-
-        return `
-          <div class="task-card">
-            <div class="check-circle ${isDone ? 'done' : ''}" onclick="toggleDone(${o.id}, '${o.status}')">✓</div>
-            <div class="task-body">
-              <div class="task-title ${isDone ? 'done-text' : ''}">${escapeHtml(o.title)}</div>
-              <div class="badges">
-                <span class="badge ${isDone ? 'badge-done' : 'badge-work'}">${o.status}</span>
-                <span class="badge ${isPaid ? 'badge-paid' : 'badge-unpaid'}">${o.payment_status}</span>
-              </div>
-              <div class="price-box">
-                <div>
-                  <span class="price-main">${Number(o.final_price || 0).toLocaleString('ru-RU')} ₽</span>
-                  ${priceChanged ? `<span class="price-old">${Number(o.initial_price || 0).toLocaleString('ru-RU')} ₽</span>` : ''}
-                </div>
-                ${(currentRole === 'worker' || currentRole === 'admin')
-                  ? `<button class="btn-small" onclick="changePrice(${o.id},${o.final_price})">Изм. цену</button>` : ''}
-              </div>
-              ${o.instruction ? `<div class="task-desc">${escapeHtml(o.instruction)}</div>` : ''}
-              ${o.worker_comment ? `<div class="worker-note"><b>Исполнитель:</b> ${escapeHtml(o.worker_comment)}</div>` : ''}
-              ${o.avito_url ? `<a href="${o.avito_url}" target="_blank" class="avito-link">↗ Открыть объявление на Авито</a>` : ''}
-              ${galleryHtml}
-              <div class="card-actions">${actionsHtml}</div>
+      const listBox = document.getElementById('usersBindList');
+      const entries = Object.entries(appConfig.users || {});
+      if (entries.length === 0) {
+        listBox.innerHTML = `<div style="font-size:12px; color:var(--muted);">Пока никто не авторизовывался</div>`;
+      } else {
+        listBox.innerHTML = entries.map(([uid, u]) => `
+          <div class="user-row">
+            <div>
+              <div class="user-row-info">${escapeHtml(u.name || uid)} ${escapeHtml(u.username || '')}</div>
+              <div class="user-row-sub">ID: ${escapeHtml(uid)}</div>
             </div>
+            <select class="role-select" onchange="changeUserRole('${uid}', this.value)">
+              <option value="agent" ${u.role === 'agent' ? 'selected' : ''}>Посредник</option>
+              <option value="worker" ${u.role === 'worker' ? 'selected' : ''}>Исполнитель</option>
+              <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Админ</option>
+            </select>
           </div>
-        `;
-      }).join('');
+        `).join('');
+      }
+      document.getElementById('adminSheet').classList.add('open');
+    }
+    function closeAdminSheet() {
+      document.getElementById('adminSheet').classList.remove('open');
     }
 
-    async function toggleDone(id, currentStatus) {
-      await dbUpdateOrder(`id=eq.${id}`, { status: currentStatus === 'Выполнен' ? 'В работе' : 'Выполнен' });
-      await fetchOrders();
+    async function saveConfigPins() {
+      appConfig.pins.agent = document.getElementById('pinAgent').value.trim() || '1111';
+      appConfig.pins.worker = document.getElementById('pinWorker').value.trim() || '2222';
+      appConfig.pins.admin = document.getElementById('pinAdmin').value.trim() || '9999';
+      await saveAppConfigToServer();
+      closeAdminSheet();
     }
 
-    async function togglePaid(id, currentPaid) {
-      await dbUpdateOrder(`id=eq.${id}`, { payment_status: currentPaid === 'Выплачено' ? 'Не выплачено' : 'Выплачено' });
-      await fetchOrders();
-    }
-
-    async function payAllCompleted() {
-      if (!confirm('Отметить все выполненные заказы как «Выплачено»?')) return;
-      await dbUpdateOrder(`status=eq.Выполнен&payment_status=eq.Не выплачено`, { payment_status: 'Выплачено' });
-      await fetchOrders();
-    }
-
-    async function changePrice(id, currentPrice) {
-      const input = prompt('Введите актуальную итоговую цену заказа (₽):', currentPrice);
-      if (input === null) return;
-      const num = parseFloat(input.replace(',', '.'));
-      if (isNaN(num)) return alert('Введите корректное число!');
-      await dbUpdateOrder(`id=eq.${id}`, { final_price: num });
-      await fetchOrders();
-    }
-
-    async function editWorkerNote(id, currentNote) {
-      const note = prompt('Комментарий исполнителя (трек-номер, итог торга и т.д.):', currentNote || '');
-      if (note === null) return;
-      await dbUpdateOrder(`id=eq.${id}`, { worker_comment: note.trim() });
-      await fetchOrders();
-    }
-
-    function triggerAddPhotos(orderId) {
-      const input = document.createElement('input');
-      input.type = 'file'; input.multiple = true; input.accept = 'image/*';
-      input.onchange = async (e) => {
-        const files = Array.from(e.target.files);
-        if (!files.length) return;
-        const order = allOrders.find(x => x.id === orderId);
-        const existingPhotos = Array.isArray(order?.photos) ? [...order.photos] : [];
-        for (let i = 0; i < files.length; i++) {
-          const comp = await compressImage(files[i]);
-          const fileName = `order_${orderId}_${Date.now()}_${i}.jpg`;
-          const pubUrl = await storageUploadPhoto(fileName, comp.blob);
-          existingPhotos.push(pubUrl);
+    async function changeUserRole(uid, newRole) {
+      if (appConfig.users[uid]) {
+        appConfig.users[uid].role = newRole;
+        if (uid === currentUser.id) {
+          realUserRole = newRole;
+          localStorage.setItem('avito_locked_role_' + currentUser.id, newRole);
         }
-        await dbUpdateOrder(`id=eq.${orderId}`, { photos: existingPhotos });
-        await fetchOrders();
-      };
-      input.click();
+        await saveAppConfigToServer();
+        checkAuthAndRender();
+      }
     }
 
-    async function deleteOrder(id) {
-      if (!confirm('Удалить этот заказ навсегда?')) return;
-      await dbDeleteOrder(id);
-      await fetchOrders();
-    }
-
-    function openLightbox(photos, index) {
-      lbPhotos = photos; lbIndex = index; updateLightbox();
+    // Полноэкранный просмотр фото
+    function openLightbox(photos, idx) {
+      lbPhotos = photos;
+      lbIndex = idx;
+      updateLightbox();
       document.getElementById('lightbox').classList.add('open');
     }
     function updateLightbox() {
-      document.getElementById('lightboxImg').src = lbPhotos[lbIndex];
-      document.getElementById('lbCounter').innerText = `${lbIndex + 1} / ${lbPhotos.length}`;
+      document.getElementById('lbImg').src = lbPhotos[lbIndex];
+      document.getElementById('lbCount').innerText = `${lbIndex + 1} / ${lbPhotos.length}`;
     }
     function prevPhoto() { lbIndex = (lbIndex - 1 + lbPhotos.length) % lbPhotos.length; updateLightbox(); }
     function nextPhoto() { lbIndex = (lbIndex + 1) % lbPhotos.length; updateLightbox(); }
@@ -930,7 +1621,7 @@
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    setRole(currentRole);
+    checkAuthAndRender();
     fetchOrders();
   </script>
 </body>
