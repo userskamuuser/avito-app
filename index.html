@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <link rel="icon" href="data:,">
   <title>Заказы Авито</title>
-  <script type="text/javascript" src="https://gc.kes.v2.scr.kaspersky-labs.com/7EA5E9BB-55E1-4C31-9C21-4943DDFED2E4/main.js?attr=3y0jVNtCSdH--KmS-c6_lymUiedwGfcffFpDK5sWUZUl6oeRmcVGdR0j_VP1GtToQWbL1j0vTtOKFkUTCHGWObfYqNybnXfmQMKKm5zB8r06iywfj9hqcVyyDvbi_g906fgNFFDsP_asmoTkDgxzCI1oTwhcWGcW7m2ffzUFWqLeVKeq9w_1xGmS-latFjsOl7H6YtxXqiZHRA3X6-4EcFpH9_Fm8EoyEImrlytX-J6ri9dce3MvO5-A_SijVYSc64hBOgQPV3xpRuzhlvn9AfhbIKnQ0OYoLkfsSaTahq6WHos6WzGgby0Zsq2pCq905RTt7uVnJ2xjuPd6o1w8Gg" charset="UTF-8"></script><style>
+  <script type="text/javascript" src="https://gc.kes.v2.scr.kaspersky-labs.com/7EA5E9BB-55E1-4C31-9C21-4943DDFED2E4/main.js?attr=Va-oW8tMrS0Hkyh7-ySS1JMQ2C4yQsepaATklT2pdqNUubwvggRUNHKyh3g1EbkXgJ2LimxWmWSYtb4NIM1xbZ9lQEW4kltrSyjBF55Uvq2br9uxqwKqUavForGFtN0okA_q2jgJUHvC_f5Sc6yLg2NNXGAcnfRjB6JKacToY9fvNXVh4v7ERjXwtPCsfU1MYAasYsEVxx9ba-oRvSxL79Rz7A5TJARCrB9jVKoFwE31F6kIDMl5TBNglhM4LjYgbVR8uFZikHN-JP6YNvgObMoLFdQvm-g5-do91t4M60zmGdHXtK96rHPv8DC-5sOwZz-aMwb_VSOQ-iRWr3Ef2Q" charset="UTF-8"></script><style>
     :root {
       --bg: #f1f5f9;
       --surface: #ffffff;
@@ -23,17 +24,16 @@
       --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
       --radius-lg: 22px;
       --radius-md: 16px;
-      --radius-sm: 12px;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #090d16;
-        --surface: #131b2e;
+        --bg: #0b0f19;
+        --surface: #151d2e;
         --surface-2: #1e293b;
         --text: #f8fafc;
         --muted: #94a3b8;
-        --border: rgba(255, 255, 255, 0.08);
+        --border: rgba(255, 255, 255, 0.09);
         --primary: #3b82f6;
         --primary-soft: rgba(59, 130, 246, 0.16);
         --success: #10b981;
@@ -42,7 +42,7 @@
         --warning-soft: rgba(251, 191, 36, 0.16);
         --danger: #f87171;
         --danger-soft: rgba(248, 113, 113, 0.18);
-        --shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.4);
+        --shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.45);
       }
     }
 
@@ -68,7 +68,7 @@
       padding: 12px 14px;
     }
 
-    /* ЭКРАН АВТОРИЗАЦИИ ПО РОЛЯМ */
+    /* ЭКРАН ВХОДА И РЕГИСТРАЦИИ */
     .auth-screen {
       position: fixed;
       inset: 0;
@@ -78,70 +78,81 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 24px;
+      padding: 18px;
+      overflow-y: auto;
     }
     .auth-screen.open { display: flex; }
     .auth-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 28px;
-      padding: 28px 22px;
+      border-radius: 26px;
+      padding: 24px 20px;
       width: 100%;
-      max-width: 380px;
+      max-width: 400px;
       box-shadow: var(--shadow);
-      text-align: center;
     }
     .auth-logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 20px;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
       color: #fff;
-      font-size: 30px;
+      font-size: 26px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 16px;
-      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+      margin: 0 auto 12px;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
     }
-    .auth-title { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
-    .auth-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.4; }
-    .pin-input {
-      width: 100%;
+    .auth-title { font-size: 20px; font-weight: 800; text-align: center; margin-bottom: 4px; }
+    .auth-sub { font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 16px; }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       background: var(--surface-2);
-      border: 2px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: 8px;
-      text-align: center;
-      color: var(--text);
-      outline: none;
-      margin-bottom: 14px;
-      transition: border-color 0.2s;
+      padding: 4px;
+      border-radius: 14px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
     }
-    .pin-input:focus { border-color: var(--primary); }
-    .auth-btn {
-      width: 100%;
-      background: var(--primary);
-      color: #fff;
+    .auth-tab {
       border: none;
-      border-radius: 16px;
-      padding: 15px;
-      font-size: 15px;
+      background: transparent;
+      color: var(--muted);
+      padding: 9px;
+      border-radius: 10px;
+      font-size: 13px;
       font-weight: 700;
       cursor: pointer;
     }
-    .auth-hint {
-      margin-top: 16px;
-      font-size: 12px;
-      color: var(--muted);
+    .auth-tab.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .role-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .role-option {
+      border: 2px solid var(--border);
       background: var(--surface-2);
-      padding: 10px 12px;
-      border-radius: 12px;
-      text-align: left;
-      line-height: 1.5;
+      color: var(--text);
+      padding: 10px 8px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .role-option.selected {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+      color: var(--primary);
     }
 
     /* ВЕРХНЯЯ ШАПКА */
@@ -156,10 +167,11 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      min-width: 0;
     }
     .avatar-circle {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 14px;
       background: linear-gradient(135deg, var(--primary), #6366f1);
       color: #fff;
@@ -170,18 +182,22 @@
       justify-content: center;
       flex-shrink: 0;
     }
-    .user-meta { display: flex; flex-direction: column; }
-    .user-name { font-size: 15px; font-weight: 700; line-height: 1.2; }
+    .user-meta { display: flex; flex-direction: column; min-width: 0; }
+    .user-name {
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     .role-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
       font-size: 11px;
       font-weight: 700;
       color: var(--primary);
       margin-top: 2px;
     }
-    .top-actions { display: flex; gap: 8px; }
+    .top-actions { display: flex; gap: 8px; flex-shrink: 0; }
     .icon-btn {
       width: 38px;
       height: 38px;
@@ -196,29 +212,29 @@
       cursor: pointer;
     }
 
-    /* ПЕРЕКЛЮЧАТЕЛЬ РЕЖИМА ПРОСМОТРА (ТОЛЬКО ДЛЯ АДМИНА) */
-    .admin-preview-bar {
+    /* НАВИГАЦИЯ АДМИНА */
+    .admin-nav {
       display: none;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 4px;
-      margin-bottom: 12px;
       grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
+      gap: 6px;
+      background: var(--surface);
+      padding: 5px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      margin-bottom: 14px;
     }
-    .admin-preview-bar.visible { display: grid; }
-    .preview-tab {
+    .admin-nav.visible { display: grid; }
+    .admin-nav-btn {
       border: none;
       background: transparent;
       color: var(--muted);
-      padding: 8px 4px;
+      padding: 9px 4px;
+      border-radius: 12px;
       font-size: 12px;
       font-weight: 700;
-      border-radius: 10px;
       cursor: pointer;
     }
-    .preview-tab.active {
+    .admin-nav-btn.active {
       background: var(--primary);
       color: #fff;
     }
@@ -228,11 +244,9 @@
       background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
       color: #ffffff;
       border-radius: var(--radius-lg);
-      padding: 20px;
-      margin-bottom: 14px;
+      padding: 18px;
+      margin-bottom: 12px;
       box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25);
-      position: relative;
-      overflow: hidden;
     }
     .hero-card.has-debt {
       background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
@@ -242,7 +256,7 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 12px;
+      gap: 10px;
       margin-bottom: 14px;
     }
     .hero-label {
@@ -254,27 +268,22 @@
       margin-bottom: 4px;
     }
     .hero-amount {
-      font-size: 30px;
+      font-size: 28px;
       font-weight: 800;
       letter-spacing: -0.5px;
       line-height: 1.1;
     }
-    .hero-sub {
-      font-size: 12px;
-      opacity: 0.85;
-      margin-top: 4px;
-    }
+    .hero-sub { font-size: 12px; opacity: 0.85; margin-top: 4px; }
     .hero-pay-btn {
       background: #ffffff;
       color: #991b1b;
       border: none;
       border-radius: 12px;
-      padding: 10px 14px;
+      padding: 10px 12px;
       font-size: 12px;
       font-weight: 800;
       cursor: pointer;
       white-space: nowrap;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       flex-shrink: 0;
     }
     .hero-stats {
@@ -287,7 +296,25 @@
     .mini-stat-label { font-size: 11px; opacity: 0.75; }
     .mini-stat-val { font-size: 14px; font-weight: 700; margin-top: 2px; }
 
-    /* РОВНЫЕ ВКЛАДКИ ФИЛЬТРОВ (3 КОЛОНКИ БЕЗ ОБРЕЗАНИЯ) */
+    /* ФИЛЬТР ПО ИСПОЛНИТЕЛЮ (ДЛЯ ПОСРЕДНИКА И АДМИНА) */
+    .worker-filter-bar {
+      margin-bottom: 12px;
+      display: none;
+    }
+    .worker-filter-bar.visible { display: block; }
+    .worker-filter-select {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      outline: none;
+    }
+
+    /* ВКЛАДКИ ФИЛЬТРОВ ЗАКАЗОВ */
     .tabs-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -311,7 +338,6 @@
       align-items: center;
       justify-content: center;
       gap: 5px;
-      transition: all 0.15s;
     }
     .seg-tab.active {
       background: var(--text);
@@ -332,51 +358,40 @@
       padding: 16px;
       margin-bottom: 12px;
       box-shadow: var(--shadow);
-      transition: transform 0.15s;
     }
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
-    .card-id-date {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--muted);
-      margin-bottom: 3px;
-    }
-    .card-title {
-      font-size: 16px;
-      font-weight: 800;
-      line-height: 1.3;
-      word-break: break-word;
-    }
-    .card-title.done {
-      text-decoration: line-through;
-      opacity: 0.65;
-    }
-    .status-pills {
-      display: flex;
-      gap: 5px;
-      flex-shrink: 0;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-    .pill {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 9px;
-      border-radius: 8px;
-      white-space: nowrap;
-    }
+    .card-id-date { font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 2px; }
+    .card-title { font-size: 16px; font-weight: 800; line-height: 1.3; word-break: break-word; }
+    .card-title.done { text-decoration: line-through; opacity: 0.65; }
+    .status-pills { display: flex; gap: 5px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+    .pill { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 8px; white-space: nowrap; }
     .pill-work { background: var(--warning-soft); color: var(--warning); }
     .pill-done { background: var(--primary-soft); color: var(--primary); }
     .pill-unpaid { background: var(--danger-soft); color: var(--danger); }
     .pill-paid { background: var(--success-soft); color: var(--success); }
 
-    /* БЛОК ЦЕНЫ В КАРТОЧКЕ */
+    .people-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .person-tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
     .price-banner {
       background: var(--surface-2);
       border: 1px solid var(--border);
@@ -389,13 +404,7 @@
     }
     .price-label { font-size: 11px; color: var(--muted); font-weight: 600; }
     .price-val { font-size: 18px; font-weight: 800; }
-    .price-initial {
-      font-size: 12px;
-      color: var(--muted);
-      text-decoration: line-through;
-      margin-left: 6px;
-      font-weight: 500;
-    }
+    .price-initial { font-size: 12px; color: var(--muted); text-decoration: line-through; margin-left: 6px; }
     .price-diff {
       font-size: 11px;
       font-weight: 700;
@@ -407,8 +416,6 @@
 
     .desc-box {
       font-size: 13px;
-      color: var(--text);
-      opacity: 0.88;
       line-height: 1.45;
       margin-bottom: 10px;
       white-space: pre-wrap;
@@ -439,7 +446,6 @@
       margin-bottom: 10px;
     }
 
-    /* ГАЛЕРЕЯ ПРЕВЬЮ */
     .photos-row {
       display: flex;
       gap: 8px;
@@ -448,25 +454,19 @@
       margin-bottom: 10px;
     }
     .photo-thumb-wrap {
-      position: relative;
-      width: 84px;
-      height: 84px;
+      width: 82px;
+      height: 82px;
       flex-shrink: 0;
       border-radius: 12px;
       overflow: hidden;
       border: 1px solid var(--border);
       cursor: pointer;
     }
-    .photo-thumb-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .photo-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* КНОПКИ ДЕЙСТВИЙ В КАРТОЧКЕ */
     .card-footer {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
       gap: 8px;
       padding-top: 10px;
       border-top: 1px solid var(--border);
@@ -475,22 +475,92 @@
       border: 1px solid var(--border);
       background: var(--surface-2);
       color: var(--text);
-      padding: 10px 12px;
+      padding: 10px 10px;
       border-radius: 12px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 5px;
       white-space: nowrap;
     }
     .c-btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
     .c-btn.success { background: var(--success); color: #fff; border-color: var(--success); }
     .c-btn.danger { color: var(--danger); background: var(--danger-soft); border-color: transparent; }
 
-    /* НИЖНЯЯ ЗАКРЕПЛЕННАЯ ПАНЕЛЬ */
+    /* ЭКРАН СТАТИСТИКИ АДМИНА */
+    .stats-section { display: none; }
+    .stats-section.visible { display: block; }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .stat-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+    .stat-box-lbl { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+    .stat-box-val { font-size: 20px; font-weight: 800; margin-top: 4px; }
+    .stat-box-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+    .section-card-title { font-size: 15px; font-weight: 800; margin-bottom: 12px; }
+    .person-stat-row {
+      padding: 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 8px;
+    }
+    .person-stat-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .person-stat-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .person-stat-metrics b { color: var(--text); display: block; font-size: 13px; margin-top: 2px; }
+
+    /* ЭКРАН УПРАВЛЕНИЯ ПОЛЬЗОВАТЕЛЯМИ (АДМИН) */
+    .users-section { display: none; }
+    .users-section.visible { display: block; }
+    .user-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .user-item-name { font-size: 14px; font-weight: 800; }
+    .user-item-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* НИЖНЯЯ КНОПКА */
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -503,14 +573,9 @@
       display: flex;
       justify-content: center;
     }
-    .bottom-bar-inner {
-      width: 100%;
-      max-width: 480px;
-      display: flex;
-      gap: 10px;
-    }
+    .bottom-bar-inner { width: 100%; max-width: 480px; }
     .main-add-btn {
-      flex: 1;
+      width: 100%;
       background: var(--primary);
       color: #fff;
       border: none;
@@ -526,12 +591,11 @@
       box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
     }
 
-    /* ШТОРКИ (BOTTOM SHEETS) ВМЕСТО PROMPT */
+    /* МОДАЛЬНЫЕ ШТОРКИ */
     .sheet-backdrop {
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(3px);
       z-index: 200;
       display: none;
       align-items: flex-end;
@@ -546,25 +610,9 @@
       padding: 18px 18px calc(22px + env(safe-area-inset-bottom, 12px));
       max-height: 92vh;
       overflow-y: auto;
-      animation: slideUp 0.22s ease-out;
     }
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-    .sheet-handle {
-      width: 40px;
-      height: 5px;
-      background: var(--border);
-      border-radius: 10px;
-      margin: 0 auto 14px;
-    }
-    .sheet-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
+    .sheet-handle { width: 40px; height: 5px; background: var(--border); border-radius: 10px; margin: 0 auto 14px; }
+    .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
     .sheet-title { font-size: 18px; font-weight: 800; }
     .sheet-close {
       width: 32px;
@@ -578,94 +626,49 @@
     }
 
     .form-group { margin-bottom: 12px; }
-    .form-label {
-      display: block;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
+    .form-label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 5px; }
     .f-input {
       width: 100%;
       background: var(--surface-2);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px 14px;
-      font-size: 15px;
+      border-radius: 13px;
+      padding: 11px 13px;
+      font-size: 14px;
       color: var(--text);
       outline: none;
       font-family: inherit;
     }
     .f-input:focus { border-color: var(--primary); }
-    textarea.f-input { min-height: 80px; resize: vertical; }
+    textarea.f-input { min-height: 76px; resize: vertical; }
     .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
     .drop-area {
       border: 2px dashed var(--border);
       background: var(--surface-2);
       border-radius: 16px;
-      padding: 16px;
+      padding: 14px;
       text-align: center;
       cursor: pointer;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
-    .staged-grid {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
-    }
-    .staged-item {
-      position: relative;
-      width: 68px;
-      height: 68px;
-    }
-    .staged-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-    }
+    .staged-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .staged-item { position: relative; width: 66px; height: 66px; }
+    .staged-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; border: 1px solid var(--border); }
     .staged-remove {
       position: absolute;
       top: -6px;
       right: -6px;
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       border-radius: 50%;
       background: var(--danger);
       color: #fff;
       border: none;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
       cursor: pointer;
     }
 
-    /* СПИСОК ПОЛЬЗОВАТЕЛЕЙ В АДМИНКЕ */
-    .user-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 12px;
-      background: var(--surface-2);
-      border-radius: 12px;
-      margin-bottom: 8px;
-      gap: 8px;
-    }
-    .user-row-info { font-size: 13px; font-weight: 600; }
-    .user-row-sub { font-size: 11px; color: var(--muted); }
-    .role-select {
-      background: var(--surface);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 6px 8px;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    /* ПРОСМОТР ФОТО (LIGHTBOX) */
     .lightbox {
       position: fixed;
       inset: 0;
@@ -678,17 +681,8 @@
       padding: 16px;
     }
     .lightbox.open { display: flex; }
-    .lightbox img {
-      max-width: 100%;
-      max-height: 78vh;
-      border-radius: 12px;
-      object-fit: contain;
-    }
-    .lb-bar {
-      display: flex;
-      gap: 10px;
-      margin-top: 18px;
-    }
+    .lightbox img { max-width: 100%; max-height: 78vh; border-radius: 12px; object-fit: contain; }
+    .lb-bar { display: flex; gap: 10px; margin-top: 18px; }
     .lb-btn {
       background: rgba(255,255,255,0.16);
       color: #fff;
@@ -704,7 +698,7 @@
       background: var(--surface);
       border: 1px dashed var(--border);
       border-radius: var(--radius-lg);
-      padding: 40px 20px;
+      padding: 36px 20px;
       text-align: center;
       color: var(--muted);
       font-size: 14px;
@@ -714,99 +708,213 @@
 </head>
 <body>
 
-  <!-- ЭКРАН ВХОДА ПО РОЛИ (ИЗОЛЯЦИЯ РОЛЕЙ) -->
+  <!-- ЭКРАН ВХОДА И РЕГИСТРАЦИИ АККАУНТА -->
   <div class="auth-screen" id="authScreen">
     <div class="auth-card">
       <div class="auth-logo">📦</div>
       <div class="auth-title">Заказы Авито</div>
-      <div class="auth-sub" id="authGreeting">Введите ваш персональный ПИН-код доступа, чтобы войти в свою роль</div>
-      <input type="tel" maxlength="6" class="pin-input" id="pinInput" placeholder="••••">
-      <button class="auth-btn" onclick="loginWithPin()">Войти в систему</button>
-      <div class="auth-hint">
-        🔑 <b>Стандартные коды (меняются у Админа):</b><br>
-        • Посредник: <b>1111</b><br>
-        • Исполнитель: <b>2222</b><br>
-        • Администратор: <b>9999</b>
+      <div class="auth-sub">Система учёта заказов для посредников и исполнителей</div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="authTabLogin" onclick="switchAuthTab('login')">🔑 Вход</button>
+        <button class="auth-tab" id="authTabReg" onclick="switchAuthTab('register')">✨ Создать аккаунт</button>
+      </div>
+
+      <!-- ФОРМА ВХОДА -->
+      <div id="loginBox">
+        <div class="form-group">
+          <label class="form-label">Логин</label>
+          <input type="text" id="loginUser" class="f-input" placeholder="Введите ваш логин" autocapitalize="none">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Пароль</label>
+          <input type="password" id="loginPass" class="f-input" placeholder="Введите пароль">
+        </div>
+        <button class="main-add-btn" id="loginBtn" onclick="handleLogin()">Войти в аккаунт</button>
+      </div>
+
+      <!-- ФОРМА РЕГИСТРАЦИИ (ДЛЯ ПОСРЕДНИКА И ИСПОЛНИТЕЛЯ) -->
+      <div id="registerBox" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">Выберите вашу роль</label>
+          <div class="role-selector">
+            <div class="role-option selected" id="regRoleAgent" onclick="selectRegRole('agent')">💼 Посредник</div>
+            <div class="role-option" id="regRoleWorker" onclick="selectRegRole('worker')">🛠 Исполнитель</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ваше имя / Никнейм *</label>
+          <input type="text" id="regName" class="f-input" placeholder="Например: Алексей">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Придумайте логин *</label>
+          <input type="text" id="regLogin" class="f-input" placeholder="Например: alex_avito" autocapitalize="none">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Придумайте пароль *</label>
+          <input type="password" id="regPass" class="f-input" placeholder="Минимум 6 символов">
+        </div>
+        <button class="main-add-btn" id="regBtn" onclick="handleRegister()">Создать аккаунт</button>
       </div>
     </div>
   </div>
 
   <!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
   <div class="app-shell">
-    <!-- Шапка с профилем и зафиксированной ролью -->
+    <!-- Шапка профиля -->
     <div class="top-bar">
       <div class="user-chip">
-        <div class="avatar-circle" id="userAvatar">А</div>
+        <div class="avatar-circle" id="uAvatar">А</div>
         <div class="user-meta">
-          <div class="user-name" id="userName">Пользователь</div>
-          <div class="role-badge" id="userRoleBadge">● Посредник</div>
+          <div class="user-name" id="uName">Загрузка...</div>
+          <div class="role-badge" id="uRole">● Роль</div>
         </div>
       </div>
       <div class="top-actions">
-        <button class="icon-btn" id="adminSettingsBtn" style="display:none;" onclick="openAdminSheet()" title="Управление ролями и кодами">👑</button>
-        <button class="icon-btn" onclick="fetchOrders()" title="Обновить">🔄</button>
-        <button class="icon-btn" onclick="logoutRole()" title="Сменить аккаунт / Выйти">🚪</button>
+        <button class="icon-btn" onclick="fetchAllData(true)" title="Обновить данные">🔄</button>
+        <button class="icon-btn" onclick="logoutAccount()" title="Выйти из аккаунта">🚪</button>
       </div>
     </div>
 
-    <!-- Панель предпросмотра ролей (ВИДНА ТОЛЬКО АДМИНУ!) -->
-    <div class="admin-preview-bar" id="adminPreviewBar">
-      <button class="preview-tab active" id="prev-admin" onclick="switchAdminView('admin')">👑 Админ</button>
-      <button class="preview-tab" id="prev-agent" onclick="switchAdminView('agent')">👀 Посредник</button>
-      <button class="preview-tab" id="prev-worker" onclick="switchAdminView('worker')">👀 Исполнитель</button>
+    <!-- Навигация Администратора (Заказы / Статистика / Пользователи) -->
+    <div class="admin-nav" id="adminNav">
+      <button class="admin-nav-btn active" id="admTab-orders" onclick="switchAdminSection('orders')">📋 Заказы</button>
+      <button class="admin-nav-btn" id="admTab-stats" onclick="switchAdminSection('stats')">📊 Статистика</button>
+      <button class="admin-nav-btn" id="admTab-users" onclick="switchAdminSection('users')">👥 Аккаунты</button>
     </div>
 
-    <!-- Финансовое табло -->
-    <div class="hero-card" id="heroCard">
-      <div class="hero-top">
-        <div>
-          <div class="hero-label" id="heroLabel">К ВЫПЛАТЕ ИСПОЛНИТЕЛЮ</div>
-          <div class="hero-amount" id="heroAmount">0 ₽</div>
-          <div class="hero-sub" id="heroSub">Все выполненные заказы оплачены</div>
+    <!-- СЕКЦИЯ 1: ЗАКАЗЫ -->
+    <div id="sectionOrders">
+      <!-- Финансовое табло -->
+      <div class="hero-card" id="heroCard">
+        <div class="hero-top">
+          <div>
+            <div class="hero-label" id="heroLabel">К ВЫПЛАТЕ ИСПОЛНИТЕЛЮ</div>
+            <div class="hero-amount" id="heroAmount">0 ₽</div>
+            <div class="hero-sub" id="heroSub">Все выполненные заказы оплачены</div>
+          </div>
+          <button class="hero-pay-btn" id="heroPayAllBtn" style="display:none;" onclick="payAllFiltered()">💳 Выплатить всё</button>
         </div>
-        <button class="hero-pay-btn" id="heroPayAllBtn" style="display:none;" onclick="openPayAllConfirm()">💳 Выплатить всё</button>
+        <div class="hero-stats">
+          <div>
+            <div class="mini-stat-label">В работе сейчас</div>
+            <div class="mini-stat-val" id="statActiveSum">0 шт. • 0 ₽</div>
+          </div>
+          <div>
+            <div class="mini-stat-label">Уже выплачено</div>
+            <div class="mini-stat-val" id="statPaidSum">0 ₽</div>
+          </div>
+        </div>
       </div>
-      <div class="hero-stats">
-        <div>
-          <div class="mini-stat-label">Активно в работе</div>
-          <div class="mini-stat-val" id="statActiveSum">0 шт. • 0 ₽</div>
-        </div>
-        <div>
-          <div class="mini-stat-label">Всего выплачено</div>
-          <div class="mini-stat-val" id="statPaidSum">0 ₽</div>
-        </div>
+
+      <!-- Фильтр по исполнителю (виден Посреднику и Админу) -->
+      <div class="worker-filter-bar" id="workerFilterBar">
+        <select class="worker-filter-select" id="workerFilterSelect" onchange="renderAll()">
+          <option value="ALL">👤 Все исполнители (показать все заказы)</option>
+        </select>
+      </div>
+
+      <!-- Вкладки статусов -->
+      <div class="tabs-grid">
+        <button class="seg-tab active" id="tab-active" onclick="setOrderFilter('active')">
+          🔥 В работе <span class="seg-badge" id="cnt-active">0</span>
+        </button>
+        <button class="seg-tab" id="tab-unpaid" onclick="setOrderFilter('unpaid')">
+          ⏳ К оплате <span class="seg-badge" id="cnt-unpaid">0</span>
+        </button>
+        <button class="seg-tab" id="tab-all" onclick="setOrderFilter('all')">
+          📁 Все <span class="seg-badge" id="cnt-all">0</span>
+        </button>
+      </div>
+
+      <!-- Список карточек -->
+      <div id="ordersContainer">
+        <div class="empty-state">Загрузка заказов...</div>
       </div>
     </div>
 
-    <!-- Вкладки фильтрации (3 ровные колонки) -->
-    <div class="tabs-grid">
-      <button class="seg-tab active" id="tab-active" onclick="setFilter('active')">
-        🔥 В работе <span class="seg-badge" id="cnt-active">0</span>
-      </button>
-      <button class="seg-tab" id="tab-unpaid" onclick="setFilter('unpaid')">
-        ⏳ К оплате <span class="seg-badge" id="cnt-unpaid">0</span>
-      </button>
-      <button class="seg-tab" id="tab-all" onclick="setFilter('all')">
-        📁 Все <span class="seg-badge" id="cnt-all">0</span>
-      </button>
+    <!-- СЕКЦИЯ 2: СТАТИСТИКА (ТОЛЬКО ДЛЯ АДМИНА) -->
+    <div class="stats-section" id="sectionStats">
+      <div class="stat-grid">
+        <div class="stat-box">
+          <div class="stat-box-lbl">Всего заказов</div>
+          <div class="stat-box-val" id="stTotalOrders">0</div>
+          <div class="stat-box-sub" id="stDoneOrders">Выполнено: 0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-lbl">Общий оборот</div>
+          <div class="stat-box-val" id="stTotalVolume">0 ₽</div>
+          <div class="stat-box-sub" id="stBargainDiff">Экономия торга: 0 ₽</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-lbl">Ждут выплаты</div>
+          <div class="stat-box-val" style="color:var(--danger);" id="stUnpaidSum">0 ₽</div>
+          <div class="stat-box-sub" id="stUnpaidCount">Заказов: 0 шт.</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-lbl">Всего выплачено</div>
+          <div class="stat-box-val" style="color:var(--success);" id="stPaidTotal">0 ₽</div>
+          <div class="stat-box-sub" id="stPaidCount">Закрыто: 0 шт.</div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-title">🛠 Статистика по исполнителям</div>
+        <div id="statsByWorkers"></div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-title">💼 Статистика по посредникам</div>
+        <div id="statsByAgents"></div>
+      </div>
     </div>
 
-    <!-- Список карточек -->
-    <div id="ordersList">
-      <div class="empty-state">Загрузка заказов...</div>
+    <!-- СЕКЦИЯ 3: УПРАВЛЕНИЕ АККАУНТАМИ (ТОЛЬКО ДЛЯ АДМИНА) -->
+    <div class="users-section" id="sectionUsers">
+      <div class="section-card">
+        <div class="section-card-title">＋ Создать новый аккаунт</div>
+        <div class="form-group">
+          <label class="form-label">Имя пользователя *</label>
+          <input type="text" id="admNewName" class="f-input" placeholder="Например: Дмитрий (Исполнитель)">
+        </div>
+        <div class="f-row">
+          <div class="form-group">
+            <label class="form-label">Логин *</label>
+            <input type="text" id="admNewLogin" class="f-input" placeholder="dmitry" autocapitalize="none">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Пароль *</label>
+            <input type="text" id="admNewPass" class="f-input" placeholder="Пароль входа">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Роль в системе</label>
+          <select id="admNewRole" class="f-input">
+            <option value="worker">🛠 Исполнитель</option>
+            <option value="agent">💼 Посредник</option>
+            <option value="admin">👑 Администратор</option>
+          </select>
+        </div>
+        <button class="main-add-btn" onclick="adminCreateUser()">Создать пользователя</button>
+      </div>
+
+      <div class="section-card">
+        <div class="section-card-title">👥 Зарегистрированные пользователи</div>
+        <div id="adminUsersList"></div>
+      </div>
     </div>
   </div>
 
-  <!-- Нижняя панель с кнопкой добавления заказа (для Посредника и Админа) -->
-  <div class="bottom-bar" id="bottomBar">
+  <!-- Нижняя панель создания заказа (для Посредника и Админа) -->
+  <div class="bottom-bar" id="bottomBar" style="display:none;">
     <div class="bottom-bar-inner">
       <button class="main-add-btn" onclick="openOrderSheet()">
-        <span>＋</span> Создать новый заказ с Авито
+        <span>＋</span> Новый заказ с Авито
       </button>
     </div>
   </div>
 
-  <!-- ШТОРКА 1: СОЗДАНИЕ / РЕДАКТИРОВАНИЕ ЗАКАЗА (ДЛЯ ПОСРЕДНИКА И АДМИНА) -->
+  <!-- ШТОРКА СОЗДАНИЯ / РЕДАКТИРОВАНИЯ ЗАКАЗА -->
   <div class="sheet-backdrop" id="orderSheet" onclick="closeOrderSheet()">
     <div class="bottom-sheet" onclick="event.stopPropagation()">
       <div class="sheet-handle"></div>
@@ -819,7 +927,12 @@
 
       <div class="form-group">
         <label class="form-label">Название товара / задачи *</label>
-        <input type="text" id="fTitle" class="f-input" placeholder="Например: Наушники Sony WH-1000XM4">
+        <input type="text" id="fTitle" class="f-input" placeholder="Например: Видеокарта RTX 3060">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">👤 Назначить исполнителя *</label>
+        <select id="fWorkerSelect" class="f-input"></select>
       </div>
 
       <div class="f-row">
@@ -828,7 +941,7 @@
           <input type="number" id="fPrice" class="f-input" placeholder="0">
         </div>
         <div class="form-group">
-          <label class="form-label">Статус оплаты</label>
+          <label class="form-label">Статус выплаты</label>
           <select id="fPaid" class="f-input">
             <option value="Не выплачено">Не выплачено</option>
             <option value="Выплачено">Выплачено</option>
@@ -837,13 +950,13 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">Ссылка на объявление Авито</label>
+        <label class="form-label">Ссылка на Авито</label>
         <input type="url" id="fUrl" class="f-input" placeholder="https://www.avito.ru/...">
       </div>
 
       <div class="form-group">
-        <label class="form-label">Задание для исполнителя</label>
-        <textarea id="fDesc" class="f-input" placeholder="Что проверить, насколько сторговаться, как отправить..."></textarea>
+        <label class="form-label">Инструкция для исполнителя</label>
+        <textarea id="fDesc" class="f-input" placeholder="Что проверить, насколько сторговаться, доставка..."></textarea>
       </div>
 
       <div class="form-group">
@@ -851,23 +964,23 @@
         <div class="drop-area" onclick="document.getElementById('fFiles').click()">
           <div style="font-size:22px; margin-bottom:4px;">📷</div>
           <div style="font-size:13px; color:var(--muted);">
-            Нажмите, чтобы выбрать фото из галереи<br>или вставьте через <b>Ctrl + V</b>
+            Нажмите для выбора скриншотов из галереи<br>или вставьте через <b>Ctrl + V</b>
           </div>
           <input type="file" id="fFiles" multiple accept="image/*" style="display:none" onchange="handleFilesSelect(this.files)">
         </div>
         <div class="staged-grid" id="stagedGrid"></div>
       </div>
 
-      <button class="main-add-btn" style="width:100%;" id="saveOrderBtn" onclick="saveOrder()">Сохранить заказ</button>
+      <button class="main-add-btn" id="saveOrderBtn" onclick="saveOrder()">Сохранить заказ</button>
     </div>
   </div>
 
-  <!-- ШТОРКА 2: УПРАВЛЕНИЕ ЦЕНОЙ И ОТЧЕТОМ (ДЛЯ ИСПОЛНИТЕЛЯ И АДМИНА) -->
+  <!-- ШТОРКА ИСПОЛНИТЕЛЯ (КОРРЕКТИРОВКА ЦЕНЫ И ОТЧЁТ) -->
   <div class="sheet-backdrop" id="workerSheet" onclick="closeWorkerSheet()">
     <div class="bottom-sheet" onclick="event.stopPropagation()">
       <div class="sheet-handle"></div>
       <div class="sheet-header">
-        <div class="sheet-title">Исполнение и корректировка цены</div>
+        <div class="sheet-title">Цена выкупа и отчёт</div>
         <button class="sheet-close" onclick="closeWorkerSheet()">✕</button>
       </div>
 
@@ -875,7 +988,7 @@
 
       <div class="form-group">
         <label class="form-label">Итоговая цена выкупа (₽)</label>
-        <input type="number" id="wFinalPrice" class="f-input" placeholder="Введите финальную сумму">
+        <input type="number" id="wFinalPrice" class="f-input" placeholder="Финальная сумма">
       </div>
 
       <div class="form-group">
@@ -887,145 +1000,111 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">Отчёт исполнителя / Трек-номер / Заметка</label>
-        <textarea id="wComment" class="f-input" placeholder="Например: Сторговал 500 руб, заказал через Боксберри, трек 12345..."></textarea>
+        <label class="form-label">Отчёт исполнителя / Трек-номер</label>
+        <textarea id="wComment" class="f-input" placeholder="Напишите результат проверки, трек-номер или причину изменения цены..."></textarea>
       </div>
 
-      <button class="main-add-btn" style="width:100%;" onclick="saveWorkerUpdate()">Сохранить изменения</button>
+      <button class="main-add-btn" onclick="saveWorkerUpdate()">Сохранить изменения</button>
     </div>
   </div>
 
-  <!-- ШТОРКА 3: АДМИН-ПАНЕЛЬ (УПРАВЛЕНИЕ РОЛЯМИ И ПИН-КОДАМИ) -->
-  <div class="sheet-backdrop" id="adminSheet" onclick="closeAdminSheet()">
-    <div class="bottom-sheet" onclick="event.stopPropagation()">
-      <div class="sheet-handle"></div>
-      <div class="sheet-header">
-        <div class="sheet-title">👑 Управление ролями и кодами</div>
-        <button class="sheet-close" onclick="closeAdminSheet()">✕</button>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">ПИН-коды для входа по ролям</label>
-        <div class="f-row" style="grid-template-columns: repeat(3, 1fr);">
-          <div>
-            <small style="color:var(--muted); font-size:11px;">Посредник</small>
-            <input type="text" id="pinAgent" class="f-input" style="text-align:center; font-weight:700;">
-          </div>
-          <div>
-            <small style="color:var(--muted); font-size:11px;">Исполнитель</small>
-            <input type="text" id="pinWorker" class="f-input" style="text-align:center; font-weight:700;">
-          </div>
-          <div>
-            <small style="color:var(--muted); font-size:11px;">Админ</small>
-            <input type="text" id="pinAdmin" class="f-input" style="text-align:center; font-weight:700;">
-          </div>
-        </div>
-      </div>
-
-      <button class="c-btn primary" style="width:100%; margin-bottom:18px;" onclick="saveConfigPins()">💾 Сохранить ПИН-коды</button>
-
-      <div class="form-group">
-        <label class="form-label">Привязанные пользователи Telegram</label>
-        <div id="usersBindList"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ГАЛЕРЕЯ НА ВЕСЬ ЭКРАН -->
+  <!-- ПОЛНОЭКРАННАЯ ГАЛЕРЕЯ (LIGHTBOX) -->
   <div class="lightbox" id="lightbox" onclick="closeLightbox()">
     <img id="lbImg" src="" onclick="event.stopPropagation()">
     <div class="lb-bar" onclick="event.stopPropagation()">
       <button class="lb-btn" onclick="prevPhoto()">◀</button>
       <button class="lb-btn" id="lbCount">1 / 1</button>
       <button class="lb-btn" onclick="nextPhoto()">▶</button>
-      <button class="lb-btn" onclick="closeLightbox()">✕ Закрыть</button>
+      <button class="lb-btn" onclick="closeLightbox()">✕</button>
     </div>
   </div>
 
   <script>
-    // 1. Мгновенная инициализация Telegram Mini App
-    (function initTg() {
-      try {
-        if (window.TelegramWebviewProxy) {
-          window.TelegramWebviewProxy.postEvent('web_app_ready', '');
-          window.TelegramWebviewProxy.postEvent('web_app_expand', '');
-        } else if (window.external && window.external.notify) {
-          window.external.notify(JSON.stringify({ eventType: 'web_app_ready', eventData: {} }));
-          window.external.notify(JSON.stringify({ eventType: 'web_app_expand', eventData: {} }));
-        } else if (window.parent && window.parent !== window) {
-          window.parent.postMessage(JSON.stringify({ eventType: 'web_app_ready', eventData: {} }), '*');
-          window.parent.postMessage(JSON.stringify({ eventType: 'web_app_expand', eventData: {} }), '*');
-        }
-      } catch (e) {}
+    // 1. МГНОВЕННЫЙ СИГНАЛ TELEGRAM НА ВСЕХ ПЛАТФОРМАХ (iOS WKWebView + Android + Desktop)
+    (function notifyTelegramReady() {
+      const events = ['web_app_ready', 'web_app_expand'];
+      events.forEach(ev => {
+        try {
+          if (window.TelegramWebviewProxy && typeof window.TelegramWebviewProxy.postEvent === 'function') {
+            window.TelegramWebviewProxy.postEvent(ev, '{}');
+          }
+        } catch (e) {}
+        try {
+          if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.performAction) {
+            window.webkit.messageHandlers.performAction.postMessage({ eventType: ev, eventData: {} });
+          }
+        } catch (e) {}
+        try {
+          if (window.external && typeof window.external.notify === 'function') {
+            window.external.notify(JSON.stringify({ eventType: ev, eventData: {} }));
+          }
+        } catch (e) {}
+        try {
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage(JSON.stringify({ eventType: ev, eventData: {} }), '*');
+          }
+        } catch (e) {}
+      });
     })();
 
-    // 2. Извлечение данных пользователя из Telegram URL Hash (без внешних библиотек)
-    function getTelegramUser() {
-      try {
-        const hash = window.location.hash.substring(1);
-        const params = new URLSearchParams(hash);
-        const tgWebAppData = params.get('tgWebAppData');
-        if (tgWebAppData) {
-          const dataParams = new URLSearchParams(tgWebAppData);
-          const userStr = dataParams.get('user');
-          if (userStr) {
-            const u = JSON.parse(decodeURIComponent(userStr));
-            return {
-              id: String(u.id),
-              name: [u.first_name, u.last_name].filter(Boolean).join(' ') || u.username || 'User',
-              username: u.username ? '@' + u.username : ''
-            };
-          }
-        }
-      } catch (e) {}
-      let devId = localStorage.getItem('avito_device_id');
-      if (!devId) {
-        devId = 'dev_' + Math.random().toString(36).substring(2, 9);
-        localStorage.setItem('avito_device_id', devId);
-      }
-      return { id: devId, name: 'Устройство', username: '' };
-    }
-
-    const currentUser = getTelegramUser();
-
-    // 3. Подключение к Supabase
+    // 2. НАСТРОЙКИ SUPABASE С ЗАЩИТОЙ ОТ ЗАВИСАНИЯ СЕТИ (ТАЙМАУТ 7 СЕК)
     const SUPABASE_URL = 'https://vzsbdvwtwcvbqhcbssfi.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_yeu1O6x7OfgNi7sRhpV8SA_s3uxOGaU';
     const CONFIG_MARKER = '__SYSTEM_CONFIG__';
 
-    let appConfig = {
-      rowId: null,
-      pins: { agent: '1111', worker: '2222', admin: '9999' },
-      users: {} // { [userId]: { name, username, role } }
+    // Стартовый сложный аккаунт Администратора по умолчанию
+    const DEFAULT_ADMIN = {
+      id: 'usr_admin_root',
+      name: 'Главный Администратор',
+      login: 'admin',
+      pass: 'Avito#Admin2026!',
+      role: 'admin'
     };
 
-    let realUserRole = localStorage.getItem('avito_locked_role_' + currentUser.id) || null;
-    let activeViewRole = realUserRole || 'agent';
-    let currentFilter = 'active';
+    let sysConfig = {
+      rowId: null,
+      users: [DEFAULT_ADMIN]
+    };
+
+    let currentAccount = null;
+    let selectedRegRole = 'agent';
+    let currentAdminSection = 'orders';
+    let currentOrderFilter = 'active';
     let allOrders = [];
     let existingEditingPhotos = [];
     let stagedFiles = [];
     let lbPhotos = [];
     let lbIndex = 0;
 
-    // Кэш для мгновенного старта
+    // Загрузка из локального кэша за 0.01с
     try {
-      const cachedOrders = localStorage.getItem('avito_orders_v3');
-      if (cachedOrders) allOrders = JSON.parse(cachedOrders);
+      const savedAcc = localStorage.getItem('avito_pro_account');
+      if (savedAcc) currentAccount = JSON.parse(savedAcc);
+      const savedCfg = localStorage.getItem('avito_pro_config');
+      if (savedCfg) sysConfig = JSON.parse(savedCfg);
+      const savedOrders = localStorage.getItem('avito_pro_orders');
+      if (savedOrders) allOrders = JSON.parse(savedOrders);
     } catch (e) {}
 
-    // Базовые вызовы к Supabase REST API
+    // Быстрый fetch с таймаутом (не дает приложению зависнуть на плохом мобильном интернете)
     async function sbFetch(path, options = {}) {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
-        ...options,
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          ...(options.headers || {})
-        }
-      });
-      if (!res.ok) throw new Error(await res.text());
-      return res;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 10000);
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+          ...options,
+          signal: controller.signal,
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            ...(options.headers || {})
+          }
+        });
+        if (!res.ok) throw new Error(await res.text());
+        return res;
+      } finally {
+        clearTimeout(timer);
+      }
     }
 
     async function storageUploadPhoto(fileName, blob) {
@@ -1043,44 +1122,83 @@
       return `${SUPABASE_URL}/storage/v1/object/public/avito-screens/${fileName}`;
     }
 
-    // Синхронизация конфигурации ролей и заказов
-    async function fetchOrders() {
+    // Разбор метаданных заказа (кто посредник, кто исполнитель, заметка)
+    function parseOrderMeta(o) {
+      let meta = {
+        note: '',
+        workerId: 'ALL',
+        workerName: 'Любой исполнитель',
+        agentId: '',
+        agentName: 'Посредник'
+      };
+      if (o.worker_comment) {
+        if (o.worker_comment.trim().startsWith('{')) {
+          try {
+            const parsed = JSON.parse(o.worker_comment);
+            meta = { ...meta, ...parsed };
+          } catch (e) {
+            meta.note = o.worker_comment;
+          }
+        } else {
+          meta.note = o.worker_comment;
+        }
+      }
+      return meta;
+    }
+
+    function packOrderMeta(metaObj) {
+      return JSON.stringify(metaObj);
+    }
+
+    // Синхронизация с базой Supabase
+    async function fetchAllData(showAlertOnError = false) {
       try {
         const res = await sbFetch('orders?select=*&order=id.desc');
         const rows = await res.json();
 
         const cfgRow = rows.find(r => r.title === CONFIG_MARKER);
         if (cfgRow) {
-          appConfig.rowId = cfgRow.id;
+          sysConfig.rowId = cfgRow.id;
           const stored = (Array.isArray(cfgRow.photos) && cfgRow.photos[0]) ? cfgRow.photos[0] : {};
-          if (stored.pins) appConfig.pins = { ...appConfig.pins, ...stored.pins };
-          if (stored.users) appConfig.users = stored.users;
-        }
-
-        // Проверяем, назначена ли пользователю роль на сервере
-        const serverUser = appConfig.users[currentUser.id];
-        if (serverUser && serverUser.role) {
-          realUserRole = serverUser.role;
-          localStorage.setItem('avito_locked_role_' + currentUser.id, realUserRole);
+          if (Array.isArray(stored.users) && stored.users.length > 0) {
+            sysConfig.users = stored.users;
+            if (!sysConfig.users.some(u => u.login === DEFAULT_ADMIN.login)) {
+              sysConfig.users.unshift(DEFAULT_ADMIN);
+            }
+          }
+        } else {
+          sysConfig.users = [DEFAULT_ADMIN];
         }
 
         allOrders = rows.filter(r => r.title !== CONFIG_MARKER);
-        localStorage.setItem('avito_orders_v3', JSON.stringify(allOrders));
 
-        checkAuthAndRender();
+        localStorage.setItem('avito_pro_config', JSON.stringify(sysConfig));
+        localStorage.setItem('avito_pro_orders', JSON.stringify(allOrders));
+
+        // Проверяем актуальность текущего аккаунта
+        if (currentAccount) {
+          const found = sysConfig.users.find(u => u.id === currentAccount.id || u.login === currentAccount.login);
+          if (found) {
+            currentAccount = found;
+            localStorage.setItem('avito_pro_account', JSON.stringify(currentAccount));
+          }
+        }
+
+        renderAll();
       } catch (err) {
-        checkAuthAndRender();
+        if (showAlertOnError) alert('Ошибка связи с сервером: ' + err.message);
+        renderAll();
       }
     }
 
-    async function saveAppConfigToServer() {
+    async function saveConfigToSupabase() {
       const payload = {
         title: CONFIG_MARKER,
         status: CONFIG_MARKER,
-        photos: [{ pins: appConfig.pins, users: appConfig.users }]
+        photos: [{ users: sysConfig.users }]
       };
-      if (appConfig.rowId) {
-        await sbFetch(`orders?id=eq.${appConfig.rowId}`, {
+      if (sysConfig.rowId) {
+        await sbFetch(`orders?id=eq.${sysConfig.rowId}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
           body: JSON.stringify({ photos: payload.photos })
@@ -1092,138 +1210,232 @@
           body: JSON.stringify(payload)
         });
       }
+      localStorage.setItem('avito_pro_config', JSON.stringify(sysConfig));
     }
 
-    // Проверка авторизации и блокировка чужих ролей
-    function checkAuthAndRender() {
-      document.getElementById('userName').innerText = currentUser.name;
-      document.getElementById('userAvatar').innerText = (currentUser.name || 'U')[0].toUpperCase();
+    // АВТОРИЗАЦИЯ И СОЗДАНИЕ АККАУНТА
+    function switchAuthTab(tab) {
+      document.getElementById('authTabLogin').classList.toggle('active', tab === 'login');
+      document.getElementById('authTabReg').classList.toggle('active', tab === 'register');
+      document.getElementById('loginBox').style.display = tab === 'login' ? 'block' : 'none';
+      document.getElementById('registerBox').style.display = tab === 'register' ? 'block' : 'none';
+    }
 
-      if (!realUserRole) {
-        document.getElementById('authGreeting').innerText =
-          `Привет, ${currentUser.name}! Введите ПИН-код вашей роли для входа:`;
+    function selectRegRole(role) {
+      selectedRegRole = role;
+      document.getElementById('regRoleAgent').classList.toggle('selected', role === 'agent');
+      document.getElementById('regRoleWorker').classList.toggle('selected', role === 'worker');
+    }
+
+    async function handleLogin() {
+      const login = document.getElementById('loginUser').value.trim().toLowerCase();
+      const pass = document.getElementById('loginPass').value.trim();
+      if (!login || !pass) return alert('Введите логин и пароль!');
+
+      const btn = document.getElementById('loginBtn');
+      btn.disabled = true;
+      btn.innerText = 'Проверка...';
+
+      await fetchAllData(false);
+
+      const matched = sysConfig.users.find(
+        u => u.login.toLowerCase() === login && u.pass === pass
+      );
+
+      btn.disabled = false;
+      btn.innerText = 'Войти в аккаунт';
+
+      if (!matched) {
+        alert('Неверный логин или пароль!');
+        return;
+      }
+
+      currentAccount = matched;
+      localStorage.setItem('avito_pro_account', JSON.stringify(currentAccount));
+      document.getElementById('loginPass').value = '';
+      renderAll();
+    }
+
+    async function handleRegister() {
+      const name = document.getElementById('regName').value.trim();
+      const login = document.getElementById('regLogin').value.trim().toLowerCase();
+      const pass = document.getElementById('regPass').value.trim();
+
+      if (!name || !login || !pass) return alert('Заполните все поля!');
+      if (pass.length < 6) return alert('Пароль должен содержать минимум 6 символов!');
+
+      const btn = document.getElementById('regBtn');
+      btn.disabled = true;
+      btn.innerText = 'Создание аккаунта...';
+
+      try {
+        await fetchAllData(false);
+        if (sysConfig.users.some(u => u.login.toLowerCase() === login)) {
+          alert('Этот логин уже занят! Придумайте другой.');
+          return;
+        }
+
+        const newUser = {
+          id: 'usr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+          name: name,
+          login: login,
+          pass: pass,
+          role: selectedRegRole
+        };
+
+        sysConfig.users.push(newUser);
+        await saveConfigToSupabase();
+
+        currentAccount = newUser;
+        localStorage.setItem('avito_pro_account', JSON.stringify(currentAccount));
+        renderAll();
+      } catch (err) {
+        alert('Ошибка создания аккаунта: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Создать аккаунт';
+      }
+    }
+
+    function logoutAccount() {
+      currentAccount = null;
+      localStorage.removeItem('avito_pro_account');
+      renderAll();
+    }
+
+    // ПЕРЕКЛЮЧЕНИЕ РАЗДЕЛОВ АДМИНА
+    function switchAdminSection(sec) {
+      currentAdminSection = sec;
+      ['orders', 'stats', 'users'].forEach(s => {
+        document.getElementById('admTab-' + s).classList.toggle('active', s === sec);
+      });
+      renderAll();
+    }
+
+    function setOrderFilter(f) {
+      currentOrderFilter = f;
+      ['active', 'unpaid', 'all'].forEach(k => {
+        document.getElementById('tab-' + k).classList.toggle('active', k === f);
+      });
+      renderAll();
+    }
+
+    // ГЛАВНАЯ ОТРИСОВКА ИНТЕРФЕЙСА
+    function renderAll() {
+      if (!currentAccount) {
         document.getElementById('authScreen').classList.add('open');
         return;
       }
-
       document.getElementById('authScreen').classList.remove('open');
 
-      if (realUserRole !== 'admin') {
-        activeViewRole = realUserRole;
-        document.getElementById('adminPreviewBar').classList.remove('visible');
-        document.getElementById('adminSettingsBtn').style.display = 'none';
+      const role = currentAccount.role;
+      const roleLabels = {
+        agent: '💼 Посредник (Заказчик)',
+        worker: '🛠 Исполнитель',
+        admin: '👑 Администратор'
+      };
+
+      document.getElementById('uName').innerText = currentAccount.name;
+      document.getElementById('uAvatar').innerText = (currentAccount.name || 'U')[0].toUpperCase();
+      document.getElementById('uRole').innerText = roleLabels[role] || role;
+
+      // Панель навигации Админа
+      const isAdm = role === 'admin';
+      document.getElementById('adminNav').classList.toggle('visible', isAdm);
+
+      const showOrdersSec = !isAdm || currentAdminSection === 'orders';
+      const showStatsSec = isAdm && currentAdminSection === 'stats';
+      const showUsersSec = isAdm && currentAdminSection === 'users';
+
+      document.getElementById('sectionOrders').style.display = showOrdersSec ? 'block' : 'none';
+      document.getElementById('sectionStats').classList.toggle('visible', showStatsSec);
+      document.getElementById('sectionUsers').classList.toggle('visible', showUsersSec);
+
+      // Кнопка создания заказа внизу (только для Посредника и Админа на вкладке Заказов)
+      document.getElementById('bottomBar').style.display =
+        (showOrdersSec && (role === 'agent' || role === 'admin')) ? 'flex' : 'none';
+
+      // Обновляем список исполнителей для фильтра
+      populateWorkerFilterDropdown();
+
+      if (showOrdersSec) renderOrdersSection();
+      if (showStatsSec) renderAdminStats();
+      if (showUsersSec) renderAdminUsers();
+    }
+
+    function getWorkersList() {
+      return sysConfig.users.filter(u => u.role === 'worker');
+    }
+
+    function populateWorkerFilterDropdown() {
+      const bar = document.getElementById('workerFilterBar');
+      const sel = document.getElementById('workerFilterSelect');
+      if (currentAccount.role === 'agent' || currentAccount.role === 'admin') {
+        bar.classList.add('visible');
+        const prevVal = sel.value || 'ALL';
+        const workers = getWorkersList();
+        sel.innerHTML = `<option value="ALL">👤 Все исполнители (${workers.length})</option>` +
+          workers.map(w => `<option value="${w.id}">🛠 Исполнитель: ${escapeHtml(w.name)}</option>`).join('');
+        if ([...sel.options].some(o => o.value === prevVal)) sel.value = prevVal;
       } else {
-        document.getElementById('adminPreviewBar').classList.add('visible');
-        document.getElementById('adminSettingsBtn').style.display = 'flex';
+        bar.classList.remove('visible');
       }
-
-      const roleNames = {
-        agent: '● Роль: Посредник',
-        worker: '● Роль: Исполнитель',
-        admin: '👑 Роль: Администратор'
-      };
-      document.getElementById('userRoleBadge').innerText = roleNames[realUserRole] || '';
-
-      // Нижняя кнопка создания заказа доступна только Посреднику и Админу
-      document.getElementById('bottomBar').style.display = (activeViewRole === 'worker') ? 'none' : 'flex';
-      document.getElementById('heroLabel').innerText = (activeViewRole === 'worker')
-        ? 'ОЖИДАЮ К ВЫПЛАТЕ'
-        : 'К ВЫПЛАТЕ ИСПОЛНИТЕЛЮ';
-
-      renderOrders();
     }
 
-    async function loginWithPin() {
-      const pin = document.getElementById('pinInput').value.trim();
-      let matchedRole = null;
-      if (pin === appConfig.pins.agent) matchedRole = 'agent';
-      else if (pin === appConfig.pins.worker) matchedRole = 'worker';
-      else if (pin === appConfig.pins.admin) matchedRole = 'admin';
+    function renderOrdersSection() {
+      const role = currentAccount.role;
+      const selectedWorkerId = document.getElementById('workerFilterSelect')?.value || 'ALL';
 
-      if (!matchedRole) {
-        alert('Неверный ПИН-код! Проверьте код у администратора.');
-        return;
-      }
-
-      realUserRole = matchedRole;
-      activeViewRole = matchedRole;
-      localStorage.setItem('avito_locked_role_' + currentUser.id, matchedRole);
-      document.getElementById('pinInput').value = '';
-
-      // Сохраняем привязку пользователя в Supabase
-      appConfig.users[currentUser.id] = {
-        name: currentUser.name,
-        username: currentUser.username,
-        role: matchedRole
-      };
-      checkAuthAndRender();
-      try { await saveAppConfigToServer(); } catch (e) {}
-    }
-
-    function logoutRole() {
-      localStorage.removeItem('avito_locked_role_' + currentUser.id);
-      realUserRole = null;
-      checkAuthAndRender();
-    }
-
-    // Переключение предпросмотра (только для Админа)
-    function switchAdminView(role) {
-      if (realUserRole !== 'admin') return;
-      activeViewRole = role;
-      ['admin', 'agent', 'worker'].forEach(r => {
-        document.getElementById('prev-' + r).classList.toggle('active', r === role);
+      // Фильтрация заказов по правам доступа пользователя
+      const visibleOrders = allOrders.filter(o => {
+        const m = parseOrderMeta(o);
+        if (role === 'worker') {
+          return m.workerId === currentAccount.id || m.workerId === 'ALL';
+        }
+        if ((role === 'agent' || role === 'admin') && selectedWorkerId !== 'ALL') {
+          return m.workerId === selectedWorkerId;
+        }
+        return true;
       });
-      checkAuthAndRender();
-    }
 
-    function setFilter(filter) {
-      currentFilter = filter;
-      ['active', 'unpaid', 'all'].forEach(f => {
-        document.getElementById('tab-' + f).classList.toggle('active', f === filter);
-      });
-      renderOrders();
-    }
-
-    // Отрисовка списка и метрик
-    function renderOrders() {
-      const activeOrders = allOrders.filter(o => o.status !== 'Выполнен');
-      const unpaidCompleted = allOrders.filter(o => o.status === 'Выполнен' && o.payment_status === 'Не выплачено');
-      const paidOrders = allOrders.filter(o => o.payment_status === 'Выплачено');
+      const activeOrders = visibleOrders.filter(o => o.status !== 'Выполнен');
+      const unpaidCompleted = visibleOrders.filter(o => o.status === 'Выполнен' && o.payment_status === 'Не выплачено');
+      const paidOrders = visibleOrders.filter(o => o.payment_status === 'Выплачено');
 
       document.getElementById('cnt-active').innerText = activeOrders.length;
       document.getElementById('cnt-unpaid').innerText = unpaidCompleted.length;
-      document.getElementById('cnt-all').innerText = allOrders.length;
+      document.getElementById('cnt-all').innerText = visibleOrders.length;
 
       const debtSum = unpaidCompleted.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
       const activeSum = activeOrders.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
       const paidSum = paidOrders.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
 
-      const heroCard = document.getElementById('heroCard');
-      heroCard.classList.toggle('has-debt', debtSum > 0);
+      document.getElementById('heroLabel').innerText = role === 'worker'
+        ? 'ОЖИДАЮ К ВЫПЛАТЕ'
+        : 'К ВЫПЛАТЕ ИСПОЛНИТЕЛЮ';
+      document.getElementById('heroCard').classList.toggle('has-debt', debtSum > 0);
       document.getElementById('heroAmount').innerText = debtSum.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('heroSub').innerText = unpaidCompleted.length > 0
-        ? `Не оплачено выполненных заказов: ${unpaidCompleted.length} шт.`
-        : 'Все выполненные заказы полностью оплачены ✨';
+        ? `Выполнено и ждёт оплаты: ${unpaidCompleted.length} шт.`
+        : 'Все выполненные заказы оплачены ✨';
 
       document.getElementById('statActiveSum').innerText = `${activeOrders.length} шт. • ${activeSum.toLocaleString('ru-RU')} ₽`;
       document.getElementById('statPaidSum').innerText = `${paidSum.toLocaleString('ru-RU')} ₽`;
 
-      const payAllBtn = document.getElementById('heroPayAllBtn');
-      payAllBtn.style.display = (unpaidCompleted.length > 0 && (activeViewRole === 'agent' || activeViewRole === 'admin'))
-        ? 'block'
-        : 'none';
+      document.getElementById('heroPayAllBtn').style.display =
+        (unpaidCompleted.length > 0 && (role === 'agent' || role === 'admin')) ? 'block' : 'none';
 
-      let list = allOrders;
-      if (currentFilter === 'active') list = activeOrders;
-      else if (currentFilter === 'unpaid') list = unpaidCompleted;
+      let list = visibleOrders;
+      if (currentOrderFilter === 'active') list = activeOrders;
+      else if (currentOrderFilter === 'unpaid') list = unpaidCompleted;
 
-      const container = document.getElementById('ordersList');
+      const box = document.getElementById('ordersContainer');
       if (list.length === 0) {
-        container.innerHTML = `<div class="empty-state">В этой вкладке пока пусто ✨</div>`;
+        box.innerHTML = `<div class="empty-state">В этой вкладке пока нет заказов ✨</div>`;
         return;
       }
 
-      container.innerHTML = list.map(o => {
+      box.innerHTML = list.map(o => {
         const isDone = o.status === 'Выполнен';
         const isPaid = o.payment_status === 'Выплачено';
         const photos = Array.isArray(o.photos) ? o.photos : [];
@@ -1231,6 +1443,7 @@
         const finP = Number(o.final_price) || 0;
         const priceChanged = initP !== finP;
         const diff = finP - initP;
+        const meta = parseOrderMeta(o);
 
         const dateStr = o.created_at
           ? new Date(o.created_at).toLocaleDateString('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
@@ -1247,9 +1460,7 @@
           : '';
 
         let footerBtns = '';
-
-        // Кнопки Исполнителя
-        if (activeViewRole === 'worker' || activeViewRole === 'admin') {
+        if (role === 'worker' || role === 'admin') {
           footerBtns += `
             <button class="c-btn ${isDone ? '' : 'primary'}" onclick="quickToggleDone(${o.id}, '${o.status}')">
               ${isDone ? '↩ В работу' : '✅ Выполнено'}
@@ -1259,24 +1470,16 @@
             </button>
           `;
         }
-
-        // Кнопки Посредника
-        if (activeViewRole === 'agent' || activeViewRole === 'admin') {
+        if (role === 'agent' || role === 'admin') {
           footerBtns += `
             <button class="c-btn ${isPaid ? '' : 'success'}" onclick="quickTogglePaid(${o.id}, '${o.payment_status}')">
               ${isPaid ? '🔄 Снять оплату' : '💳 Выплачено'}
             </button>
             <button class="c-btn" onclick="openEditOrderSheet(${o.id})">
-              ⚙️ Изменить / Фото
+              ⚙️ Изменить
             </button>
-          `;
-        }
-
-        // Удаление (для Админа и Посредника)
-        if (activeViewRole === 'admin' || activeViewRole === 'agent') {
-          footerBtns += `
             <button class="c-btn danger" onclick="removeOrder(${o.id})">
-              🗑 Удалить
+              🗑
             </button>
           `;
         }
@@ -1294,6 +1497,11 @@
               </div>
             </div>
 
+            <div class="people-row">
+              <span class="person-tag">🛠 Исполнитель: ${escapeHtml(meta.workerName || 'Любой')}</span>
+              ${meta.agentName ? `<span class="person-tag">💼 Посредник: ${escapeHtml(meta.agentName)}</span>` : ''}
+            </div>
+
             <div class="price-banner">
               <div>
                 <div class="price-label">${priceChanged ? 'Итоговая цена выкупа' : 'Цена / Бюджет'}</div>
@@ -1306,8 +1514,8 @@
             </div>
 
             ${o.instruction ? `<div class="desc-box">${escapeHtml(o.instruction)}</div>` : ''}
-            ${o.worker_comment ? `<div class="worker-report"><b>Отчёт исполнителя:</b><br>${escapeHtml(o.worker_comment)}</div>` : ''}
-            ${o.avito_url ? `<a href="${o.avito_url}" target="_blank" class="avito-btn-link">🔗 Открыть объявление на Авито</a>` : ''}
+            ${meta.note ? `<div class="worker-report"><b>Отчёт исполнителя:</b><br>${escapeHtml(meta.note)}</div>` : ''}
+            ${o.avito_url ? `<a href="${o.avito_url}" target="_blank" class="avito-btn-link">🔗 Открыть на Авито</a>` : ''}
 
             ${photosHtml}
 
@@ -1317,7 +1525,154 @@
       }).join('');
     }
 
-    // Шторка создания и редактирования заказа
+    // ОТРИСОВКА СТАТИСТИКИ ДЛЯ АДМИНА
+    function renderAdminStats() {
+      const total = allOrders.length;
+      const done = allOrders.filter(o => o.status === 'Выполнен');
+      const unpaid = done.filter(o => o.payment_status === 'Не выплачено');
+      const paid = allOrders.filter(o => o.payment_status === 'Выплачено');
+
+      const totalVol = allOrders.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+      const initVol = allOrders.reduce((s, o) => s + (Number(o.initial_price) || 0), 0);
+      const unpaidSum = unpaid.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+      const paidSum = paid.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+      const savedBargain = initVol - totalVol;
+
+      document.getElementById('stTotalOrders').innerText = total;
+      document.getElementById('stDoneOrders').innerText = `Выполнено: ${done.length} шт.`;
+      document.getElementById('stTotalVolume').innerText = totalVol.toLocaleString('ru-RU') + ' ₽';
+      document.getElementById('stBargainDiff').innerText = `Торг/разница: ${savedBargain >= 0 ? '-' + savedBargain : '+' + Math.abs(savedBargain)} ₽`;
+      document.getElementById('stUnpaidSum').innerText = unpaidSum.toLocaleString('ru-RU') + ' ₽';
+      document.getElementById('stUnpaidCount').innerText = `Ждут оплаты: ${unpaid.length} шт.`;
+      document.getElementById('stPaidTotal').innerText = paidSum.toLocaleString('ru-RU') + ' ₽';
+      document.getElementById('stPaidCount').innerText = `Оплачено: ${paid.length} шт.`;
+
+      // Статистика по каждому исполнителю
+      const workers = sysConfig.users.filter(u => u.role === 'worker');
+      const wBox = document.getElementById('statsByWorkers');
+      if (workers.length === 0) {
+        wBox.innerHTML = `<div style="font-size:13px; color:var(--muted);">Нет зарегистрированных исполнителей</div>`;
+      } else {
+        wBox.innerHTML = workers.map(w => {
+          const wOrders = allOrders.filter(o => parseOrderMeta(o).workerId === w.id);
+          const wActive = wOrders.filter(o => o.status !== 'Выполнен').length;
+          const wUnpaid = wOrders.filter(o => o.status === 'Выполнен' && o.payment_status === 'Не выплачено')
+            .reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+          const wPaid = wOrders.filter(o => o.payment_status === 'Выплачено')
+            .reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+
+          return `
+            <div class="person-stat-row">
+              <div class="person-stat-top">
+                <span>🛠 ${escapeHtml(w.name)} (@${escapeHtml(w.login)})</span>
+                <span>Заказов: ${wOrders.length}</span>
+              </div>
+              <div class="person-stat-metrics">
+                <div>В работе<b>${wActive} шт.</b></div>
+                <div>К выплате<b style="color:var(--danger);">${wUnpaid.toLocaleString('ru-RU')} ₽</b></div>
+                <div>Выплачено<b style="color:var(--success);">${wPaid.toLocaleString('ru-RU')} ₽</b></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Статистика по каждому посреднику
+      const agents = sysConfig.users.filter(u => u.role === 'agent');
+      const aBox = document.getElementById('statsByAgents');
+      if (agents.length === 0) {
+        aBox.innerHTML = `<div style="font-size:13px; color:var(--muted);">Нет зарегистрированных посредников</div>`;
+      } else {
+        aBox.innerHTML = agents.map(a => {
+          const aOrders = allOrders.filter(o => parseOrderMeta(o).agentId === a.id);
+          const aDebt = aOrders.filter(o => o.status === 'Выполнен' && o.payment_status === 'Не выплачено')
+            .reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+          const aPaid = aOrders.filter(o => o.payment_status === 'Выплачено')
+            .reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+
+          return `
+            <div class="person-stat-row">
+              <div class="person-stat-top">
+                <span>💼 ${escapeHtml(a.name)} (@${escapeHtml(a.login)})</span>
+                <span>Создал: ${aOrders.length} шт.</span>
+              </div>
+              <div class="person-stat-metrics">
+                <div>Активных<b>${aOrders.filter(o => o.status !== 'Выполнен').length} шт.</b></div>
+                <div>Должен<b style="color:var(--danger);">${aDebt.toLocaleString('ru-RU')} ₽</b></div>
+                <div>Выплатил<b style="color:var(--success);">${aPaid.toLocaleString('ru-RU')} ₽</b></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    // УПРАВЛЕНИЕ АККАУНТАМИ У АДМИНА
+    function renderAdminUsers() {
+      const box = document.getElementById('adminUsersList');
+      const roleBadges = {
+        admin: '👑 Админ',
+        agent: '💼 Посредник',
+        worker: '🛠 Исполнитель'
+      };
+      box.innerHTML = sysConfig.users.map(u => `
+        <div class="user-item">
+          <div>
+            <div class="user-item-name">${escapeHtml(u.name)} <span style="color:var(--primary); font-size:12px;">(${roleBadges[u.role] || u.role})</span></div>
+            <div class="user-item-meta">Логин: <b>${escapeHtml(u.login)}</b> • Пароль: <b>${escapeHtml(u.pass)}</b></div>
+          </div>
+          ${u.login !== DEFAULT_ADMIN.login ? `
+            <button class="c-btn danger" style="padding:8px 10px;" onclick="adminDeleteUser('${u.id}')">🗑</button>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    async function adminCreateUser() {
+      const name = document.getElementById('admNewName').value.trim();
+      const login = document.getElementById('admNewLogin').value.trim().toLowerCase();
+      const pass = document.getElementById('admNewPass').value.trim();
+      const role = document.getElementById('admNewRole').value;
+
+      if (!name || !login || !pass) return alert('Заполните имя, логин и пароль!');
+      if (sysConfig.users.some(u => u.login.toLowerCase() === login)) {
+        return alert('Пользователь с таким логином уже существует!');
+      }
+
+      sysConfig.users.push({
+        id: 'usr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+        name,
+        login,
+        pass,
+        role
+      });
+
+      await saveConfigToSupabase();
+      document.getElementById('admNewName').value = '';
+      document.getElementById('admNewLogin').value = '';
+      document.getElementById('admNewPass').value = '';
+      renderAll();
+    }
+
+    async function adminDeleteUser(uid) {
+      sysConfig.users = sysConfig.users.filter(u => u.id !== uid);
+      await saveConfigToSupabase();
+      renderAll();
+    }
+
+    // СОЗДАНИЕ И РЕДАКТИРОВАНИЕ ЗАКАЗА С ВЫБОРОМ ИСПОЛНИТЕЛЯ
+    function populateOrderWorkerSelect(selectedId = 'ALL') {
+      const sel = document.getElementById('fWorkerSelect');
+      const workers = getWorkersList();
+      sel.innerHTML = `<option value="ALL">🌐 Любой исполнитель (Общий пул)</option>` +
+        workers.map(w => `<option value="${w.id}">🛠 ${escapeHtml(w.name)} (@${escapeHtml(w.login)})</option>`).join('');
+      if ([...sel.options].some(o => o.value === selectedId)) {
+        sel.value = selectedId;
+      } else if (workers.length === 1) {
+        sel.value = workers[0].id;
+      }
+    }
+
     function openOrderSheet() {
       document.getElementById('editOrderId').value = '';
       document.getElementById('orderSheetTitle').innerText = 'Новый заказ с Авито';
@@ -1326,6 +1681,7 @@
       document.getElementById('fPaid').value = 'Не выплачено';
       document.getElementById('fUrl').value = '';
       document.getElementById('fDesc').value = '';
+      populateOrderWorkerSelect('ALL');
       existingEditingPhotos = [];
       stagedFiles = [];
       renderStagedPhotos();
@@ -1335,13 +1691,15 @@
     function openEditOrderSheet(orderId) {
       const o = allOrders.find(x => x.id === orderId);
       if (!o) return;
+      const meta = parseOrderMeta(o);
       document.getElementById('editOrderId').value = o.id;
-      document.getElementById('orderSheetTitle').innerText = `Редактировать заказ #${o.id}`;
+      document.getElementById('orderSheetTitle').innerText = `Изменить заказ #${o.id}`;
       document.getElementById('fTitle').value = o.title || '';
       document.getElementById('fPrice').value = o.final_price || '';
       document.getElementById('fPaid').value = o.payment_status || 'Не выплачено';
       document.getElementById('fUrl').value = o.avito_url || '';
       document.getElementById('fDesc').value = o.instruction || '';
+      populateOrderWorkerSelect(meta.workerId || 'ALL');
       existingEditingPhotos = Array.isArray(o.photos) ? [...o.photos] : [];
       stagedFiles = [];
       renderStagedPhotos();
@@ -1352,8 +1710,7 @@
       document.getElementById('orderSheet').classList.remove('open');
     }
 
-    // Сжатие и подготовка скриншотов
-    function compressImage(file, maxWidth = 1280, quality = 0.82) {
+    function compressImage(file, maxWidth = 1280, quality = 0.8) {
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -1382,12 +1739,13 @@
     }
 
     window.addEventListener('paste', async (e) => {
+      if (!currentAccount || currentAccount.role === 'worker') return;
       const items = e.clipboardData?.items || [];
       const files = [];
       for (let item of items) {
         if (item.type.indexOf('image') !== -1) files.push(item.getAsFile());
       }
-      if (files.length > 0 && activeViewRole !== 'worker') {
+      if (files.length > 0) {
         if (!document.getElementById('orderSheet').classList.contains('open')) openOrderSheet();
         await handleFilesSelect(files);
       }
@@ -1395,28 +1753,19 @@
 
     function renderStagedPhotos() {
       const box = document.getElementById('stagedGrid');
-      const existingHtml = existingEditingPhotos.map((url, idx) => `
+      const ex = existingEditingPhotos.map((url, idx) => `
         <div class="staged-item">
           <img src="${url}">
-          <button class="staged-remove" onclick="removeExistingPhoto(${idx})">✕</button>
+          <button class="staged-remove" onclick="existingEditingPhotos.splice(${idx},1);renderStagedPhotos();">✕</button>
         </div>
       `).join('');
-      const newHtml = stagedFiles.map((item, idx) => `
+      const st = stagedFiles.map((item, idx) => `
         <div class="staged-item">
           <img src="${item.previewUrl}">
-          <button class="staged-remove" onclick="removeNewPhoto(${idx})">✕</button>
+          <button class="staged-remove" onclick="stagedFiles.splice(${idx},1);renderStagedPhotos();">✕</button>
         </div>
       `).join('');
-      box.innerHTML = existingHtml + newHtml;
-    }
-
-    function removeExistingPhoto(idx) {
-      existingEditingPhotos.splice(idx, 1);
-      renderStagedPhotos();
-    }
-    function removeNewPhoto(idx) {
-      stagedFiles.splice(idx, 1);
-      renderStagedPhotos();
+      box.innerHTML = ex + st;
     }
 
     async function saveOrder() {
@@ -1426,8 +1775,12 @@
       const paid = document.getElementById('fPaid').value;
       const url = document.getElementById('fUrl').value.trim();
       const desc = document.getElementById('fDesc').value.trim();
+      const workerId = document.getElementById('fWorkerSelect').value;
 
-      if (!title) return alert('Укажите название товара!');
+      if (!title) return alert('Введите название заказа!');
+
+      const workerObj = sysConfig.users.find(u => u.id === workerId);
+      const workerName = workerObj ? workerObj.name : 'Любой исполнитель';
 
       const btn = document.getElementById('saveOrderBtn');
       btn.disabled = true;
@@ -1443,6 +1796,14 @@
 
         btn.innerText = 'Сохранение...';
         if (editId) {
+          const oldOrder = allOrders.find(x => x.id === Number(editId));
+          const oldMeta = oldOrder ? parseOrderMeta(oldOrder) : {};
+          const updatedMeta = packOrderMeta({
+            ...oldMeta,
+            workerId,
+            workerName
+          });
+
           await sbFetch(`orders?id=eq.${editId}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
@@ -1452,10 +1813,19 @@
               instruction: desc,
               final_price: price,
               payment_status: paid,
-              photos: uploadedUrls
+              photos: uploadedUrls,
+              worker_comment: updatedMeta
             })
           });
         } else {
+          const newMeta = packOrderMeta({
+            note: '',
+            workerId,
+            workerName,
+            agentId: currentAccount.id,
+            agentName: currentAccount.name
+          });
+
           await sbFetch('orders', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
@@ -1467,40 +1837,52 @@
               final_price: price,
               status: 'В работе',
               payment_status: paid,
-              photos: uploadedUrls
+              photos: uploadedUrls,
+              worker_comment: newMeta
             })
           });
         }
 
         closeOrderSheet();
-        await fetchOrders();
+        await fetchAllData(false);
       } catch (err) {
-        alert('Ошибка: ' + err.message);
+        alert('Ошибка сохранения: ' + err.message);
       } finally {
         btn.disabled = false;
         btn.innerText = 'Сохранить заказ';
       }
     }
 
-    // Шторка Исполнителя (корректировка цены и отчёт без браузерного prompt)
+    // ШТОРКА ИСПОЛНИТЕЛЯ
     function openWorkerSheet(orderId) {
       const o = allOrders.find(x => x.id === orderId);
       if (!o) return;
+      const meta = parseOrderMeta(o);
       document.getElementById('wOrderId').value = o.id;
       document.getElementById('wFinalPrice').value = o.final_price || 0;
       document.getElementById('wStatus').value = o.status || 'В работе';
-      document.getElementById('wComment').value = o.worker_comment || '';
+      document.getElementById('wComment').value = meta.note || '';
       document.getElementById('workerSheet').classList.add('open');
     }
+
     function closeWorkerSheet() {
       document.getElementById('workerSheet').classList.remove('open');
     }
 
     async function saveWorkerUpdate() {
-      const id = document.getElementById('wOrderId').value;
+      const id = Number(document.getElementById('wOrderId').value);
+      const o = allOrders.find(x => x.id === id);
+      const oldMeta = o ? parseOrderMeta(o) : {};
       const finalPrice = parseFloat(document.getElementById('wFinalPrice').value) || 0;
       const status = document.getElementById('wStatus').value;
-      const comment = document.getElementById('wComment').value.trim();
+      const note = document.getElementById('wComment').value.trim();
+
+      const updatedMeta = packOrderMeta({
+        ...oldMeta,
+        note,
+        workerId: oldMeta.workerId === 'ALL' && currentAccount.role === 'worker' ? currentAccount.id : oldMeta.workerId,
+        workerName: oldMeta.workerId === 'ALL' && currentAccount.role === 'worker' ? currentAccount.name : oldMeta.workerName
+      });
 
       await sbFetch(`orders?id=eq.${id}`, {
         method: 'PATCH',
@@ -1508,14 +1890,13 @@
         body: JSON.stringify({
           final_price: finalPrice,
           status: status,
-          worker_comment: comment
+          worker_comment: updatedMeta
         })
       });
       closeWorkerSheet();
-      await fetchOrders();
+      await fetchAllData(false);
     }
 
-    // Быстрые переключатели статусов
     async function quickToggleDone(id, currentStatus) {
       const next = currentStatus === 'Выполнен' ? 'В работе' : 'Выполнен';
       await sbFetch(`orders?id=eq.${id}`, {
@@ -1523,7 +1904,7 @@
         headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
         body: JSON.stringify({ status: next })
       });
-      await fetchOrders();
+      await fetchAllData(false);
     }
 
     async function quickTogglePaid(id, currentPaid) {
@@ -1533,79 +1914,26 @@
         headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
         body: JSON.stringify({ payment_status: next })
       });
-      await fetchOrders();
+      await fetchAllData(false);
     }
 
-    async function openPayAllConfirm() {
+    async function payAllFiltered() {
       await sbFetch(`orders?status=eq.Выполнен&payment_status=eq.Не выплачено`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
         body: JSON.stringify({ payment_status: 'Выплачено' })
       });
-      await fetchOrders();
+      await fetchAllData(false);
     }
 
     async function removeOrder(id) {
       await sbFetch(`orders?id=eq.${id}`, { method: 'DELETE' });
-      await fetchOrders();
+      await fetchAllData(false);
     }
 
-    // Шторка Админа (управление ПИН-кодами и ролями пользователей)
-    function openAdminSheet() {
-      document.getElementById('pinAgent').value = appConfig.pins.agent;
-      document.getElementById('pinWorker').value = appConfig.pins.worker;
-      document.getElementById('pinAdmin').value = appConfig.pins.admin;
-
-      const listBox = document.getElementById('usersBindList');
-      const entries = Object.entries(appConfig.users || {});
-      if (entries.length === 0) {
-        listBox.innerHTML = `<div style="font-size:12px; color:var(--muted);">Пока никто не авторизовывался</div>`;
-      } else {
-        listBox.innerHTML = entries.map(([uid, u]) => `
-          <div class="user-row">
-            <div>
-              <div class="user-row-info">${escapeHtml(u.name || uid)} ${escapeHtml(u.username || '')}</div>
-              <div class="user-row-sub">ID: ${escapeHtml(uid)}</div>
-            </div>
-            <select class="role-select" onchange="changeUserRole('${uid}', this.value)">
-              <option value="agent" ${u.role === 'agent' ? 'selected' : ''}>Посредник</option>
-              <option value="worker" ${u.role === 'worker' ? 'selected' : ''}>Исполнитель</option>
-              <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Админ</option>
-            </select>
-          </div>
-        `).join('');
-      }
-      document.getElementById('adminSheet').classList.add('open');
-    }
-    function closeAdminSheet() {
-      document.getElementById('adminSheet').classList.remove('open');
-    }
-
-    async function saveConfigPins() {
-      appConfig.pins.agent = document.getElementById('pinAgent').value.trim() || '1111';
-      appConfig.pins.worker = document.getElementById('pinWorker').value.trim() || '2222';
-      appConfig.pins.admin = document.getElementById('pinAdmin').value.trim() || '9999';
-      await saveAppConfigToServer();
-      closeAdminSheet();
-    }
-
-    async function changeUserRole(uid, newRole) {
-      if (appConfig.users[uid]) {
-        appConfig.users[uid].role = newRole;
-        if (uid === currentUser.id) {
-          realUserRole = newRole;
-          localStorage.setItem('avito_locked_role_' + currentUser.id, newRole);
-        }
-        await saveAppConfigToServer();
-        checkAuthAndRender();
-      }
-    }
-
-    // Полноэкранный просмотр фото
+    // ГАЛЕРЕЯ
     function openLightbox(photos, idx) {
-      lbPhotos = photos;
-      lbIndex = idx;
-      updateLightbox();
+      lbPhotos = photos; lbIndex = idx; updateLightbox();
       document.getElementById('lightbox').classList.add('open');
     }
     function updateLightbox() {
@@ -1621,8 +1949,9 @@
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    checkAuthAndRender();
-    fetchOrders();
+    // Мгновенный рендер + фоновая синхронизация
+    renderAll();
+    fetchAllData(false);
   </script>
 </body>
 </html>
