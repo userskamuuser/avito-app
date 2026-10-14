@@ -5,7 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <link rel="icon" href="data:,">
   <title>Заказы Авито</title>
-  <script type="text/javascript" src="https://gc.kes.v2.scr.kaspersky-labs.com/7EA5E9BB-55E1-4C31-9C21-4943DDFED2E4/main.js?attr=Va-oW8tMrS0Hkyh7-ySS1JMQ2C4yQsepaATklT2pdqNUubwvggRUNHKyh3g1EbkXgJ2LimxWmWSYtb4NIM1xbZ9lQEW4kltrSyjBF55Uvq2br9uxqwKqUavForGFtN0okA_q2jgJUHvC_f5Sc6yLg2NNXGAcnfRjB6JKacToY9fvNXVh4v7ERjXwtPCsfU1MYAasYsEVxx9ba-oRvSxL79Rz7A5TJARCrB9jVKoFwE31F6kIDMl5TBNglhM4LjYgbVR8uFZikHN-JP6YNvgObMoLFdQvm-g5-do91t4M60zmGdHXtK96rHPv8DC-5sOwZz-aMwb_VSOQ-iRWr3Ef2Q" charset="UTF-8"></script><style>
+
+  <!-- Официальный Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
     :root {
       --bg: #f1f5f9;
       --surface: #ffffff;
@@ -60,12 +64,50 @@
       min-height: 100vh;
       padding-bottom: calc(96px + env(safe-area-inset-bottom, 16px));
       overflow-x: hidden;
+      touch-action: pan-y;
     }
 
     .app-shell {
       max-width: 480px;
       margin: 0 auto;
       padding: 12px 14px;
+    }
+
+    /* УВЕДОМЛЕНИЯ (TOASTS) */
+    .toast-container {
+      position: fixed;
+      top: calc(14px + env(safe-area-inset-top, 0px));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: calc(100% - 32px);
+      max-width: 400px;
+      pointer-events: none;
+    }
+    .toast {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      pointer-events: auto;
+    }
+    .toast.success { border-left: 4px solid var(--success); }
+    .toast.error { border-left: 4px solid var(--danger); }
+    .toast.info { border-left: 4px solid var(--primary); }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* ЭКРАН ВХОДА И РЕГИСТРАЦИИ */
@@ -155,7 +197,7 @@
       color: var(--primary);
     }
 
-    /* ВЕРХНЯЯ ШАПКА */
+    /* ШАПКА */
     .top-bar {
       display: flex;
       justify-content: space-between;
@@ -212,7 +254,7 @@
       cursor: pointer;
     }
 
-    /* НАВИГАЦИЯ АДМИНА */
+    /* НАВИГАЦИЯ АДМИНИСТРАТОРА */
     .admin-nav {
       display: none;
       grid-template-columns: repeat(3, 1fr);
@@ -239,7 +281,7 @@
       color: #fff;
     }
 
-    /* ФИНАНСОВЫЙ ВИДЖЕТ (HERO CARD) */
+    /* ФИНАНСОВАЯ ПЛАШКА */
     .hero-card {
       background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
       color: #ffffff;
@@ -296,9 +338,35 @@
     .mini-stat-label { font-size: 11px; opacity: 0.75; }
     .mini-stat-val { font-size: 14px; font-weight: 700; margin-top: 2px; }
 
-    /* ФИЛЬТР ПО ИСПОЛНИТЕЛЮ (ДЛЯ ПОСРЕДНИКА И АДМИНА) */
+    /* ПОЛЕ ПОИСКА И ФИЛЬТРЫ */
+    .search-input-wrap {
+      position: relative;
+      margin-bottom: 10px;
+    }
+    .search-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 14px 10px 36px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--primary); }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
     .worker-filter-bar {
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       display: none;
     }
     .worker-filter-bar.visible { display: block; }
@@ -314,7 +382,6 @@
       outline: none;
     }
 
-    /* ВКЛАДКИ ФИЛЬТРОВ ЗАКАЗОВ */
     .tabs-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -432,6 +499,13 @@
       margin-bottom: 10px;
       line-height: 1.4;
     }
+    .link-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
     .avito-btn-link {
       display: inline-flex;
       align-items: center;
@@ -443,7 +517,19 @@
       padding: 7px 12px;
       border-radius: 10px;
       text-decoration: none;
-      margin-bottom: 10px;
+    }
+    .copy-btn-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      border-radius: 10px;
+      cursor: pointer;
     }
 
     .photos-row {
@@ -466,7 +552,7 @@
 
     .card-footer {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
       gap: 8px;
       padding-top: 10px;
       border-top: 1px solid var(--border);
@@ -475,7 +561,7 @@
       border: 1px solid var(--border);
       background: var(--surface-2);
       color: var(--text);
-      padding: 10px 10px;
+      padding: 10px 8px;
       border-radius: 12px;
       font-size: 12px;
       font-weight: 700;
@@ -490,7 +576,7 @@
     .c-btn.success { background: var(--success); color: #fff; border-color: var(--success); }
     .c-btn.danger { color: var(--danger); background: var(--danger-soft); border-color: transparent; }
 
-    /* ЭКРАН СТАТИСТИКИ АДМИНА */
+    /* СТАТИСТИКА */
     .stats-section { display: none; }
     .stats-section.visible { display: block; }
     .stat-grid {
@@ -543,7 +629,7 @@
     }
     .person-stat-metrics b { color: var(--text); display: block; font-size: 13px; margin-top: 2px; }
 
-    /* ЭКРАН УПРАВЛЕНИЯ ПОЛЬЗОВАТЕЛЯМИ (АДМИН) */
+    /* АККАУНТЫ */
     .users-section { display: none; }
     .users-section.visible { display: block; }
     .user-item {
@@ -560,7 +646,7 @@
     .user-item-name { font-size: 14px; font-weight: 800; }
     .user-item-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-    /* НИЖНЯЯ КНОПКА */
+    /* НИЖНЯЯ ПАНЕЛЬ */
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -590,8 +676,12 @@
       gap: 8px;
       box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
     }
+    .main-add-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
-    /* МОДАЛЬНЫЕ ШТОРКИ */
+    /* ШТОРКИ (МОДАЛКИ) */
     .sheet-backdrop {
       position: fixed;
       inset: 0;
@@ -669,6 +759,7 @@
       cursor: pointer;
     }
 
+    /* ПОЛНОЭКРАННАЯ ГАЛЕРЕЯ */
     .lightbox {
       position: fixed;
       inset: 0;
@@ -679,6 +770,7 @@
       justify-content: center;
       align-items: center;
       padding: 16px;
+      touch-action: none;
     }
     .lightbox.open { display: flex; }
     .lightbox img { max-width: 100%; max-height: 78vh; border-radius: 12px; object-fit: contain; }
@@ -708,6 +800,9 @@
 </head>
 <body>
 
+  <!-- Всплывающие уведомления (Toasts) -->
+  <div class="toast-container" id="toastContainer"></div>
+
   <!-- ЭКРАН ВХОДА И РЕГИСТРАЦИИ АККАУНТА -->
   <div class="auth-screen" id="authScreen">
     <div class="auth-card">
@@ -720,7 +815,7 @@
         <button class="auth-tab" id="authTabReg" onclick="switchAuthTab('register')">✨ Создать аккаунт</button>
       </div>
 
-      <!-- ФОРМА ВХОДА -->
+      <!-- ВХОД -->
       <div id="loginBox">
         <div class="form-group">
           <label class="form-label">Логин</label>
@@ -733,7 +828,7 @@
         <button class="main-add-btn" id="loginBtn" onclick="handleLogin()">Войти в аккаунт</button>
       </div>
 
-      <!-- ФОРМА РЕГИСТРАЦИИ (ДЛЯ ПОСРЕДНИКА И ИСПОЛНИТЕЛЯ) -->
+      <!-- РЕГИСТРАЦИЯ -->
       <div id="registerBox" style="display:none;">
         <div class="form-group">
           <label class="form-label">Выберите вашу роль</label>
@@ -761,7 +856,6 @@
 
   <!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
   <div class="app-shell">
-    <!-- Шапка профиля -->
     <div class="top-bar">
       <div class="user-chip">
         <div class="avatar-circle" id="uAvatar">А</div>
@@ -776,7 +870,7 @@
       </div>
     </div>
 
-    <!-- Навигация Администратора (Заказы / Статистика / Пользователи) -->
+    <!-- Навигация Администратора -->
     <div class="admin-nav" id="adminNav">
       <button class="admin-nav-btn active" id="admTab-orders" onclick="switchAdminSection('orders')">📋 Заказы</button>
       <button class="admin-nav-btn" id="admTab-stats" onclick="switchAdminSection('stats')">📊 Статистика</button>
@@ -807,14 +901,20 @@
         </div>
       </div>
 
-      <!-- Фильтр по исполнителю (виден Посреднику и Админу) -->
+      <!-- Живой поиск -->
+      <div class="search-input-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="orderSearchInput" placeholder="Поиск по номеру, названию или исполнителю..." oninput="renderOrdersSection()">
+      </div>
+
+      <!-- Фильтр по исполнителю -->
       <div class="worker-filter-bar" id="workerFilterBar">
         <select class="worker-filter-select" id="workerFilterSelect" onchange="renderAll()">
           <option value="ALL">👤 Все исполнители (показать все заказы)</option>
         </select>
       </div>
 
-      <!-- Вкладки статусов -->
+      <!-- Вкладки фильтров -->
       <div class="tabs-grid">
         <button class="seg-tab active" id="tab-active" onclick="setOrderFilter('active')">
           🔥 В работе <span class="seg-badge" id="cnt-active">0</span>
@@ -827,13 +927,13 @@
         </button>
       </div>
 
-      <!-- Список карточек -->
+      <!-- Список заказов -->
       <div id="ordersContainer">
         <div class="empty-state">Загрузка заказов...</div>
       </div>
     </div>
 
-    <!-- СЕКЦИЯ 2: СТАТИСТИКА (ТОЛЬКО ДЛЯ АДМИНА) -->
+    <!-- СЕКЦИЯ 2: СТАТИСТИКА (АДМИН) -->
     <div class="stats-section" id="sectionStats">
       <div class="stat-grid">
         <div class="stat-box">
@@ -869,7 +969,7 @@
       </div>
     </div>
 
-    <!-- СЕКЦИЯ 3: УПРАВЛЕНИЕ АККАУНТАМИ (ТОЛЬКО ДЛЯ АДМИНА) -->
+    <!-- СЕКЦИЯ 3: УПРАВЛЕНИЕ АККАУНТАМИ (АДМИН) -->
     <div class="users-section" id="sectionUsers">
       <div class="section-card">
         <div class="section-card-title">＋ Создать новый аккаунт</div>
@@ -884,7 +984,7 @@
           </div>
           <div class="form-group">
             <label class="form-label">Пароль *</label>
-            <input type="text" id="admNewPass" class="f-input" placeholder="Пароль входа">
+            <input type="password" id="admNewPass" class="f-input" placeholder="Пароль входа">
           </div>
         </div>
         <div class="form-group">
@@ -905,7 +1005,7 @@
     </div>
   </div>
 
-  <!-- Нижняя панель создания заказа (для Посредника и Админа) -->
+  <!-- НИЖНЯЯ КНОПКА СОЗДАНИЯ -->
   <div class="bottom-bar" id="bottomBar" style="display:none;">
     <div class="bottom-bar-inner">
       <button class="main-add-btn" onclick="openOrderSheet()">
@@ -975,7 +1075,7 @@
     </div>
   </div>
 
-  <!-- ШТОРКА ИСПОЛНИТЕЛЯ (КОРРЕКТИРОВКА ЦЕНЫ И ОТЧЁТ) -->
+  <!-- ШТОРКА ИСПОЛНИТЕЛЯ (ОТЧЁТ) -->
   <div class="sheet-backdrop" id="workerSheet" onclick="closeWorkerSheet()">
     <div class="bottom-sheet" onclick="event.stopPropagation()">
       <div class="sheet-handle"></div>
@@ -1004,11 +1104,11 @@
         <textarea id="wComment" class="f-input" placeholder="Напишите результат проверки, трек-номер или причину изменения цены..."></textarea>
       </div>
 
-      <button class="main-add-btn" onclick="saveWorkerUpdate()">Сохранить изменения</button>
+      <button class="main-add-btn" id="workerSaveBtn" onclick="saveWorkerUpdate()">Сохранить изменения</button>
     </div>
   </div>
 
-  <!-- ПОЛНОЭКРАННАЯ ГАЛЕРЕЯ (LIGHTBOX) -->
+  <!-- ПОЛНОЭКРАННАЯ ГАЛЕРЕЯ (LIGHTBOX СО СВАЙПАМИ) -->
   <div class="lightbox" id="lightbox" onclick="closeLightbox()">
     <img id="lbImg" src="" onclick="event.stopPropagation()">
     <div class="lb-bar" onclick="event.stopPropagation()">
@@ -1020,39 +1120,68 @@
   </div>
 
   <script>
-    // 1. МГНОВЕННЫЙ СИГНАЛ TELEGRAM НА ВСЕХ ПЛАТФОРМАХ (iOS WKWebView + Android + Desktop)
-    (function notifyTelegramReady() {
-      const events = ['web_app_ready', 'web_app_expand'];
-      events.forEach(ev => {
-        try {
-          if (window.TelegramWebviewProxy && typeof window.TelegramWebviewProxy.postEvent === 'function') {
-            window.TelegramWebviewProxy.postEvent(ev, '{}');
-          }
-        } catch (e) {}
-        try {
-          if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.performAction) {
-            window.webkit.messageHandlers.performAction.postMessage({ eventType: ev, eventData: {} });
-          }
-        } catch (e) {}
-        try {
-          if (window.external && typeof window.external.notify === 'function') {
-            window.external.notify(JSON.stringify({ eventType: ev, eventData: {} }));
-          }
-        } catch (e) {}
-        try {
-          if (window.parent && window.parent !== window) {
-            window.parent.postMessage(JSON.stringify({ eventType: ev, eventData: {} }), '*');
-          }
-        } catch (e) {}
-      });
-    })();
+    // 1. ИНИЦИАЛИЗАЦИЯ TELEGRAM WEBAPP
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      try {
+        tg.ready();
+        tg.expand();
+        tg.enableClosingConfirmation();
+      } catch (e) {}
+    }
 
-    // 2. НАСТРОЙКИ SUPABASE С ЗАЩИТОЙ ОТ ЗАВИСАНИЯ СЕТИ (ТАЙМАУТ 7 СЕК)
+    // Тактильный отклик (Haptic Feedback)
+    function haptic(type = 'light') {
+      try {
+        if (tg?.HapticFeedback) {
+          if (['success', 'error', 'warning'].includes(type)) {
+            tg.HapticFeedback.notificationOccurred(type);
+          } else {
+            tg.HapticFeedback.impactOccurred(type);
+          }
+        }
+      } catch (e) {}
+    }
+
+    // Всплывающие уведомления (вместо alert)
+    function showToast(msg, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      const icons = { success: '✅', error: '⚠️', info: 'ℹ️' };
+      toast.innerHTML = `<span>${icons[type] || 'ℹ️'}</span><span>${escapeHtml(msg)}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-8px)';
+        toast.style.transition = 'all 0.2s ease';
+        setTimeout(() => toast.remove(), 200);
+      }, 3000);
+    }
+
+    // Безопасное подтверждение действий
+    function confirmAction(text) {
+      return new Promise(resolve => {
+        if (tg?.showConfirm) {
+          tg.showConfirm(text, ok => resolve(ok));
+        } else {
+          resolve(window.confirm(text));
+        }
+      });
+    }
+
+    // 2. ХЕШИРОВАНИЕ ПАРОЛЕЙ (SHA-256)
+    async function hashPassword(str) {
+      const enc = new TextEncoder().encode(str + "_avito_crm_salt_2026");
+      const hashBuf = await crypto.subtle.digest('SHA-256', enc);
+      return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // 3. КОНФИГУРАЦИЯ SUPABASE
     const SUPABASE_URL = 'https://vzsbdvwtwcvbqhcbssfi.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_yeu1O6x7OfgNi7sRhpV8SA_s3uxOGaU';
     const CONFIG_MARKER = '__SYSTEM_CONFIG__';
 
-    // Стартовый сложный аккаунт Администратора по умолчанию
     const DEFAULT_ADMIN = {
       id: 'usr_admin_root',
       name: 'Главный Администратор',
@@ -1076,7 +1205,7 @@
     let lbPhotos = [];
     let lbIndex = 0;
 
-    // Загрузка из локального кэша за 0.01с
+    // Быстрая загрузка из кэша
     try {
       const savedAcc = localStorage.getItem('avito_pro_account');
       if (savedAcc) currentAccount = JSON.parse(savedAcc);
@@ -1086,10 +1215,10 @@
       if (savedOrders) allOrders = JSON.parse(savedOrders);
     } catch (e) {}
 
-    // Быстрый fetch с таймаутом (не дает приложению зависнуть на плохом мобильном интернете)
+    // Быстрый fetch с таймаутом
     async function sbFetch(path, options = {}) {
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 10000);
+      const timer = setTimeout(() => controller.abort(), 8000);
       try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
           ...options,
@@ -1122,7 +1251,6 @@
       return `${SUPABASE_URL}/storage/v1/object/public/avito-screens/${fileName}`;
     }
 
-    // Разбор метаданных заказа (кто посредник, кто исполнитель, заметка)
     function parseOrderMeta(o) {
       let meta = {
         note: '',
@@ -1134,8 +1262,7 @@
       if (o.worker_comment) {
         if (o.worker_comment.trim().startsWith('{')) {
           try {
-            const parsed = JSON.parse(o.worker_comment);
-            meta = { ...meta, ...parsed };
+            meta = { ...meta, ...JSON.parse(o.worker_comment) };
           } catch (e) {
             meta.note = o.worker_comment;
           }
@@ -1150,10 +1277,10 @@
       return JSON.stringify(metaObj);
     }
 
-    // Синхронизация с базой Supabase
-    async function fetchAllData(showAlertOnError = false) {
+    // Загрузка данных с оптимизацией (limit=50)
+    async function fetchAllData(showSuccessToast = false) {
       try {
-        const res = await sbFetch('orders?select=*&order=id.desc');
+        const res = await sbFetch('orders?select=*&order=id.desc&limit=50');
         const rows = await res.json();
 
         const cfgRow = rows.find(r => r.title === CONFIG_MARKER);
@@ -1175,7 +1302,6 @@
         localStorage.setItem('avito_pro_config', JSON.stringify(sysConfig));
         localStorage.setItem('avito_pro_orders', JSON.stringify(allOrders));
 
-        // Проверяем актуальность текущего аккаунта
         if (currentAccount) {
           const found = sysConfig.users.find(u => u.id === currentAccount.id || u.login === currentAccount.login);
           if (found) {
@@ -1185,8 +1311,9 @@
         }
 
         renderAll();
+        if (showSuccessToast) showToast('Данные обновлены', 'success');
       } catch (err) {
-        if (showAlertOnError) alert('Ошибка связи с сервером: ' + err.message);
+        if (showSuccessToast) showToast('Ошибка связи: ' + err.message, 'error');
         renderAll();
       }
     }
@@ -1213,7 +1340,7 @@
       localStorage.setItem('avito_pro_config', JSON.stringify(sysConfig));
     }
 
-    // АВТОРИЗАЦИЯ И СОЗДАНИЕ АККАУНТА
+    // АВТОРИЗАЦИЯ
     function switchAuthTab(tab) {
       document.getElementById('authTabLogin').classList.toggle('active', tab === 'login');
       document.getElementById('authTabReg').classList.toggle('active', tab === 'register');
@@ -1230,7 +1357,7 @@
     async function handleLogin() {
       const login = document.getElementById('loginUser').value.trim().toLowerCase();
       const pass = document.getElementById('loginPass').value.trim();
-      if (!login || !pass) return alert('Введите логин и пароль!');
+      if (!login || !pass) return showToast('Введите логин и пароль!', 'error');
 
       const btn = document.getElementById('loginBtn');
       btn.disabled = true;
@@ -1238,21 +1365,31 @@
 
       await fetchAllData(false);
 
-      const matched = sysConfig.users.find(
-        u => u.login.toLowerCase() === login && u.pass === pass
+      const passHash = await hashPassword(pass);
+      const matched = sysConfig.users.find(u =>
+        u.login.toLowerCase() === login && (u.pass === passHash || u.pass === pass)
       );
 
       btn.disabled = false;
       btn.innerText = 'Войти в аккаунт';
 
       if (!matched) {
-        alert('Неверный логин или пароль!');
+        haptic('error');
+        showToast('Неверный логин или пароль!', 'error');
         return;
+      }
+
+      // Обновляем старый пароль на хеш
+      if (matched.pass === pass) {
+        matched.pass = passHash;
+        saveConfigToSupabase();
       }
 
       currentAccount = matched;
       localStorage.setItem('avito_pro_account', JSON.stringify(currentAccount));
       document.getElementById('loginPass').value = '';
+      haptic('success');
+      showToast(`Добро пожаловать, ${currentAccount.name}!`, 'success');
       renderAll();
     }
 
@@ -1261,17 +1398,17 @@
       const login = document.getElementById('regLogin').value.trim().toLowerCase();
       const pass = document.getElementById('regPass').value.trim();
 
-      if (!name || !login || !pass) return alert('Заполните все поля!');
-      if (pass.length < 6) return alert('Пароль должен содержать минимум 6 символов!');
+      if (!name || !login || !pass) return showToast('Заполните все поля!', 'error');
+      if (pass.length < 6) return showToast('Пароль минимум 6 символов!', 'error');
 
       const btn = document.getElementById('regBtn');
       btn.disabled = true;
-      btn.innerText = 'Создание аккаунта...';
+      btn.innerText = 'Создание...';
 
       try {
         await fetchAllData(false);
         if (sysConfig.users.some(u => u.login.toLowerCase() === login)) {
-          alert('Этот логин уже занят! Придумайте другой.');
+          showToast('Этот логин уже занят!', 'error');
           return;
         }
 
@@ -1279,7 +1416,7 @@
           id: 'usr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
           name: name,
           login: login,
-          pass: pass,
+          pass: await hashPassword(pass),
           role: selectedRegRole
         };
 
@@ -1288,9 +1425,11 @@
 
         currentAccount = newUser;
         localStorage.setItem('avito_pro_account', JSON.stringify(currentAccount));
+        haptic('success');
+        showToast('Аккаунт успешно создан!', 'success');
         renderAll();
       } catch (err) {
-        alert('Ошибка создания аккаунта: ' + err.message);
+        showToast('Ошибка регистрации: ' + err.message, 'error');
       } finally {
         btn.disabled = false;
         btn.innerText = 'Создать аккаунт';
@@ -1300,15 +1439,16 @@
     function logoutAccount() {
       currentAccount = null;
       localStorage.removeItem('avito_pro_account');
+      haptic('light');
       renderAll();
     }
 
-    // ПЕРЕКЛЮЧЕНИЕ РАЗДЕЛОВ АДМИНА
     function switchAdminSection(sec) {
       currentAdminSection = sec;
       ['orders', 'stats', 'users'].forEach(s => {
         document.getElementById('admTab-' + s).classList.toggle('active', s === sec);
       });
+      haptic('light');
       renderAll();
     }
 
@@ -1317,10 +1457,11 @@
       ['active', 'unpaid', 'all'].forEach(k => {
         document.getElementById('tab-' + k).classList.toggle('active', k === f);
       });
+      haptic('light');
       renderAll();
     }
 
-    // ГЛАВНАЯ ОТРИСОВКА ИНТЕРФЕЙСА
+    // РЕНДЕРИНГ ИНТЕРФЕЙСА
     function renderAll() {
       if (!currentAccount) {
         document.getElementById('authScreen').classList.add('open');
@@ -1330,7 +1471,7 @@
 
       const role = currentAccount.role;
       const roleLabels = {
-        agent: '💼 Посредник (Заказчик)',
+        agent: '💼 Посредник',
         worker: '🛠 Исполнитель',
         admin: '👑 Администратор'
       };
@@ -1339,7 +1480,6 @@
       document.getElementById('uAvatar').innerText = (currentAccount.name || 'U')[0].toUpperCase();
       document.getElementById('uRole').innerText = roleLabels[role] || role;
 
-      // Панель навигации Админа
       const isAdm = role === 'admin';
       document.getElementById('adminNav').classList.toggle('visible', isAdm);
 
@@ -1351,11 +1491,9 @@
       document.getElementById('sectionStats').classList.toggle('visible', showStatsSec);
       document.getElementById('sectionUsers').classList.toggle('visible', showUsersSec);
 
-      // Кнопка создания заказа внизу (только для Посредника и Админа на вкладке Заказов)
       document.getElementById('bottomBar').style.display =
         (showOrdersSec && (role === 'agent' || role === 'admin')) ? 'flex' : 'none';
 
-      // Обновляем список исполнителей для фильтра
       populateWorkerFilterDropdown();
 
       if (showOrdersSec) renderOrdersSection();
@@ -1375,25 +1513,32 @@
         const prevVal = sel.value || 'ALL';
         const workers = getWorkersList();
         sel.innerHTML = `<option value="ALL">👤 Все исполнители (${workers.length})</option>` +
-          workers.map(w => `<option value="${w.id}">🛠 Исполнитель: ${escapeHtml(w.name)}</option>`).join('');
+          workers.map(w => `<option value="${w.id}">🛠 ${escapeHtml(w.name)}</option>`).join('');
         if ([...sel.options].some(o => o.value === prevVal)) sel.value = prevVal;
       } else {
         bar.classList.remove('visible');
       }
     }
 
+    // РЕНДЕР КАРТОЧЕК С ЖИВЫМ ПОИСКОМ
     function renderOrdersSection() {
       const role = currentAccount.role;
       const selectedWorkerId = document.getElementById('workerFilterSelect')?.value || 'ALL';
+      const searchVal = (document.getElementById('orderSearchInput')?.value || '').toLowerCase().trim();
 
-      // Фильтрация заказов по правам доступа пользователя
       const visibleOrders = allOrders.filter(o => {
         const m = parseOrderMeta(o);
-        if (role === 'worker') {
-          return m.workerId === currentAccount.id || m.workerId === 'ALL';
+        if (role === 'worker' && m.workerId !== currentAccount.id && m.workerId !== 'ALL') {
+          return false;
         }
-        if ((role === 'agent' || role === 'admin') && selectedWorkerId !== 'ALL') {
-          return m.workerId === selectedWorkerId;
+        if ((role === 'agent' || role === 'admin') && selectedWorkerId !== 'ALL' && m.workerId !== selectedWorkerId) {
+          return false;
+        }
+        if (searchVal) {
+          const matchTitle = (o.title || '').toLowerCase().includes(searchVal);
+          const matchId = String(o.id).includes(searchVal);
+          const matchWorker = (m.workerName || '').toLowerCase().includes(searchVal);
+          if (!matchTitle && !matchId && !matchWorker) return false;
         }
         return true;
       });
@@ -1410,9 +1555,7 @@
       const activeSum = activeOrders.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
       const paidSum = paidOrders.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
 
-      document.getElementById('heroLabel').innerText = role === 'worker'
-        ? 'ОЖИДАЮ К ВЫПЛАТЕ'
-        : 'К ВЫПЛАТЕ ИСПОЛНИТЕЛЮ';
+      document.getElementById('heroLabel').innerText = role === 'worker' ? 'ОЖИДАЮ К ВЫПЛАТЕ' : 'К ВЫПЛАТЕ ИСПОЛНИТЕЛЮ';
       document.getElementById('heroCard').classList.toggle('has-debt', debtSum > 0);
       document.getElementById('heroAmount').innerText = debtSum.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('heroSub').innerText = unpaidCompleted.length > 0
@@ -1431,7 +1574,7 @@
 
       const box = document.getElementById('ordersContainer');
       if (list.length === 0) {
-        box.innerHTML = `<div class="empty-state">В этой вкладке пока нет заказов ✨</div>`;
+        box.innerHTML = `<div class="empty-state">Заказов не найдено ✨</div>`;
         return;
       }
 
@@ -1515,7 +1658,11 @@
 
             ${o.instruction ? `<div class="desc-box">${escapeHtml(o.instruction)}</div>` : ''}
             ${meta.note ? `<div class="worker-report"><b>Отчёт исполнителя:</b><br>${escapeHtml(meta.note)}</div>` : ''}
-            ${o.avito_url ? `<a href="${o.avito_url}" target="_blank" class="avito-btn-link">🔗 Открыть на Авито</a>` : ''}
+
+            <div class="link-row">
+              ${o.avito_url ? `<a href="${o.avito_url}" target="_blank" class="avito-btn-link">🔗 На Авито</a>` : ''}
+              <button class="copy-btn-link" onclick="copyOrderDetails(${o.id}, '${escapeHtml(o.title)}', ${finP}, '${o.avito_url || ''}')">📋 Скопировать</button>
+            </div>
 
             ${photosHtml}
 
@@ -1525,7 +1672,17 @@
       }).join('');
     }
 
-    // ОТРИСОВКА СТАТИСТИКИ ДЛЯ АДМИНА
+    function copyOrderDetails(id, title, price, url) {
+      const text = `Заказ #${id}: ${title}\nЦена: ${price} ₽${url ? '\nСсылка: ' + url : ''}`;
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          haptic('light');
+          showToast('Данные заказа скопированы', 'info');
+        });
+      }
+    }
+
+    // СТАТИСТИКА
     function renderAdminStats() {
       const total = allOrders.length;
       const done = allOrders.filter(o => o.status === 'Выполнен');
@@ -1547,13 +1704,10 @@
       document.getElementById('stPaidTotal').innerText = paidSum.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('stPaidCount').innerText = `Оплачено: ${paid.length} шт.`;
 
-      // Статистика по каждому исполнителю
       const workers = sysConfig.users.filter(u => u.role === 'worker');
       const wBox = document.getElementById('statsByWorkers');
-      if (workers.length === 0) {
-        wBox.innerHTML = `<div style="font-size:13px; color:var(--muted);">Нет зарегистрированных исполнителей</div>`;
-      } else {
-        wBox.innerHTML = workers.map(w => {
+      wBox.innerHTML = workers.length === 0 ? `<div style="color:var(--muted); font-size:13px;">Нет исполнителей</div>` :
+        workers.map(w => {
           const wOrders = allOrders.filter(o => parseOrderMeta(o).workerId === w.id);
           const wActive = wOrders.filter(o => o.status !== 'Выполнен').length;
           const wUnpaid = wOrders.filter(o => o.status === 'Выполнен' && o.payment_status === 'Не выплачено')
@@ -1564,7 +1718,7 @@
           return `
             <div class="person-stat-row">
               <div class="person-stat-top">
-                <span>🛠 ${escapeHtml(w.name)} (@${escapeHtml(w.login)})</span>
+                <span>🛠 ${escapeHtml(w.name)}</span>
                 <span>Заказов: ${wOrders.length}</span>
               </div>
               <div class="person-stat-metrics">
@@ -1575,15 +1729,11 @@
             </div>
           `;
         }).join('');
-      }
 
-      // Статистика по каждому посреднику
       const agents = sysConfig.users.filter(u => u.role === 'agent');
       const aBox = document.getElementById('statsByAgents');
-      if (agents.length === 0) {
-        aBox.innerHTML = `<div style="font-size:13px; color:var(--muted);">Нет зарегистрированных посредников</div>`;
-      } else {
-        aBox.innerHTML = agents.map(a => {
+      aBox.innerHTML = agents.length === 0 ? `<div style="color:var(--muted); font-size:13px;">Нет посредников</div>` :
+        agents.map(a => {
           const aOrders = allOrders.filter(o => parseOrderMeta(o).agentId === a.id);
           const aDebt = aOrders.filter(o => o.status === 'Выполнен' && o.payment_status === 'Не выплачено')
             .reduce((s, o) => s + (Number(o.final_price) || 0), 0);
@@ -1593,7 +1743,7 @@
           return `
             <div class="person-stat-row">
               <div class="person-stat-top">
-                <span>💼 ${escapeHtml(a.name)} (@${escapeHtml(a.login)})</span>
+                <span>💼 ${escapeHtml(a.name)}</span>
                 <span>Создал: ${aOrders.length} шт.</span>
               </div>
               <div class="person-stat-metrics">
@@ -1604,22 +1754,17 @@
             </div>
           `;
         }).join('');
-      }
     }
 
-    // УПРАВЛЕНИЕ АККАУНТАМИ У АДМИНА
+    // АККАУНТЫ
     function renderAdminUsers() {
       const box = document.getElementById('adminUsersList');
-      const roleBadges = {
-        admin: '👑 Админ',
-        agent: '💼 Посредник',
-        worker: '🛠 Исполнитель'
-      };
+      const roleBadges = { admin: '👑 Админ', agent: '💼 Посредник', worker: '🛠 Исполнитель' };
       box.innerHTML = sysConfig.users.map(u => `
         <div class="user-item">
           <div>
             <div class="user-item-name">${escapeHtml(u.name)} <span style="color:var(--primary); font-size:12px;">(${roleBadges[u.role] || u.role})</span></div>
-            <div class="user-item-meta">Логин: <b>${escapeHtml(u.login)}</b> • Пароль: <b>${escapeHtml(u.pass)}</b></div>
+            <div class="user-item-meta">Логин: <b>${escapeHtml(u.login)}</b> • Пароль: <b>••••••••</b></div>
           </div>
           ${u.login !== DEFAULT_ADMIN.login ? `
             <button class="c-btn danger" style="padding:8px 10px;" onclick="adminDeleteUser('${u.id}')">🗑</button>
@@ -1634,16 +1779,16 @@
       const pass = document.getElementById('admNewPass').value.trim();
       const role = document.getElementById('admNewRole').value;
 
-      if (!name || !login || !pass) return alert('Заполните имя, логин и пароль!');
+      if (!name || !login || !pass) return showToast('Заполните имя, логин и пароль!', 'error');
       if (sysConfig.users.some(u => u.login.toLowerCase() === login)) {
-        return alert('Пользователь с таким логином уже существует!');
+        return showToast('Пользователь с таким логином уже есть!', 'error');
       }
 
       sysConfig.users.push({
         id: 'usr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
         name,
         login,
-        pass,
+        pass: await hashPassword(pass),
         role
       });
 
@@ -1651,16 +1796,23 @@
       document.getElementById('admNewName').value = '';
       document.getElementById('admNewLogin').value = '';
       document.getElementById('admNewPass').value = '';
+      haptic('success');
+      showToast('Пользователь добавлен', 'success');
       renderAll();
     }
 
     async function adminDeleteUser(uid) {
+      const ok = await confirmAction('Удалить этого пользователя навсегда?');
+      if (!ok) return;
+
       sysConfig.users = sysConfig.users.filter(u => u.id !== uid);
       await saveConfigToSupabase();
+      haptic('warning');
+      showToast('Пользователь удален', 'info');
       renderAll();
     }
 
-    // СОЗДАНИЕ И РЕДАКТИРОВАНИЕ ЗАКАЗА С ВЫБОРОМ ИСПОЛНИТЕЛЯ
+    // РАБОТА С ЗАКАЗОМ
     function populateOrderWorkerSelect(selectedId = 'ALL') {
       const sel = document.getElementById('fWorkerSelect');
       const workers = getWorkersList();
@@ -1686,6 +1838,7 @@
       stagedFiles = [];
       renderStagedPhotos();
       document.getElementById('orderSheet').classList.add('open');
+      haptic('light');
     }
 
     function openEditOrderSheet(orderId) {
@@ -1704,13 +1857,14 @@
       stagedFiles = [];
       renderStagedPhotos();
       document.getElementById('orderSheet').classList.add('open');
+      haptic('light');
     }
 
     function closeOrderSheet() {
       document.getElementById('orderSheet').classList.remove('open');
     }
 
-    function compressImage(file, maxWidth = 1280, quality = 0.8) {
+    function compressImage(file, maxWidth = 1200, quality = 0.75) {
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -1731,11 +1885,15 @@
       });
     }
 
+    // Параллельное сжатие изображений
     async function handleFilesSelect(fileList) {
-      for (const file of Array.from(fileList)) {
-        stagedFiles.push(await compressImage(file));
-      }
+      const files = Array.from(fileList);
+      if (files.length === 0) return;
+      showToast('Обработка изображений...', 'info');
+      const compressed = await Promise.all(files.map(f => compressImage(f)));
+      stagedFiles.push(...compressed);
       renderStagedPhotos();
+      haptic('light');
     }
 
     window.addEventListener('paste', async (e) => {
@@ -1743,7 +1901,7 @@
       const items = e.clipboardData?.items || [];
       const files = [];
       for (let item of items) {
-        if (item.type.indexOf('image') !== -1) files.push(item.getAsFile());
+        if (item.type.includes('image')) files.push(item.getAsFile());
       }
       if (files.length > 0) {
         if (!document.getElementById('orderSheet').classList.contains('open')) openOrderSheet();
@@ -1777,7 +1935,7 @@
       const desc = document.getElementById('fDesc').value.trim();
       const workerId = document.getElementById('fWorkerSelect').value;
 
-      if (!title) return alert('Введите название заказа!');
+      if (!title) return showToast('Введите название заказа!', 'error');
 
       const workerObj = sysConfig.users.find(u => u.id === workerId);
       const workerName = workerObj ? workerObj.name : 'Любой исполнитель';
@@ -1798,11 +1956,7 @@
         if (editId) {
           const oldOrder = allOrders.find(x => x.id === Number(editId));
           const oldMeta = oldOrder ? parseOrderMeta(oldOrder) : {};
-          const updatedMeta = packOrderMeta({
-            ...oldMeta,
-            workerId,
-            workerName
-          });
+          const updatedMeta = packOrderMeta({ ...oldMeta, workerId, workerName });
 
           await sbFetch(`orders?id=eq.${editId}`, {
             method: 'PATCH',
@@ -1844,9 +1998,11 @@
         }
 
         closeOrderSheet();
+        haptic('success');
+        showToast('Заказ сохранён!', 'success');
         await fetchAllData(false);
       } catch (err) {
-        alert('Ошибка сохранения: ' + err.message);
+        showToast('Ошибка сохранения: ' + err.message, 'error');
       } finally {
         btn.disabled = false;
         btn.innerText = 'Сохранить заказ';
@@ -1863,6 +2019,7 @@
       document.getElementById('wStatus').value = o.status || 'В работе';
       document.getElementById('wComment').value = meta.note || '';
       document.getElementById('workerSheet').classList.add('open');
+      haptic('light');
     }
 
     function closeWorkerSheet() {
@@ -1870,35 +2027,50 @@
     }
 
     async function saveWorkerUpdate() {
-      const id = Number(document.getElementById('wOrderId').value);
-      const o = allOrders.find(x => x.id === id);
-      const oldMeta = o ? parseOrderMeta(o) : {};
-      const finalPrice = parseFloat(document.getElementById('wFinalPrice').value) || 0;
-      const status = document.getElementById('wStatus').value;
-      const note = document.getElementById('wComment').value.trim();
+      const btn = document.getElementById('workerSaveBtn');
+      btn.disabled = true;
+      btn.innerText = 'Сохранение...';
 
-      const updatedMeta = packOrderMeta({
-        ...oldMeta,
-        note,
-        workerId: oldMeta.workerId === 'ALL' && currentAccount.role === 'worker' ? currentAccount.id : oldMeta.workerId,
-        workerName: oldMeta.workerId === 'ALL' && currentAccount.role === 'worker' ? currentAccount.name : oldMeta.workerName
-      });
+      try {
+        const id = Number(document.getElementById('wOrderId').value);
+        const o = allOrders.find(x => x.id === id);
+        const oldMeta = o ? parseOrderMeta(o) : {};
+        const finalPrice = parseFloat(document.getElementById('wFinalPrice').value) || 0;
+        const status = document.getElementById('wStatus').value;
+        const note = document.getElementById('wComment').value.trim();
 
-      await sbFetch(`orders?id=eq.${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-        body: JSON.stringify({
-          final_price: finalPrice,
-          status: status,
-          worker_comment: updatedMeta
-        })
-      });
-      closeWorkerSheet();
-      await fetchAllData(false);
+        const updatedMeta = packOrderMeta({
+          ...oldMeta,
+          note,
+          workerId: oldMeta.workerId === 'ALL' && currentAccount.role === 'worker' ? currentAccount.id : oldMeta.workerId,
+          workerName: oldMeta.workerId === 'ALL' && currentAccount.role === 'worker' ? currentAccount.name : oldMeta.workerName
+        });
+
+        await sbFetch(`orders?id=eq.${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+          body: JSON.stringify({
+            final_price: finalPrice,
+            status: status,
+            worker_comment: updatedMeta
+          })
+        });
+
+        closeWorkerSheet();
+        haptic('success');
+        showToast('Отчёт отправлен', 'success');
+        await fetchAllData(false);
+      } catch (e) {
+        showToast('Ошибка: ' + e.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Сохранить изменения';
+      }
     }
 
     async function quickToggleDone(id, currentStatus) {
       const next = currentStatus === 'Выполнен' ? 'В работе' : 'Выполнен';
+      haptic(next === 'Выполнен' ? 'success' : 'light');
       await sbFetch(`orders?id=eq.${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
@@ -1909,6 +2081,7 @@
 
     async function quickTogglePaid(id, currentPaid) {
       const next = currentPaid === 'Выплачено' ? 'Не выплачено' : 'Выплачено';
+      haptic(next === 'Выплачено' ? 'success' : 'light');
       await sbFetch(`orders?id=eq.${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
@@ -1918,38 +2091,58 @@
     }
 
     async function payAllFiltered() {
+      const ok = await confirmAction('Отметить все завершенные заказы как выплаченные?');
+      if (!ok) return;
+
       await sbFetch(`orders?status=eq.Выполнен&payment_status=eq.Не выплачено`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
         body: JSON.stringify({ payment_status: 'Выплачено' })
       });
+      haptic('success');
+      showToast('Все выполненные заказы оплачены', 'success');
       await fetchAllData(false);
     }
 
     async function removeOrder(id) {
+      const ok = await confirmAction(`Удалить заказ #${id}?`);
+      if (!ok) return;
+
       await sbFetch(`orders?id=eq.${id}`, { method: 'DELETE' });
+      haptic('warning');
+      showToast('Заказ удален', 'info');
       await fetchAllData(false);
     }
 
-    // ГАЛЕРЕЯ
+    // ГАЛЕРЕЯ СО СВАЙПАМИ
+    let touchStartX = 0;
+    const lbElem = document.getElementById('lightbox');
+    lbElem.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    lbElem.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 45) nextPhoto();
+      if (touchEndX - touchStartX > 45) prevPhoto();
+    }, { passive: true });
+
     function openLightbox(photos, idx) {
       lbPhotos = photos; lbIndex = idx; updateLightbox();
       document.getElementById('lightbox').classList.add('open');
+      haptic('light');
     }
     function updateLightbox() {
       document.getElementById('lbImg').src = lbPhotos[lbIndex];
       document.getElementById('lbCount').innerText = `${lbIndex + 1} / ${lbPhotos.length}`;
     }
-    function prevPhoto() { lbIndex = (lbIndex - 1 + lbPhotos.length) % lbPhotos.length; updateLightbox(); }
-    function nextPhoto() { lbIndex = (lbIndex + 1) % lbPhotos.length; updateLightbox(); }
+    function prevPhoto() { lbIndex = (lbIndex - 1 + lbPhotos.length) % lbPhotos.length; updateLightbox(); haptic('light'); }
+    function nextPhoto() { lbIndex = (lbIndex + 1) % lbPhotos.length; updateLightbox(); haptic('light'); }
     function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
 
     function escapeHtml(str) {
       if (!str) return '';
-      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // Мгновенный рендер + фоновая синхронизация
+    // Запуск
     renderAll();
     fetchAllData(false);
   </script>
