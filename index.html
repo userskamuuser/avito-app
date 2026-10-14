@@ -81,19 +81,10 @@
       pointer-events: none;
     }
     .toast {
-      background: var(--surface);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px 16px;
-      font-size: 13px;
-      font-weight: 700;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      pointer-events: auto;
-      animation: toastIn 0.22s ease-out forwards;
+      background: var(--surface); color: var(--text); border: 1px solid var(--border);
+      border-radius: 14px; padding: 12px 16px; font-size: 13px; font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 10px;
+      pointer-events: auto; animation: toastIn 0.22s ease-out forwards;
     }
     .toast.success { border-left: 4px solid var(--success); }
     .toast.error { border-left: 4px solid var(--danger); }
@@ -111,8 +102,7 @@
       padding: 24px 20px; width: 100%; max-width: 400px; box-shadow: var(--shadow);
     }
     .auth-logo {
-      width: 54px; height: 54px; border-radius: 16px;
-      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      width: 54px; height: 54px; border-radius: 16px; background: linear-gradient(135deg, #4f46e5, #06b6d4);
       color: #fff; font-size: 26px; display: flex; align-items: center; justify-content: center;
       margin: 0 auto 12px; box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35);
     }
@@ -140,8 +130,7 @@
     .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
     .user-chip { display: flex; align-items: center; gap: 10px; min-width: 0; }
     .avatar-circle {
-      width: 42px; height: 42px; border-radius: 14px;
-      background: linear-gradient(135deg, var(--primary), #8b5cf6);
+      width: 42px; height: 42px; border-radius: 14px; background: linear-gradient(135deg, var(--primary), #8b5cf6);
       color: #fff; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
     .user-name { font-size: 15px; font-weight: 800; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -185,7 +174,18 @@
     .mini-stat-lbl { font-size: 11px; opacity: 0.75; }
     .mini-stat-val { font-size: 14px; font-weight: 800; margin-top: 2px; }
 
-    /* ПОИСК И ФИЛЬТРЫ */
+    /* ЧИПСЫ ФИЛЬТРОВ ПО ДЕДЛАЙНУ */
+    .chip-scroll {
+      display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px;
+    }
+    .filter-chip {
+      padding: 6px 12px; border-radius: 12px; font-size: 11px; font-weight: 700;
+      border: 1px solid var(--border); background: var(--surface); color: var(--muted);
+      cursor: pointer; white-space: nowrap; transition: all 0.15s;
+    }
+    .filter-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    /* ПОИСК */
     .search-input-wrap { position: relative; margin-bottom: 10px; }
     .search-input {
       width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
@@ -213,16 +213,24 @@
     /* КАРТОЧКА ЗАКАЗА */
     .order-card {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
-      padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); position: relative;
+      padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); position: relative; transition: all 0.2s;
     }
-    .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+    .order-card.urgent-card {
+      border-left: 5px solid var(--danger);
+      box-shadow: 0 4px 18px rgba(239, 68, 68, 0.18);
+    }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
     .work-type-tag {
       font-size: 11px; font-weight: 800; text-transform: uppercase; padding: 3px 8px;
       border-radius: 7px; background: var(--primary-soft); color: var(--primary); display: inline-block;
     }
+    .urgent-badge {
+      font-size: 10px; font-weight: 800; background: var(--danger-soft); color: var(--danger);
+      padding: 3px 7px; border-radius: 6px; text-transform: uppercase;
+    }
     .card-title { font-size: 16px; font-weight: 800; line-height: 1.35; margin: 4px 0 6px; }
 
-    /* ДЕДЛАЙН БЕЙДЖИ */
+    /* ДЕДЛАЙН */
     .deadline-pill {
       display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 800;
       padding: 4px 9px; border-radius: 9px; white-space: nowrap;
@@ -247,6 +255,17 @@
     .spec-lbl { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
     .spec-val { font-weight: 800; color: var(--text); }
 
+    /* ДВУХЭТАПНАЯ ОПЛАТА СТУДЕНТА */
+    .pay-steps-row {
+      display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap;
+    }
+    .pay-step-badge {
+      display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px; border-radius: 9px;
+      font-size: 11px; font-weight: 700; cursor: pointer; border: 1px solid var(--border);
+    }
+    .pay-step-badge.paid { background: var(--success-soft); color: var(--success); border-color: transparent; }
+    .pay-step-badge.unpaid { background: var(--surface-2); color: var(--muted); }
+
     /* ФИНАНСЫ В КАРТОЧКЕ */
     .price-box {
       background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px;
@@ -261,14 +280,20 @@
     .links-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
     .btn-link {
       display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700;
-      padding: 6px 10px; border-radius: 9px; text-decoration: none; border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+      padding: 6px 10px; border-radius: 9px; text-decoration: none; border: 1px solid var(--border);
+      background: var(--surface-2); color: var(--text); cursor: pointer;
     }
     .btn-link.primary { background: var(--primary-soft); color: var(--primary); border-color: transparent; }
+    .btn-link.purple { background: var(--purple-soft); color: var(--purple); border-color: transparent; }
 
-    .report-box {
-      background: var(--purple-soft); border-left: 3px solid var(--purple);
-      padding: 9px 12px; border-radius: 8px; margin-bottom: 10px; font-size: 12px; line-height: 1.4;
+    /* ЖУРНАЛ ЗАМЕЧАНИЙ И ПРАВОК */
+    .revisions-timeline {
+      background: var(--surface-2); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px;
+      font-size: 12px; border-left: 3px solid var(--danger);
     }
+    .rev-item { padding: 4px 0; border-bottom: 1px solid var(--border); }
+    .rev-item:last-child { border-bottom: none; }
+    .rev-meta { font-size: 10px; color: var(--muted); margin-bottom: 2px; }
 
     .photos-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 10px; }
     .photo-thumb-wrap {
@@ -278,12 +303,12 @@
     .photo-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
 
     .card-footer {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 6px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 6px;
       padding-top: 10px; border-top: 1px solid var(--border);
     }
     .c-btn {
       border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
-      padding: 9px 6px; border-radius: 11px; font-size: 12px; font-weight: 700; cursor: pointer;
+      padding: 9px 5px; border-radius: 11px; font-size: 12px; font-weight: 700; cursor: pointer;
       display: flex; align-items: center; justify-content: center; gap: 4px; text-align: center;
     }
     .c-btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
@@ -368,7 +393,7 @@
     <div class="auth-card">
       <div class="auth-logo">🎓</div>
       <div class="auth-title">Академ CRM</div>
-      <div class="auth-sub">Система заказов студенческих работ с Авито</div>
+      <div class="auth-sub">Система студенческих заказов с Авито</div>
 
       <div class="auth-tabs">
         <button class="auth-tab active" id="authTabLogin" onclick="switchAuthTab('login')">🔑 Вход</button>
@@ -391,8 +416,8 @@
         <div class="form-group">
           <label class="form-label">Ваша роль в системе</label>
           <div class="role-selector">
-            <div class="role-option selected" id="regRoleAgent" onclick="selectRegRole('agent')">💼 Менеджер (Посредник)</div>
-            <div class="role-option" id="regRoleWorker" onclick="selectRegRole('worker')">✍️ Автор (Исполнитель)</div>
+            <div class="role-option selected" id="regRoleAgent" onclick="selectRegRole('agent')">💼 Менеджер</div>
+            <div class="role-option" id="regRoleWorker" onclick="selectRegRole('worker')">✍️ Автор</div>
           </div>
         </div>
         <div class="form-group">
@@ -459,7 +484,16 @@
         </div>
       </div>
 
-      <!-- Поиск по заказам -->
+      <!-- Быстрые чипсы фильтрации сроков -->
+      <div class="chip-scroll">
+        <button class="filter-chip active" id="chip-all" onclick="setDeadlineFilter('all')">Все сроки</button>
+        <button class="filter-chip" id="chip-urgent" onclick="setDeadlineFilter('urgent')">⚡ Срочные</button>
+        <button class="filter-chip" id="chip-today" onclick="setDeadlineFilter('today')">🔥 Сегодня</button>
+        <button class="filter-chip" id="chip-tomorrow" onclick="setDeadlineFilter('tomorrow')">⏳ Завтра</button>
+        <button class="filter-chip" id="chip-week" onclick="setDeadlineFilter('week')">📅 На неделе</button>
+      </div>
+
+      <!-- Поиск -->
       <div class="search-input-wrap">
         <span class="search-icon">🔍</span>
         <input type="text" class="search-input" id="orderSearchInput" placeholder="Поиск по теме, автору или номеру..." oninput="renderOrdersSection()">
@@ -527,8 +561,8 @@
         <div class="form-group">
           <label class="form-label">Роль</label>
           <select id="admNewRole" class="f-input">
-            <option value="worker">✍️ Автор (Исполнитель)</option>
-            <option value="agent">💼 Менеджер (Посредник)</option>
+            <option value="worker">✍️ Автор</option>
+            <option value="agent">💼 Менеджер</option>
             <option value="admin">👑 Администратор</option>
           </select>
         </div>
@@ -542,10 +576,10 @@
     </div>
   </div>
 
-  <!-- КНОПКА СОЗДАНИЯ ЗАКАЗА (МЕНЕДЖЕР / АДМИН) -->
+  <!-- КНОПКА СОЗДАНИЯ ЗАКАЗА -->
   <div class="bottom-bar" id="bottomBar" style="display:none;">
     <button class="main-add-btn" onclick="openOrderSheet()">
-      <span>＋</span> Новый заказ со студентом
+      <span>＋</span> Новый студенческий заказ
     </button>
   </div>
 
@@ -560,15 +594,22 @@
 
       <input type="hidden" id="editOrderId">
 
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:800; color:var(--danger); cursor:pointer;">
+          <input type="checkbox" id="fUrgent" onchange="saveDraft()"> 🔥 Срочный заказ (Приоритет)
+        </label>
+        <button id="clearDraftBtn" style="display:none; background:none; border:none; color:var(--muted); font-size:11px; text-decoration:underline; cursor:pointer;" onclick="clearDraft()">Сбросить черновик</button>
+      </div>
+
       <div class="form-group">
         <label class="form-label">Тема работы / Дисциплина *</label>
-        <input type="text" id="fTitle" class="f-input" placeholder="Например: Курсовая по макроэкономике">
+        <input type="text" id="fTitle" class="f-input" placeholder="Например: Курсовая по макроэкономике" oninput="saveDraft()">
       </div>
 
       <div class="f-row">
         <div class="form-group">
           <label class="form-label">Тип работы</label>
-          <select id="fWorkType" class="f-input">
+          <select id="fWorkType" class="f-input" onchange="saveDraft()">
             <option value="Курсовая">Курсовая работа</option>
             <option value="Диплом / ВКР">Диплом / ВКР</option>
             <option value="Презентация">Презентация</option>
@@ -581,23 +622,23 @@
         </div>
         <div class="form-group">
           <label class="form-label">✍️ Назначить автора *</label>
-          <select id="fWorkerSelect" class="f-input"></select>
+          <select id="fWorkerSelect" class="f-input" onchange="saveDraft()"></select>
         </div>
       </div>
 
       <div class="form-group">
         <label class="form-label">⏰ Срок сдачи (Дедлайн) *</label>
-        <input type="datetime-local" id="fDeadline" class="f-input">
+        <input type="datetime-local" id="fDeadline" class="f-input" onchange="saveDraft()">
       </div>
 
       <div class="f-row">
         <div class="form-group">
           <label class="form-label">Сумма со студента (₽) *</label>
-          <input type="number" id="fClientPrice" class="f-input" placeholder="5000" oninput="updateProfitPreview()">
+          <input type="number" id="fClientPrice" class="f-input" placeholder="5000" oninput="updateProfitPreview(); saveDraft();">
         </div>
         <div class="form-group">
           <label class="form-label">Оплата автору (₽) *</label>
-          <input type="number" id="fWorkerPrice" class="f-input" placeholder="2500" oninput="updateProfitPreview()">
+          <input type="number" id="fWorkerPrice" class="f-input" placeholder="2500" oninput="updateProfitPreview(); saveDraft();">
         </div>
       </div>
 
@@ -606,30 +647,24 @@
         <b style="color:var(--success);" id="profitPreview">0 ₽</b>
       </div>
 
-      <div class="f-row">
-        <div class="form-group">
-          <label class="form-label">Антиплагиат</label>
-          <input type="text" id="fAntiplag" class="f-input" placeholder="АП.ВУЗ от 75%">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Объём работы</label>
-          <input type="text" id="fVolume" class="f-input" placeholder="30-35 стр. / 15 слайдов">
-        </div>
+      <div class="form-group">
+        <label class="form-label">Объём работы</label>
+        <input type="text" id="fVolume" class="f-input" placeholder="30-35 стр. / 15 слайдов" oninput="saveDraft()">
       </div>
 
       <div class="form-group">
         <label class="form-label">📁 Ссылка на методичку / материалы (Облако)</label>
-        <input type="url" id="fMaterialsUrl" class="f-input" placeholder="https://disk.yandex.ru/d/...">
+        <input type="url" id="fMaterialsUrl" class="f-input" placeholder="https://disk.yandex.ru/d/..." oninput="saveDraft()">
       </div>
 
       <div class="form-group">
         <label class="form-label">🔗 Ссылка на диалог Авито (для менеджера)</label>
-        <input type="url" id="fAvitoUrl" class="f-input" placeholder="https://www.avito.ru/...">
+        <input type="url" id="fAvitoUrl" class="f-input" placeholder="https://www.avito.ru/..." oninput="saveDraft()">
       </div>
 
       <div class="form-group">
         <label class="form-label">Требования студента / План</label>
-        <textarea id="fDesc" class="f-input" placeholder="План работы, требования преподавателя, оформление по ГОСТ..."></textarea>
+        <textarea id="fDesc" class="f-input" placeholder="План работы, требования преподавателя, оформление..." oninput="saveDraft()"></textarea>
       </div>
 
       <div class="form-group">
@@ -645,6 +680,23 @@
     </div>
   </div>
 
+  <!-- ШТОРКА ДОБАВЛЕНИЯ ПРАВОК (ДЛЯ МЕНЕДЖЕРА) -->
+  <div class="sheet-backdrop" id="revisionSheet" onclick="closeRevisionSheet()">
+    <div class="bottom-sheet" onclick="event.stopPropagation()">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header">
+        <div class="sheet-title">Отправить на доработку</div>
+        <button class="sheet-close" onclick="closeRevisionSheet()">✕</button>
+      </div>
+      <input type="hidden" id="revOrderId">
+      <div class="form-group">
+        <label class="form-label">Замечания научного руководителя / студента *</label>
+        <textarea id="revComment" class="f-input" placeholder="Напишите список замечаний или скопируйте ответ преподавателя..."></textarea>
+      </div>
+      <button class="main-add-btn" id="sendRevBtn" onclick="submitRevision()">Отправить автору на правки</button>
+    </div>
+  </div>
+
   <!-- ШТОРКА СДАЧИ РАБОТЫ (ДЛЯ АВТОРА) -->
   <div class="sheet-backdrop" id="workerSheet" onclick="closeWorkerSheet()">
     <div class="bottom-sheet" onclick="event.stopPropagation()">
@@ -657,7 +709,7 @@
       <input type="hidden" id="wOrderId">
 
       <div class="form-group">
-        <label class="form-label">Статус выполнения</label>
+        <label class="form-label">Статус работы</label>
         <select id="wStatus" class="f-input">
           <option value="В работе">🔥 В процессе написания</option>
           <option value="На проверке">👀 Готово (передано на проверку студенту)</option>
@@ -667,21 +719,16 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">📁 Ссылка на готовую работу (Яндекс/Google Диск)</label>
+        <label class="form-label">📁 Ссылка на готовую работу (Яндекс/Google Диск) *</label>
         <input type="url" id="wResultUrl" class="f-input" placeholder="Ссылка на файл docx / pptx">
       </div>
 
       <div class="form-group">
-        <label class="form-label">Фактический процент Антиплагиата</label>
-        <input type="text" id="wResultPlag" class="f-input" placeholder="Например: 81% по АП.ВУЗ">
+        <label class="form-label">Комментарий автора (что сделано / ответы на замечания)</label>
+        <textarea id="wComment" class="f-input" placeholder="Опишите, какие правки внесены или на что обратить внимание при сдаче..."></textarea>
       </div>
 
-      <div class="form-group">
-        <label class="form-label">Комментарий для менеджера и студента</label>
-        <textarea id="wComment" class="f-input" placeholder="Что сделано, на что обратить внимание при защите, какие замечания учтены..."></textarea>
-      </div>
-
-      <button class="main-add-btn" id="workerSaveBtn" onclick="saveWorkerUpdate()">Отправить отчёт</button>
+      <button class="main-add-btn" id="workerSaveBtn" onclick="saveWorkerUpdate()">Отправить отчёт менеджеру</button>
     </div>
   </div>
 
@@ -697,7 +744,7 @@
   </div>
 
   <script>
-    // 1. TELEGRAM SDK & HAPTIC
+    // 1. ИНИЦИАЛИЗАЦИЯ TELEGRAM
     const tg = window.Telegram?.WebApp;
     if (tg) {
       try { tg.ready(); tg.expand(); tg.enableClosingConfirmation(); } catch (e) {}
@@ -734,14 +781,13 @@
       });
     }
 
-    // 2. БЕЗОПАСНОСТЬ (ХЕШИРОВАНИЕ ПАРОЛЕЙ)
     async function hashPassword(str) {
       const enc = new TextEncoder().encode(str + "_academ_crm_salt_2026");
       const hashBuf = await crypto.subtle.digest('SHA-256', enc);
       return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    // 3. КОНФИГУРАЦИЯ SUPABASE
+    // 2. НАСТРОЙКИ SUPABASE
     const SUPABASE_URL = 'https://vzsbdvwtwcvbqhcbssfi.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_yeu1O6x7OfgNi7sRhpV8SA_s3uxOGaU';
     const CONFIG_MARKER = '__SYSTEM_CONFIG__';
@@ -759,13 +805,14 @@
     let selectedRegRole = 'agent';
     let currentAdminSection = 'orders';
     let currentOrderFilter = 'active'; // 'active', 'check', 'revision', 'done'
+    let currentDeadlineFilter = 'all'; // 'all', 'urgent', 'today', 'tomorrow', 'week'
     let allOrders = [];
     let existingEditingPhotos = [];
     let stagedFiles = [];
     let lbPhotos = [];
     let lbIndex = 0;
 
-    // Загрузка локального кэша
+    // АВТОВХОД ПО ПОСЛЕДНЕЙ СЕССИИ (мгновенное чтение до сети)
     try {
       const acc = localStorage.getItem('academ_crm_acc');
       if (acc) currentAccount = JSON.parse(acc);
@@ -810,17 +857,19 @@
       return `${SUPABASE_URL}/storage/v1/object/public/avito-screens/${fileName}`;
     }
 
-    // РАЗБОР МЕТАДАННЫХ АКАДЕМИЧЕСКОГО ЗАКАЗА
+    // МЕТАДАННЫЕ ЗАКАЗА С ДВУХЭТАПНОЙ ОПЛАТОЙ И ЖУРНАЛОМ ПРАВОК
     function parseOrderMeta(o) {
       let meta = {
         workType: 'Курсовая',
         deadline: '',
-        antiplag: '',
         volume: '',
         materialsUrl: '',
         resultUrl: '',
-        resultPlag: '',
         note: '',
+        isUrgent: false,
+        prepaid: false,
+        postpaid: false,
+        revisions: [],
         workerId: 'ALL',
         workerName: 'Любой свободный автор',
         agentId: '',
@@ -835,6 +884,7 @@
           meta.note = o.worker_comment;
         }
       }
+      if (!Array.isArray(meta.revisions)) meta.revisions = [];
       return meta;
     }
 
@@ -863,6 +913,7 @@
         localStorage.setItem('academ_crm_cfg', JSON.stringify(sysConfig));
         localStorage.setItem('academ_crm_ord', JSON.stringify(allOrders));
 
+        // Проверяем сессию пользователя
         if (currentAccount) {
           const found = sysConfig.users.find(u => u.id === currentAccount.id || u.login === currentAccount.login);
           if (found) {
@@ -936,9 +987,10 @@
 
       currentAccount = matched;
       localStorage.setItem('academ_crm_acc', JSON.stringify(currentAccount));
+      localStorage.setItem('academ_crm_last_login', currentAccount.login);
       document.getElementById('loginPass').value = '';
       haptic('success');
-      showToast(`С возвращением, ${currentAccount.name}!`, 'success');
+      showToast(`Добро пожаловать, ${currentAccount.name}!`, 'success');
       renderAll();
     }
 
@@ -969,6 +1021,7 @@
 
         currentAccount = newUser;
         localStorage.setItem('academ_crm_acc', JSON.stringify(currentAccount));
+        localStorage.setItem('academ_crm_last_login', currentAccount.login);
         haptic('success');
         showToast('Профиль успешно создан!', 'success');
         renderAll();
@@ -983,6 +1036,8 @@
       currentAccount = null;
       localStorage.removeItem('academ_crm_acc');
       haptic('light');
+      const lastLogin = localStorage.getItem('academ_crm_last_login') || '';
+      document.getElementById('loginUser').value = lastLogin;
       renderAll();
     }
 
@@ -1004,6 +1059,15 @@
       renderOrdersSection();
     }
 
+    function setDeadlineFilter(f) {
+      currentDeadlineFilter = f;
+      ['all', 'urgent', 'today', 'tomorrow', 'week'].forEach(k => {
+        document.getElementById('chip-' + k).classList.toggle('active', k === f);
+      });
+      haptic('light');
+      renderOrdersSection();
+    }
+
     function getWorkersList() { return sysConfig.users.filter(u => u.role === 'worker'); }
     function getAgentsList() { return sysConfig.users.filter(u => u.role === 'agent'); }
 
@@ -1011,6 +1075,10 @@
     function renderAll() {
       if (!currentAccount) {
         document.getElementById('authScreen').classList.add('open');
+        const lastLogin = localStorage.getItem('academ_crm_last_login');
+        if (lastLogin && document.getElementById('loginUser')) {
+          document.getElementById('loginUser').value = lastLogin;
+        }
         return;
       }
       document.getElementById('authScreen').classList.remove('open');
@@ -1032,7 +1100,6 @@
       document.getElementById('sectionStats').style.display = showStats ? 'block' : 'none';
       document.getElementById('sectionUsers').style.display = showUsers ? 'block' : 'none';
 
-      // Кнопка создания заказа (только для Менеджера и Админа)
       document.getElementById('bottomBar').style.display = (showOrders && (role === 'agent' || role === 'admin')) ? 'flex' : 'none';
 
       populateAgentFilterDropdown();
@@ -1057,31 +1124,42 @@
       }
     }
 
-    // РЕНДЕР КАРТОЧЕК С ИЗОЛЯЦИЕЙ И ДЕДЛАЙНАМИ
+    // РЕНДЕР КАРТОЧЕК С ФИЛЬТРАМИ СРОКОВ
     function renderOrdersSection() {
       const role = currentAccount.role;
       const selectedAgentId = document.getElementById('agentFilterSelect')?.value || 'ALL';
       const searchVal = (document.getElementById('orderSearchInput')?.value || '').toLowerCase().trim();
 
-      // СТРОГАЯ ИЗОЛЯЦИЯ:
-      // Менеджер видит ТОЛЬКО свои созданные заказы.
-      // Автор видит ТОЛЬКО работы, где он назначен исполнителем (или общий пул).
+      // Строгая изоляция доступа
       const scopedOrders = allOrders.filter(o => {
         const m = parseOrderMeta(o);
-        if (role === 'agent') {
-          return m.agentId === currentAccount.id;
-        }
-        if (role === 'worker') {
-          return m.workerId === currentAccount.id || m.workerId === 'ALL';
-        }
-        if (role === 'admin' && selectedAgentId !== 'ALL') {
-          return m.agentId === selectedAgentId;
-        }
+        if (role === 'agent') return m.agentId === currentAccount.id;
+        if (role === 'worker') return m.workerId === currentAccount.id || m.workerId === 'ALL';
+        if (role === 'admin' && selectedAgentId !== 'ALL') return m.agentId === selectedAgentId;
+        return true;
+      });
+
+      // Фильтр по чипсам дедлайна
+      const now = new Date();
+      const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+      const endToday = startToday + 86400000;
+      const endTomorrow = endToday + 86400000;
+      const endWeek = startToday + 7 * 86400000;
+
+      const filteredByDeadline = scopedOrders.filter(o => {
+        const m = parseOrderMeta(o);
+        if (currentDeadlineFilter === 'all') return true;
+        if (currentDeadlineFilter === 'urgent') return m.isUrgent === true;
+        if (!m.deadline) return false;
+        const dl = new Date(m.deadline).getTime();
+        if (currentDeadlineFilter === 'today') return dl >= startToday && dl <= endToday;
+        if (currentDeadlineFilter === 'tomorrow') return dl > endToday && dl <= endTomorrow;
+        if (currentDeadlineFilter === 'week') return dl >= startToday && dl <= endWeek;
         return true;
       });
 
       // Поиск
-      const filteredBySearch = scopedOrders.filter(o => {
+      const filteredBySearch = filteredByDeadline.filter(o => {
         if (!searchVal) return true;
         const m = parseOrderMeta(o);
         return (o.title || '').toLowerCase().includes(searchVal) ||
@@ -1090,30 +1168,25 @@
                (m.workType || '').toLowerCase().includes(searchVal);
       });
 
-      // Сортировка: самые горящие дедлайны наверх
+      // Сортировка: срочные и горящие наверх
       filteredBySearch.sort((a, b) => {
         const mA = parseOrderMeta(a);
         const mB = parseOrderMeta(b);
+        if (mA.isUrgent && !mB.isUrgent) return -1;
+        if (!mA.isUrgent && mB.isUrgent) return 1;
         if (!mA.deadline) return 1;
         if (!mB.deadline) return -1;
         return new Date(mA.deadline) - new Date(mB.deadline);
       });
 
       // Счетчики по статусам
-      const cActive = filteredBySearch.filter(o => o.status === 'В работе').length;
-      const cCheck = filteredBySearch.filter(o => o.status === 'На проверке').length;
-      const cRevision = filteredBySearch.filter(o => o.status === 'Правки').length;
-      const cDone = filteredBySearch.filter(o => o.status === 'Сдан').length;
+      document.getElementById('cnt-active').innerText = filteredBySearch.filter(o => o.status === 'В работе').length;
+      document.getElementById('cnt-check').innerText = filteredBySearch.filter(o => o.status === 'На проверке').length;
+      document.getElementById('cnt-revision').innerText = filteredBySearch.filter(o => o.status === 'Правки').length;
+      document.getElementById('cnt-done').innerText = filteredBySearch.filter(o => o.status === 'Сдан').length;
 
-      document.getElementById('cnt-active').innerText = cActive;
-      document.getElementById('cnt-check').innerText = cCheck;
-      document.getElementById('cnt-revision').innerText = cRevision;
-      document.getElementById('cnt-done').innerText = cDone;
-
-      // Аналитика в Hero-карточке
       renderHeroDashboard(scopedOrders);
 
-      // Фильтрация по текущей вкладке
       let displayList = [];
       if (currentOrderFilter === 'active') displayList = filteredBySearch.filter(o => o.status === 'В работе');
       else if (currentOrderFilter === 'check') displayList = filteredBySearch.filter(o => o.status === 'На проверке');
@@ -1129,14 +1202,12 @@
       box.innerHTML = displayList.map(o => renderOrderCardHtml(o, role)).join('');
     }
 
-    // ДАШБОРД ВЕРХНЕЙ ПЛАШКИ
     function renderHeroDashboard(orders) {
       const role = currentAccount.role;
       const doneOrders = orders.filter(o => o.status === 'Сдан');
       const inWorkCount = orders.filter(o => o.status === 'В работе' || o.status === 'Правки').length;
 
       if (role === 'worker') {
-        // Автор видит только свою заработную плату
         const toPay = doneOrders.filter(o => o.payment_status === 'Не выплачено')
           .reduce((s, o) => s + (Number(o.final_price) || 0), 0);
         const totalEarned = orders.filter(o => o.payment_status === 'Выплачено')
@@ -1151,7 +1222,6 @@
         document.getElementById('heroStat2Val').innerText = `${totalEarned.toLocaleString('ru-RU')} ₽`;
         document.getElementById('heroPayAllBtn').style.display = 'none';
       } else {
-        // Менеджер или Админ видит Чистую Прибыль и долг авторам
         const totalClient = orders.reduce((s, o) => s + (Number(o.initial_price) || 0), 0);
         const totalAuthor = orders.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
         const netProfit = totalClient - totalAuthor;
@@ -1166,12 +1236,10 @@
         document.getElementById('heroStat1Val').innerText = `${inWorkCount} шт.`;
         document.getElementById('heroStat2Lbl').innerText = 'Долг перед авторами';
         document.getElementById('heroStat2Val').innerText = `${debtToAuthors.toLocaleString('ru-RU')} ₽`;
-
         document.getElementById('heroPayAllBtn').style.display = (debtToAuthors > 0) ? 'block' : 'none';
       }
     }
 
-    // РАСЧЁТ ДЕДЛАЙНА
     function formatDeadline(dl, isDone) {
       if (!dl) return `<span class="deadline-pill deadline-ok">Срок не указан</span>`;
       if (isDone) return `<span class="deadline-pill deadline-ok">✅ Заказ сдан</span>`;
@@ -1186,7 +1254,7 @@
       return `<span class="deadline-pill deadline-ok">📅 Дедлайн: ${dt}</span>`;
     }
 
-    // ГЕНЕРАТОР HTML КАРТОЧКИ
+    // ГЕНЕРАТОР КАРТОЧКИ
     function renderOrderCardHtml(o, role) {
       const m = parseOrderMeta(o);
       const isDone = o.status === 'Сдан';
@@ -1197,6 +1265,8 @@
       const workerP = Number(o.final_price) || 0;
       const margin = clientP - workerP;
 
+      const halfP = Math.round(clientP / 2);
+
       const statusClasses = {
         'В работе': 'st-work',
         'На проверке': 'st-check',
@@ -1204,44 +1274,43 @@
         'Сдан': 'st-done'
       };
 
-      // Кнопки управления в зависимости от роли
       let footerBtns = '';
       if (role === 'worker') {
         footerBtns = `
-          <button class="c-btn primary" onclick="openWorkerSheet(${o.id})">
-            ✍️ Сдать / Отчёт
-          </button>
-          <button class="c-btn" onclick="quickWorkerStatus(${o.id})">
-            🔄 Сменить статус
-          </button>
+          <button class="c-btn primary" onclick="openWorkerSheet(${o.id})">✍️ Сдать / Отчёт</button>
+          <button class="c-btn" onclick="quickWorkerStatus(${o.id})">🔄 Сменить статус</button>
         `;
       } else if (role === 'agent' || role === 'admin') {
         footerBtns = `
           <button class="c-btn ${isPaid ? '' : 'success'}" onclick="quickTogglePaid(${o.id}, '${o.payment_status}')">
             ${isPaid ? 'Снять оплату' : '💳 Выплачено автору'}
           </button>
-          <button class="c-btn warn" onclick="sendToRevision(${o.id})">
-            🟠 На правки
-          </button>
-          <button class="c-btn" onclick="openEditOrderSheet(${o.id})">
-            ⚙️ Изменить
-          </button>
-          <button class="c-btn danger" onclick="removeOrder(${o.id})">
-            🗑
-          </button>
+          <button class="c-btn warn" onclick="openRevisionSheet(${o.id})">🟠 На правки</button>
+          <button class="c-btn" onclick="openEditOrderSheet(${o.id})">⚙️ Изменить</button>
+          <button class="c-btn danger" onclick="removeOrder(${o.id})">🗑</button>
         `;
       }
 
-      // Блок цен: автор видит ТОЛЬКО свою ставку
+      // Блок двухэтапной оплаты (для менеджера и админа)
+      const payStepsHtml = (role !== 'worker') ? `
+        <div class="pay-steps-row">
+          <div class="pay-step-badge ${m.prepaid ? 'paid' : 'unpaid'}" onclick="quickTogglePaymentStep(${o.id}, 'prepaid')">
+            ${m.prepaid ? '✓ Предоплата: ' + halfP + ' ₽' : '⏳ Предоплата (50%): ' + halfP + ' ₽'}
+          </div>
+          <div class="pay-step-badge ${m.postpaid ? 'paid' : 'unpaid'}" onclick="quickTogglePaymentStep(${o.id}, 'postpaid')">
+            ${m.postpaid ? '✓ Доплата: ' + (clientP - halfP) + ' ₽' : '⏳ Ожидает доплаты (50%)'}
+          </div>
+        </div>
+      ` : '';
+
+      // Блок цен
       const priceHtml = (role === 'worker') ? `
         <div class="price-box">
           <div class="price-row-agent">
             <span>Ваша выплата за работу:</span>
             <span style="font-size:17px; font-weight:800; color:var(--primary);">${workerP.toLocaleString('ru-RU')} ₽</span>
           </div>
-          <div class="price-sub">
-            <span>Статус оплаты: <b>${o.payment_status}</b></span>
-          </div>
+          <div class="price-sub"><span>Выплата от менеджера: <b>${o.payment_status}</b></span></div>
         </div>
       ` : `
         <div class="price-box">
@@ -1249,29 +1318,37 @@
             <span>Студент платит: ${clientP.toLocaleString('ru-RU')} ₽</span>
             <span class="net-profit">Маржа: +${margin.toLocaleString('ru-RU')} ₽</span>
           </div>
-          <div class="price-sub">
-            <span>Автору: <b>${workerP.toLocaleString('ru-RU')} ₽</b> (${o.payment_status})</span>
-          </div>
+          <div class="price-sub"><span>Автору: <b>${workerP.toLocaleString('ru-RU')} ₽</b> (${o.payment_status})</span></div>
         </div>
       `;
 
-      return `
-        <div class="order-card">
-          <div class="card-top">
-            <span class="work-type-tag">${escapeHtml(m.workType || 'Работа')}</span>
-            <div style="display:flex; gap:5px; align-items:center;">
-              <span class="status-pill ${statusClasses[o.status] || 'st-work'}">${o.status}</span>
+      // История замечаний
+      const revTimelineHtml = (m.revisions && m.revisions.length > 0) ? `
+        <div class="revisions-timeline">
+          <b style="color:var(--danger); display:block; margin-bottom:4px;">🟠 Замечания и правки (${m.revisions.length}):</b>
+          ${m.revisions.slice(-2).map(r => `
+            <div class="rev-item">
+              <div class="rev-meta">${escapeHtml(r.sender)} • ${escapeHtml(r.date)}</div>
+              <div>${escapeHtml(r.text)}</div>
             </div>
+          `).join('')}
+        </div>
+      ` : '';
+
+      return `
+        <div class="order-card ${m.isUrgent ? 'urgent-card' : ''}">
+          <div class="card-top">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span class="work-type-tag">${escapeHtml(m.workType || 'Работа')}</span>
+              ${m.isUrgent ? `<span class="urgent-badge">🔥 СРОЧНЫЙ</span>` : ''}
+            </div>
+            <span class="status-pill ${statusClasses[o.status] || 'st-work'}">${o.status}</span>
           </div>
 
           <div class="card-title">${escapeHtml(o.title)}</div>
           <div style="margin-bottom:8px;">${formatDeadline(m.deadline, isDone)}</div>
 
           <div class="spec-grid">
-            <div class="spec-item">
-              <span class="spec-lbl">Антиплагиат</span>
-              <span class="spec-val">${escapeHtml(m.antiplag || 'Не указан')}</span>
-            </div>
             <div class="spec-item">
               <span class="spec-lbl">Объём</span>
               <span class="spec-val">${escapeHtml(m.volume || 'По заданию')}</span>
@@ -1280,23 +1357,20 @@
               <span class="spec-lbl">Автор</span>
               <span class="spec-val">${escapeHtml(m.workerName || 'Не назначен')}</span>
             </div>
-            <div class="spec-item">
-              <span class="spec-lbl">Менеджер</span>
-              <span class="spec-val">${escapeHtml(m.agentName || 'Менеджер')}</span>
-            </div>
           </div>
 
+          ${payStepsHtml}
           ${priceHtml}
 
           <div class="links-bar">
-            ${m.materialsUrl ? `<a href="${m.materialsUrl}" target="_blank" class="btn-link primary">📁 Методичка / Диск</a>` : ''}
-            ${m.resultUrl ? `<a href="${m.resultUrl}" target="_blank" class="btn-link" style="color:var(--purple); font-weight:800;">🎓 Готовая работа</a>` : ''}
-            ${(role !== 'worker' && o.avito_url) ? `<a href="${o.avito_url}" target="_blank" class="btn-link">🔗 Авито</a>` : ''}
+            ${m.materialsUrl ? `<a href="${m.materialsUrl}" target="_blank" class="btn-link primary">📁 Методичка</a>` : ''}
+            ${m.resultUrl ? `<a href="${m.resultUrl}" target="_blank" class="btn-link purple">🎓 Готовая работа</a>` : ''}
+            ${role !== 'worker' ? `<button class="btn-link" onclick="copyClientMessage(${o.id})">📤 Для студента</button>` : ''}
             <button class="btn-link" onclick="copyOrderDetails(${o.id}, '${escapeHtml(o.title)}', '${escapeHtml(m.workType)}', '${m.deadline || ''}')">📋 Копия</button>
           </div>
 
           ${o.instruction ? `<div style="font-size:12px; background:var(--surface-2); padding:8px 10px; border-radius:10px; margin-bottom:8px; white-space:pre-wrap;"><b>Задание:</b> ${escapeHtml(o.instruction)}</div>` : ''}
-          ${m.resultPlag ? `<div class="report-box"><b>Факт. оригинальность:</b> ${escapeHtml(m.resultPlag)}<br>${escapeHtml(m.note || '')}</div>` : ''}
+          ${revTimelineHtml}
 
           ${photos.length > 0 ? `
             <div class="photos-row">
@@ -1313,6 +1387,33 @@
       `;
     }
 
+    // ГЕНЕРАТОР СООБЩЕНИЯ ДЛЯ СТУДЕНТА (БЕЗ ОРИГИНАЛЬНОСТИ)
+    function copyClientMessage(id) {
+      const o = allOrders.find(x => x.id === id);
+      if (!o) return;
+      const m = parseOrderMeta(o);
+      const isFullPaid = m.prepaid && m.postpaid;
+
+      let paymentNote = isFullPaid
+        ? '✅ Работа полностью оплачена. Успешной защиты!'
+        : '⏳ Работа готова. Ждём вторую часть оплаты для отправки чистого итогового файла.';
+
+      let text = `Здравствуйте! Ваша работа готова 🎓\n` +
+        `📌 Заказ #${o.id}: ${m.workType || 'Работа'} — "${o.title}"\n`;
+
+      if (m.resultUrl) {
+        text += `📁 Ссылка на файл для ознакомления: ${m.resultUrl}\n`;
+      }
+      text += `\n${paymentNote}`;
+
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          haptic('success');
+          showToast('Сообщение для студента скопировано!', 'success');
+        });
+      }
+    }
+
     function copyOrderDetails(id, title, type, dl) {
       const text = `Заказ #${id}: ${type} — "${title}"\nДедлайн: ${dl ? new Date(dl).toLocaleString('ru-RU') : 'Не указан'}`;
       if (navigator.clipboard?.writeText) {
@@ -1323,6 +1424,71 @@
       }
     }
 
+    // БЫСТРОЕ ПЕРЕКЛЮЧЕНИЕ ПРЕДОПЛАТЫ / ДОПЛАТЫ
+    async function quickTogglePaymentStep(orderId, step) {
+      const o = allOrders.find(x => x.id === orderId);
+      if (!o) return;
+      const m = parseOrderMeta(o);
+      m[step] = !m[step];
+
+      await sbFetch(`orders?id=eq.${orderId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ worker_comment: packOrderMeta(m) })
+      });
+
+      haptic(m[step] ? 'success' : 'light');
+      showToast(`${step === 'prepaid' ? 'Предоплата' : 'Доплата'} ${m[step] ? 'отмечена' : 'снята'}`, 'info');
+      await fetchAllData(false);
+    }
+
+    // АВТОСОХРАНЕНИЕ ЧЕРНОВИКА
+    function saveDraft() {
+      if (document.getElementById('editOrderId').value) return; // Не сохраняем в черновик при редактировании
+      const draft = {
+        title: document.getElementById('fTitle').value,
+        workType: document.getElementById('fWorkType').value,
+        deadline: document.getElementById('fDeadline').value,
+        clientPrice: document.getElementById('fClientPrice').value,
+        workerPrice: document.getElementById('fWorkerPrice').value,
+        volume: document.getElementById('fVolume').value,
+        materialsUrl: document.getElementById('fMaterialsUrl').value,
+        avitoUrl: document.getElementById('fAvitoUrl').value,
+        desc: document.getElementById('fDesc').value,
+        isUrgent: document.getElementById('fUrgent').checked
+      };
+      sessionStorage.setItem('academ_crm_draft', JSON.stringify(draft));
+    }
+
+    function restoreDraft() {
+      try {
+        const raw = sessionStorage.getItem('academ_crm_draft');
+        if (!raw) return;
+        const d = JSON.parse(raw);
+        if (!d.title && !d.desc && !d.clientPrice) return;
+
+        document.getElementById('fTitle').value = d.title || '';
+        document.getElementById('fWorkType').value = d.workType || 'Курсовая';
+        document.getElementById('fDeadline').value = d.deadline || '';
+        document.getElementById('fClientPrice').value = d.clientPrice || '';
+        document.getElementById('fWorkerPrice').value = d.workerPrice || '';
+        document.getElementById('fVolume').value = d.volume || '';
+        document.getElementById('fMaterialsUrl').value = d.materialsUrl || '';
+        document.getElementById('fAvitoUrl').value = d.avitoUrl || '';
+        document.getElementById('fDesc').value = d.desc || '';
+        document.getElementById('fUrgent').checked = !!d.isUrgent;
+        document.getElementById('clearDraftBtn').style.display = 'block';
+        updateProfitPreview();
+      } catch (e) {}
+    }
+
+    function clearDraft() {
+      sessionStorage.removeItem('academ_crm_draft');
+      document.getElementById('clearDraftBtn').style.display = 'none';
+      openOrderSheet();
+      showToast('Черновик сброшен', 'info');
+    }
+
     function updateProfitPreview() {
       const c = parseFloat(document.getElementById('fClientPrice').value) || 0;
       const w = parseFloat(document.getElementById('fWorkerPrice').value) || 0;
@@ -1330,7 +1496,7 @@
       document.getElementById('profitPreview').innerText = `${p >= 0 ? '+' : ''}${p.toLocaleString('ru-RU')} ₽`;
     }
 
-    // СОЗДАНИЕ И РЕДАКТИРОВАНИЕ ЗАКАЗА МЕНЕДЖЕРОМ
+    // СОЗДАНИЕ И РЕДАКТИРОВАНИЕ ЗАКАЗА
     function populateOrderWorkerSelect(selectedId = 'ALL') {
       const sel = document.getElementById('fWorkerSelect');
       const workers = getWorkersList();
@@ -1341,22 +1507,24 @@
 
     function openOrderSheet() {
       document.getElementById('editOrderId').value = '';
-      document.getElementById('orderSheetTitle').innerText = 'Новый заказ со студентом';
+      document.getElementById('orderSheetTitle').innerText = 'Новый студенческий заказ';
       document.getElementById('fTitle').value = '';
       document.getElementById('fWorkType').value = 'Курсовая';
       document.getElementById('fDeadline').value = '';
       document.getElementById('fClientPrice').value = '';
       document.getElementById('fWorkerPrice').value = '';
-      document.getElementById('fAntiplag').value = '';
       document.getElementById('fVolume').value = '';
       document.getElementById('fMaterialsUrl').value = '';
       document.getElementById('fAvitoUrl').value = '';
       document.getElementById('fDesc').value = '';
+      document.getElementById('fUrgent').checked = false;
+      document.getElementById('clearDraftBtn').style.display = 'none';
       updateProfitPreview();
       populateOrderWorkerSelect('ALL');
       existingEditingPhotos = [];
       stagedFiles = [];
       renderStagedPhotos();
+      restoreDraft();
       document.getElementById('orderSheet').classList.add('open');
       haptic('light');
     }
@@ -1373,11 +1541,12 @@
       document.getElementById('fDeadline').value = m.deadline || '';
       document.getElementById('fClientPrice').value = o.initial_price || '';
       document.getElementById('fWorkerPrice').value = o.final_price || '';
-      document.getElementById('fAntiplag').value = m.antiplag || '';
       document.getElementById('fVolume').value = m.volume || '';
       document.getElementById('fMaterialsUrl').value = m.materialsUrl || '';
       document.getElementById('fAvitoUrl').value = o.avito_url || '';
       document.getElementById('fDesc').value = o.instruction || '';
+      document.getElementById('fUrgent').checked = !!m.isUrgent;
+      document.getElementById('clearDraftBtn').style.display = 'none';
       updateProfitPreview();
       populateOrderWorkerSelect(m.workerId || 'ALL');
       existingEditingPhotos = Array.isArray(o.photos) ? [...o.photos] : [];
@@ -1456,11 +1625,11 @@
       const deadline = document.getElementById('fDeadline').value;
       const clientPrice = parseFloat(document.getElementById('fClientPrice').value) || 0;
       const workerPrice = parseFloat(document.getElementById('fWorkerPrice').value) || 0;
-      const antiplag = document.getElementById('fAntiplag').value.trim();
       const volume = document.getElementById('fVolume').value.trim();
       const materialsUrl = document.getElementById('fMaterialsUrl').value.trim();
       const avitoUrl = document.getElementById('fAvitoUrl').value.trim();
       const desc = document.getElementById('fDesc').value.trim();
+      const isUrgent = document.getElementById('fUrgent').checked;
 
       if (!title) return showToast('Укажите тему работы!', 'error');
 
@@ -1485,7 +1654,7 @@
           const oldMeta = old ? parseOrderMeta(old) : {};
           const meta = packOrderMeta({
             ...oldMeta,
-            workType, workerId, workerName, deadline, antiplag, volume, materialsUrl
+            workType, workerId, workerName, deadline, volume, materialsUrl, isUrgent
           });
 
           await sbFetch(`orders?id=eq.${editId}`, {
@@ -1503,9 +1672,9 @@
           });
         } else {
           const meta = packOrderMeta({
-            workType, workerId, workerName, deadline, antiplag, volume, materialsUrl,
+            workType, workerId, workerName, deadline, volume, materialsUrl, isUrgent,
             agentId: currentAccount.id, agentName: currentAccount.name,
-            resultUrl: '', resultPlag: '', note: ''
+            prepaid: false, postpaid: false, revisions: [], resultUrl: '', note: ''
           });
 
           await sbFetch('orders', {
@@ -1523,6 +1692,8 @@
               worker_comment: meta
             })
           });
+
+          sessionStorage.removeItem('academ_crm_draft');
         }
 
         closeOrderSheet();
@@ -1536,6 +1707,45 @@
       }
     }
 
+    // ШТОРКА ПРАВОК (ДЛЯ МЕНЕДЖЕРА)
+    function openRevisionSheet(id) {
+      document.getElementById('revOrderId').value = id;
+      document.getElementById('revComment').value = '';
+      document.getElementById('revisionSheet').classList.add('open');
+      haptic('light');
+    }
+    function closeRevisionSheet() { document.getElementById('revisionSheet').classList.remove('open'); }
+
+    async function submitRevision() {
+      const id = Number(document.getElementById('revOrderId').value);
+      const text = document.getElementById('revComment').value.trim();
+      if (!text) return showToast('Введите замечания!', 'error');
+
+      const o = allOrders.find(x => x.id === id);
+      const m = o ? parseOrderMeta(o) : {};
+
+      const now = new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+      m.revisions.push({
+        sender: currentAccount.name + ' (Менеджер)',
+        date: now,
+        text: text
+      });
+
+      await sbFetch(`orders?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({
+          status: 'Правки',
+          worker_comment: packOrderMeta(m)
+        })
+      });
+
+      closeRevisionSheet();
+      haptic('warning');
+      showToast('Заказ отправлен автору на правки', 'info');
+      await fetchAllData(false);
+    }
+
     // ШТОРКА СДАЧИ АВТОРА
     function openWorkerSheet(id) {
       const o = allOrders.find(x => x.id === id);
@@ -1545,8 +1755,7 @@
       document.getElementById('wOrderId').value = o.id;
       document.getElementById('wStatus').value = o.status || 'В работе';
       document.getElementById('wResultUrl').value = m.resultUrl || '';
-      document.getElementById('wResultPlag').value = m.resultPlag || '';
-      document.getElementById('wComment').value = m.note || '';
+      document.getElementById('wComment').value = '';
 
       document.getElementById('workerSheet').classList.add('open');
       haptic('light');
@@ -1561,18 +1770,24 @@
 
       const status = document.getElementById('wStatus').value;
       const resultUrl = document.getElementById('wResultUrl').value.trim();
-      const resultPlag = document.getElementById('wResultPlag').value.trim();
       const note = document.getElementById('wComment').value.trim();
 
       const btn = document.getElementById('workerSaveBtn');
       btn.disabled = true; btn.innerText = 'Отправка...';
 
       try {
+        if (note) {
+          const now = new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+          oldMeta.revisions.push({
+            sender: currentAccount.name + ' (Автор)',
+            date: now,
+            text: note
+          });
+        }
+
         const updatedMeta = packOrderMeta({
           ...oldMeta,
           resultUrl,
-          resultPlag,
-          note,
           workerId: oldMeta.workerId === 'ALL' && currentAccount.role === 'worker' ? currentAccount.id : oldMeta.workerId,
           workerName: oldMeta.workerId === 'ALL' && currentAccount.role === 'worker' ? currentAccount.name : oldMeta.workerName
         });
@@ -1590,7 +1805,7 @@
       } catch (e) {
         showToast('Ошибка: ' + e.message, 'error');
       } finally {
-        btn.disabled = false; btn.innerText = 'Отправить отчёт';
+        btn.disabled = false; btn.innerText = 'Отправить отчёт менеджеру';
       }
     }
 
@@ -1605,17 +1820,6 @@
       });
       haptic('light');
       showToast(`Статус: ${nextStatus}`, 'info');
-      await fetchAllData(false);
-    }
-
-    async function sendToRevision(id) {
-      await sbFetch(`orders?id=eq.${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-        body: JSON.stringify({ status: 'Правки' })
-      });
-      haptic('warning');
-      showToast('Заказ возвращён автору на правки', 'info');
       await fetchAllData(false);
     }
 
@@ -1753,7 +1957,7 @@
       renderAll();
     }
 
-    // ГАЛЕРЕЯ СО СВАЙПАМИ
+    // ГАЛЕРЕЯ
     let touchStartX = 0;
     const lbElem = document.getElementById('lightbox');
     lbElem.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
@@ -1781,7 +1985,7 @@
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // СТАРТ
+    // СТАРТ: если была сессия — рендерим мгновенно, без задержки
     renderAll();
     fetchAllData(false);
   </script>
