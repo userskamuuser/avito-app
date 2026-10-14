@@ -175,9 +175,7 @@
     .mini-stat-val { font-size: 14px; font-weight: 800; margin-top: 2px; }
 
     /* ЧИПСЫ ФИЛЬТРОВ ПО ДЕДЛАЙНУ */
-    .chip-scroll {
-      display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px;
-    }
+    .chip-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; }
     .filter-chip {
       padding: 6px 12px; border-radius: 12px; font-size: 11px; font-weight: 700;
       border: 1px solid var(--border); background: var(--surface); color: var(--muted);
@@ -213,7 +211,7 @@
     /* КАРТОЧКА ЗАКАЗА */
     .order-card {
       background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
-      padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); position: relative; transition: all 0.2s;
+      padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); position: relative;
     }
     .order-card.urgent-card {
       border-left: 5px solid var(--danger);
@@ -256,9 +254,7 @@
     .spec-val { font-weight: 800; color: var(--text); }
 
     /* ДВУХЭТАПНАЯ ОПЛАТА СТУДЕНТА */
-    .pay-steps-row {
-      display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap;
-    }
+    .pay-steps-row { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
     .pay-step-badge {
       display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px; border-radius: 9px;
       font-size: 11px; font-weight: 700; cursor: pointer; border: 1px solid var(--border);
@@ -277,6 +273,29 @@
     .price-sub { font-size: 11px; color: var(--muted); margin-top: 3px; display: flex; justify-content: space-between; }
     .net-profit { color: var(--success); font-weight: 800; }
 
+    /* БЛОК СКАЧИВАНИЯ ФАЙЛОВ */
+    .file-group-box {
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;
+      padding: 9px 11px; margin-bottom: 8px;
+    }
+    .file-group-box.result {
+      background: var(--purple-soft); border-color: rgba(139, 92, 246, 0.25);
+    }
+    .file-group-title {
+      font-size: 11px; font-weight: 800; color: var(--muted); margin-bottom: 6px;
+    }
+    .file-group-box.result .file-group-title { color: var(--purple); }
+    .file-download-chip {
+      display: flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border);
+      padding: 6px 10px; border-radius: 9px; text-decoration: none; color: var(--text); font-size: 12px;
+      font-weight: 700; margin-bottom: 5px;
+    }
+    .file-download-chip:last-child { margin-bottom: 0; }
+    .file-download-chip.highlight { border-color: rgba(139, 92, 246, 0.4); }
+    .file-name-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .file-size-text { font-size: 10px; color: var(--muted); }
+    .dl-btn-icon { color: var(--primary); font-size: 13px; }
+
     .links-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
     .btn-link {
       display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700;
@@ -286,7 +305,7 @@
     .btn-link.primary { background: var(--primary-soft); color: var(--primary); border-color: transparent; }
     .btn-link.purple { background: var(--purple-soft); color: var(--purple); border-color: transparent; }
 
-    /* ЖУРНАЛ ЗАМЕЧАНИЙ И ПРАВОК */
+    /* ЖУРНАЛ ПРАВОК */
     .revisions-timeline {
       background: var(--surface-2); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px;
       font-size: 12px; border-left: 3px solid var(--danger);
@@ -294,13 +313,6 @@
     .rev-item { padding: 4px 0; border-bottom: 1px solid var(--border); }
     .rev-item:last-child { border-bottom: none; }
     .rev-meta { font-size: 10px; color: var(--muted); margin-bottom: 2px; }
-
-    .photos-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 10px; }
-    .photo-thumb-wrap {
-      width: 76px; height: 76px; flex-shrink: 0; border-radius: 12px; overflow: hidden;
-      border: 1px solid var(--border); cursor: pointer;
-    }
-    .photo-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
 
     .card-footer {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 6px;
@@ -360,23 +372,12 @@
       border: 2px dashed var(--border); background: var(--surface-2); border-radius: 14px;
       padding: 12px; text-align: center; cursor: pointer; margin-bottom: 8px; font-size: 12px; color: var(--muted);
     }
-    .staged-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-    .staged-item { position: relative; width: 62px; height: 62px; }
-    .staged-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
-    .staged-remove {
-      position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; border-radius: 50%;
-      background: var(--danger); color: #fff; border: none; font-size: 11px; cursor: pointer;
+    .staged-file-item {
+      display: flex; justify-content: space-between; align-items: center; background: var(--surface);
+      border: 1px solid var(--border); padding: 7px 10px; border-radius: 10px; margin-bottom: 4px; font-size: 12px; font-weight: 700;
     }
-
-    /* LIGHTBOX */
-    .lightbox {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.94); z-index: 400;
-      display: none; flex-direction: column; justify-content: center; align-items: center; padding: 16px; touch-action: none;
-    }
-    .lightbox.open { display: flex; }
-    .lightbox img { max-width: 100%; max-height: 78vh; border-radius: 12px; object-fit: contain; }
-    .lb-bar { display: flex; gap: 10px; margin-top: 18px; }
-    .lb-btn { background: rgba(255,255,255,0.18); color: #fff; border: none; padding: 9px 16px; border-radius: 20px; font-weight: 700; cursor: pointer; }
+    .staged-file-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 80%; }
+    .staged-remove-btn { background: none; border: none; color: var(--danger); font-size: 14px; cursor: pointer; font-weight: 800; }
 
     .empty-state {
       background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius-lg);
@@ -653,8 +654,18 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">📁 Ссылка на методичку / материалы (Облако)</label>
+        <label class="form-label">📁 Ссылка на Яндекс / Google Диск (если есть)</label>
         <input type="url" id="fMaterialsUrl" class="f-input" placeholder="https://disk.yandex.ru/d/..." oninput="saveDraft()">
+      </div>
+
+      <!-- ЗАГРУЗКА МЕТОДИЧЕК И ФАЙЛОВ МЕНЕДЖЕРОМ -->
+      <div class="form-group">
+        <label class="form-label">📎 Прикрепить файлы и методички (DOCX, PDF, ZIP, PPTX...)</label>
+        <div class="drop-area" onclick="document.getElementById('fDocFiles').click()">
+          📂 Нажмите, чтобы выбрать файлы задания
+          <input type="file" id="fDocFiles" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip,.rar,image/*" style="display:none" onchange="handleManagerFilesSelect(this.files)">
+        </div>
+        <div id="stagedManagerFilesList"></div>
       </div>
 
       <div class="form-group">
@@ -665,15 +676,6 @@
       <div class="form-group">
         <label class="form-label">Требования студента / План</label>
         <textarea id="fDesc" class="f-input" placeholder="План работы, требования преподавателя, оформление..." oninput="saveDraft()"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Скриншоты задания / методички</label>
-        <div class="drop-area" onclick="document.getElementById('fFiles').click()">
-          📷 Прикрепить файлы из галереи или вставить через Ctrl + V
-          <input type="file" id="fFiles" multiple accept="image/*" style="display:none" onchange="handleFilesSelect(this.files)">
-        </div>
-        <div class="staged-grid" id="stagedGrid"></div>
       </div>
 
       <button class="main-add-btn" id="saveOrderBtn" onclick="saveOrder()">Сохранить заказ</button>
@@ -719,8 +721,18 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">📁 Ссылка на готовую работу (Яндекс/Google Диск) *</label>
-        <input type="url" id="wResultUrl" class="f-input" placeholder="Ссылка на файл docx / pptx">
+        <label class="form-label">📁 Ссылка на Google / Яндекс Диск (если файл там)</label>
+        <input type="url" id="wResultUrl" class="f-input" placeholder="https://drive.google.com/...">
+      </div>
+
+      <!-- ЗАГРУЗКА ГОТОВЫХ ФАЙЛОВ АВТОРОМ -->
+      <div class="form-group">
+        <label class="form-label">📎 Или загрузите готовую работу файлом (Word, PPTX, PDF, ZIP...)</label>
+        <div class="drop-area" onclick="document.getElementById('wResultFilesInput').click()">
+          📤 Нажмите для выбора готовых файлов работы
+          <input type="file" id="wResultFilesInput" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip,.rar,image/*" style="display:none" onchange="handleWorkerFilesSelect(this.files)">
+        </div>
+        <div id="stagedWorkerFilesList"></div>
       </div>
 
       <div class="form-group">
@@ -729,17 +741,6 @@
       </div>
 
       <button class="main-add-btn" id="workerSaveBtn" onclick="saveWorkerUpdate()">Отправить отчёт менеджеру</button>
-    </div>
-  </div>
-
-  <!-- LIGHTBOX -->
-  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-    <img id="lbImg" src="" onclick="event.stopPropagation()">
-    <div class="lb-bar" onclick="event.stopPropagation()">
-      <button class="lb-btn" onclick="prevPhoto()">◀</button>
-      <button class="lb-btn" id="lbCount">1 / 1</button>
-      <button class="lb-btn" onclick="nextPhoto()">▶</button>
-      <button class="lb-btn" onclick="closeLightbox()">✕</button>
     </div>
   </div>
 
@@ -804,15 +805,17 @@
     let currentAccount = null;
     let selectedRegRole = 'agent';
     let currentAdminSection = 'orders';
-    let currentOrderFilter = 'active'; // 'active', 'check', 'revision', 'done'
-    let currentDeadlineFilter = 'all'; // 'all', 'urgent', 'today', 'tomorrow', 'week'
+    let currentOrderFilter = 'active';
+    let currentDeadlineFilter = 'all';
     let allOrders = [];
-    let existingEditingPhotos = [];
-    let stagedFiles = [];
-    let lbPhotos = [];
-    let lbIndex = 0;
 
-    // АВТОВХОД ПО ПОСЛЕДНЕЙ СЕССИИ (мгновенное чтение до сети)
+    // Файлы менеджера и автора
+    let existingManagerFiles = [];
+    let stagedManagerFiles = [];
+    let existingWorkerFiles = [];
+    let stagedWorkerFiles = [];
+
+    // АВТОВХОД
     try {
       const acc = localStorage.getItem('academ_crm_acc');
       if (acc) currentAccount = JSON.parse(acc);
@@ -842,29 +845,52 @@
       }
     }
 
-    async function storageUploadPhoto(fileName, blob) {
-      const res = await fetch(`${SUPABASE_URL}/storage/v1/object/avito-screens/${fileName}`, {
+    // УНИВЕРСАЛЬНАЯ ЗАГРУЗКА ЛЮБЫХ ФАЙЛОВ (PDF, DOCX, ZIP, PPTX)
+    async function storageUploadAnyFile(fileName, file) {
+      const mime = file.type || 'application/octet-stream';
+      const res = await fetch(`${SUPABASE_URL}/storage/v1/object/avito-screens/${encodeURIComponent(fileName)}`, {
         method: 'POST',
         headers: {
           'apikey': SUPABASE_KEY,
           'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'image/jpeg',
+          'Content-Type': mime,
           'x-upsert': 'true'
         },
-        body: blob
+        body: file
       });
       if (!res.ok) throw new Error(await res.text());
-      return `${SUPABASE_URL}/storage/v1/object/public/avito-screens/${fileName}`;
+      return `${SUPABASE_URL}/storage/v1/object/public/avito-screens/${encodeURIComponent(fileName)}`;
     }
 
-    // МЕТАДАННЫЕ ЗАКАЗА С ДВУХЭТАПНОЙ ОПЛАТОЙ И ЖУРНАЛОМ ПРАВОК
+    function getFileIcon(filename) {
+      const ext = (filename || '').split('.').pop().toLowerCase();
+      if (['pdf'].includes(ext)) return '📕';
+      if (['doc', 'docx'].includes(ext)) return '📘';
+      if (['ppt', 'pptx'].includes(ext)) return '📙';
+      if (['xls', 'xlsx'].includes(ext)) return '📗';
+      if (['zip', 'rar', '7z'].includes(ext)) return '🗂️';
+      if (['png', 'jpg', 'jpeg', 'webp'].includes(ext)) return '🖼️';
+      return '📄';
+    }
+
+    function formatBytes(bytes) {
+      if (!bytes || bytes === 0) return '';
+      const k = 1024;
+      const sizes = ['Б', 'КБ', 'МБ', 'ГБ'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    // МЕТАДАННЫЕ
     function parseOrderMeta(o) {
       let meta = {
         workType: 'Курсовая',
         deadline: '',
         volume: '',
         materialsUrl: '',
+        materialFiles: [],
         resultUrl: '',
+        resultFiles: [],
         note: '',
         isUrgent: false,
         prepaid: false,
@@ -885,12 +911,14 @@
         }
       }
       if (!Array.isArray(meta.revisions)) meta.revisions = [];
+      if (!Array.isArray(meta.materialFiles)) meta.materialFiles = [];
+      if (!Array.isArray(meta.resultFiles)) meta.resultFiles = [];
       return meta;
     }
 
     function packOrderMeta(m) { return JSON.stringify(m); }
 
-    // СИНХРОНИЗАЦИЯ С БАЗОЙ
+    // СИНХРОНИЗАЦИЯ
     async function fetchAllData(showToastAlert = false) {
       try {
         const res = await sbFetch('orders?select=*&order=id.desc&limit=60');
@@ -913,7 +941,6 @@
         localStorage.setItem('academ_crm_cfg', JSON.stringify(sysConfig));
         localStorage.setItem('academ_crm_ord', JSON.stringify(allOrders));
 
-        // Проверяем сессию пользователя
         if (currentAccount) {
           const found = sysConfig.users.find(u => u.id === currentAccount.id || u.login === currentAccount.login);
           if (found) {
@@ -923,7 +950,7 @@
         }
 
         renderAll();
-        if (showToastAlert) showToast('Данные актуализированы', 'success');
+        if (showToastAlert) showToast('Данные обновлены', 'success');
       } catch (err) {
         if (showToastAlert) showToast('Ошибка соединения: ' + err.message, 'error');
         renderAll();
@@ -999,7 +1026,7 @@
       const login = document.getElementById('regLogin').value.trim().toLowerCase();
       const pass = document.getElementById('regPass').value.trim();
 
-      if (!name || !login || !pass) return showToast('Заполните все обязательные поля!', 'error');
+      if (!name || !login || !pass) return showToast('Заполните все поля!', 'error');
       if (pass.length < 6) return showToast('Пароль минимум 6 знаков!', 'error');
 
       const btn = document.getElementById('regBtn');
@@ -1124,13 +1151,12 @@
       }
     }
 
-    // РЕНДЕР КАРТОЧЕК С ФИЛЬТРАМИ СРОКОВ
+    // РЕНДЕР КАРТОЧЕК
     function renderOrdersSection() {
       const role = currentAccount.role;
       const selectedAgentId = document.getElementById('agentFilterSelect')?.value || 'ALL';
       const searchVal = (document.getElementById('orderSearchInput')?.value || '').toLowerCase().trim();
 
-      // Строгая изоляция доступа
       const scopedOrders = allOrders.filter(o => {
         const m = parseOrderMeta(o);
         if (role === 'agent') return m.agentId === currentAccount.id;
@@ -1139,7 +1165,6 @@
         return true;
       });
 
-      // Фильтр по чипсам дедлайна
       const now = new Date();
       const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
       const endToday = startToday + 86400000;
@@ -1158,7 +1183,6 @@
         return true;
       });
 
-      // Поиск
       const filteredBySearch = filteredByDeadline.filter(o => {
         if (!searchVal) return true;
         const m = parseOrderMeta(o);
@@ -1168,7 +1192,6 @@
                (m.workType || '').toLowerCase().includes(searchVal);
       });
 
-      // Сортировка: срочные и горящие наверх
       filteredBySearch.sort((a, b) => {
         const mA = parseOrderMeta(a);
         const mB = parseOrderMeta(b);
@@ -1179,7 +1202,6 @@
         return new Date(mA.deadline) - new Date(mB.deadline);
       });
 
-      // Счетчики по статусам
       document.getElementById('cnt-active').innerText = filteredBySearch.filter(o => o.status === 'В работе').length;
       document.getElementById('cnt-check').innerText = filteredBySearch.filter(o => o.status === 'На проверке').length;
       document.getElementById('cnt-revision').innerText = filteredBySearch.filter(o => o.status === 'Правки').length;
@@ -1254,17 +1276,15 @@
       return `<span class="deadline-pill deadline-ok">📅 Дедлайн: ${dt}</span>`;
     }
 
-    // ГЕНЕРАТОР КАРТОЧКИ
+    // ГЕНЕРАТОР КАРТОЧКИ С ФАЙЛАМИ
     function renderOrderCardHtml(o, role) {
       const m = parseOrderMeta(o);
       const isDone = o.status === 'Сдан';
       const isPaid = o.payment_status === 'Выплачено';
-      const photos = Array.isArray(o.photos) ? o.photos : [];
 
       const clientP = Number(o.initial_price) || 0;
       const workerP = Number(o.final_price) || 0;
       const margin = clientP - workerP;
-
       const halfP = Math.round(clientP / 2);
 
       const statusClasses = {
@@ -1291,7 +1311,6 @@
         `;
       }
 
-      // Блок двухэтапной оплаты (для менеджера и админа)
       const payStepsHtml = (role !== 'worker') ? `
         <div class="pay-steps-row">
           <div class="pay-step-badge ${m.prepaid ? 'paid' : 'unpaid'}" onclick="quickTogglePaymentStep(${o.id}, 'prepaid')">
@@ -1303,7 +1322,6 @@
         </div>
       ` : '';
 
-      // Блок цен
       const priceHtml = (role === 'worker') ? `
         <div class="price-box">
           <div class="price-row-agent">
@@ -1322,7 +1340,36 @@
         </div>
       `;
 
-      // История замечаний
+      // БЛОК МАТЕРИАЛОВ И МЕТОДИЧЕК (СКАЧИВАНИЕ ФАЙЛОВ)
+      const matFilesHtml = (m.materialFiles && m.materialFiles.length > 0) ? `
+        <div class="file-group-box">
+          <div class="file-group-title">📎 Материалы и методички (${m.materialFiles.length}):</div>
+          ${m.materialFiles.map(f => `
+            <a href="${f.url}" download="${escapeHtml(f.name)}" target="_blank" class="file-download-chip">
+              <span>${getFileIcon(f.name)}</span>
+              <span class="file-name-text">${escapeHtml(f.name)}</span>
+              <span class="file-size-text">${formatBytes(f.size)}</span>
+              <span class="dl-btn-icon">⬇ Скачать</span>
+            </a>
+          `).join('')}
+        </div>
+      ` : '';
+
+      // БЛОК ГОТОВОЙ РАБОТЫ (СКАЧИВАНИЕ ФАЙЛОВ ОТ АВТОРА)
+      const resFilesHtml = (m.resultFiles && m.resultFiles.length > 0) ? `
+        <div class="file-group-box result">
+          <div class="file-group-title">🎓 Готовая работа от автора (${m.resultFiles.length}):</div>
+          ${m.resultFiles.map(f => `
+            <a href="${f.url}" download="${escapeHtml(f.name)}" target="_blank" class="file-download-chip highlight">
+              <span>${getFileIcon(f.name)}</span>
+              <span class="file-name-text">${escapeHtml(f.name)}</span>
+              <span class="file-size-text">${formatBytes(f.size)}</span>
+              <span class="dl-btn-icon">⬇ Скачать</span>
+            </a>
+          `).join('')}
+        </div>
+      ` : '';
+
       const revTimelineHtml = (m.revisions && m.revisions.length > 0) ? `
         <div class="revisions-timeline">
           <b style="color:var(--danger); display:block; margin-bottom:4px;">🟠 Замечания и правки (${m.revisions.length}):</b>
@@ -1362,25 +1409,19 @@
           ${payStepsHtml}
           ${priceHtml}
 
+          <!-- СПИСОК ПРИКРЕПЛЕННЫХ ФАЙЛОВ ДЛЯ СКАЧИВАНИЯ -->
+          ${matFilesHtml}
+          ${resFilesHtml}
+
           <div class="links-bar">
-            ${m.materialsUrl ? `<a href="${m.materialsUrl}" target="_blank" class="btn-link primary">📁 Методичка</a>` : ''}
-            ${m.resultUrl ? `<a href="${m.resultUrl}" target="_blank" class="btn-link purple">🎓 Готовая работа</a>` : ''}
+            ${m.materialsUrl ? `<a href="${m.materialsUrl}" target="_blank" class="btn-link primary">📁 Облако с методичкой</a>` : ''}
+            ${m.resultUrl ? `<a href="${m.resultUrl}" target="_blank" class="btn-link purple">🎓 Облако с готовой работой</a>` : ''}
             ${role !== 'worker' ? `<button class="btn-link" onclick="copyClientMessage(${o.id})">📤 Для студента</button>` : ''}
             <button class="btn-link" onclick="copyOrderDetails(${o.id}, '${escapeHtml(o.title)}', '${escapeHtml(m.workType)}', '${m.deadline || ''}')">📋 Копия</button>
           </div>
 
           ${o.instruction ? `<div style="font-size:12px; background:var(--surface-2); padding:8px 10px; border-radius:10px; margin-bottom:8px; white-space:pre-wrap;"><b>Задание:</b> ${escapeHtml(o.instruction)}</div>` : ''}
           ${revTimelineHtml}
-
-          ${photos.length > 0 ? `
-            <div class="photos-row">
-              ${photos.map((u, i) => `
-                <div class="photo-thumb-wrap" onclick='openLightbox(${JSON.stringify(photos)}, ${i})'>
-                  <img src="${u}" loading="lazy">
-                </div>
-              `).join('')}
-            </div>
-          ` : ''}
 
           <div class="card-footer">${footerBtns}</div>
         </div>
@@ -1402,7 +1443,9 @@
         `📌 Заказ #${o.id}: ${m.workType || 'Работа'} — "${o.title}"\n`;
 
       if (m.resultUrl) {
-        text += `📁 Ссылка на файл для ознакомления: ${m.resultUrl}\n`;
+        text += `📁 Ссылка на диск: ${m.resultUrl}\n`;
+      } else if (m.resultFiles && m.resultFiles.length > 0) {
+        text += `📁 Ссылка на скачивание файла: ${m.resultFiles[0].url}\n`;
       }
       text += `\n${paymentNote}`;
 
@@ -1424,7 +1467,6 @@
       }
     }
 
-    // БЫСТРОЕ ПЕРЕКЛЮЧЕНИЕ ПРЕДОПЛАТЫ / ДОПЛАТЫ
     async function quickTogglePaymentStep(orderId, step) {
       const o = allOrders.find(x => x.id === orderId);
       if (!o) return;
@@ -1444,7 +1486,7 @@
 
     // АВТОСОХРАНЕНИЕ ЧЕРНОВИКА
     function saveDraft() {
-      if (document.getElementById('editOrderId').value) return; // Не сохраняем в черновик при редактировании
+      if (document.getElementById('editOrderId').value) return;
       const draft = {
         title: document.getElementById('fTitle').value,
         workType: document.getElementById('fWorkType').value,
@@ -1496,7 +1538,58 @@
       document.getElementById('profitPreview').innerText = `${p >= 0 ? '+' : ''}${p.toLocaleString('ru-RU')} ₽`;
     }
 
-    // СОЗДАНИЕ И РЕДАКТИРОВАНИЕ ЗАКАЗА
+    // ОБРАБОТКА ФАЙЛОВ МЕНЕДЖЕРА
+    function handleManagerFilesSelect(files) {
+      for (const f of Array.from(files)) {
+        stagedManagerFiles.push(f);
+      }
+      renderManagerStagedFiles();
+      haptic('light');
+    }
+
+    function renderManagerStagedFiles() {
+      const box = document.getElementById('stagedManagerFilesList');
+      const ex = existingManagerFiles.map((f, i) => `
+        <div class="staged-file-item">
+          <span class="staged-file-name">${getFileIcon(f.name)} ${escapeHtml(f.name)}</span>
+          <button class="staged-remove-btn" onclick="existingManagerFiles.splice(${i},1); renderManagerStagedFiles();">✕</button>
+        </div>
+      `).join('');
+      const st = stagedManagerFiles.map((f, i) => `
+        <div class="staged-file-item">
+          <span class="staged-file-name">${getFileIcon(f.name)} ${escapeHtml(f.name)} (${formatBytes(f.size)})</span>
+          <button class="staged-remove-btn" onclick="stagedManagerFiles.splice(${i},1); renderManagerStagedFiles();">✕</button>
+        </div>
+      `).join('');
+      box.innerHTML = ex + st;
+    }
+
+    // ОБРАБОТКА ФАЙЛОВ АВТОРА
+    function handleWorkerFilesSelect(files) {
+      for (const f of Array.from(files)) {
+        stagedWorkerFiles.push(f);
+      }
+      renderWorkerStagedFiles();
+      haptic('light');
+    }
+
+    function renderWorkerStagedFiles() {
+      const box = document.getElementById('stagedWorkerFilesList');
+      const ex = existingWorkerFiles.map((f, i) => `
+        <div class="staged-file-item">
+          <span class="staged-file-name">${getFileIcon(f.name)} ${escapeHtml(f.name)}</span>
+          <button class="staged-remove-btn" onclick="existingWorkerFiles.splice(${i},1); renderWorkerStagedFiles();">✕</button>
+        </div>
+      `).join('');
+      const st = stagedWorkerFiles.map((f, i) => `
+        <div class="staged-file-item">
+          <span class="staged-file-name">${getFileIcon(f.name)} ${escapeHtml(f.name)} (${formatBytes(f.size)})</span>
+          <button class="staged-remove-btn" onclick="stagedWorkerFiles.splice(${i},1); renderWorkerStagedFiles();">✕</button>
+        </div>
+      `).join('');
+      box.innerHTML = ex + st;
+    }
+
     function populateOrderWorkerSelect(selectedId = 'ALL') {
       const sel = document.getElementById('fWorkerSelect');
       const workers = getWorkersList();
@@ -1519,11 +1612,13 @@
       document.getElementById('fDesc').value = '';
       document.getElementById('fUrgent').checked = false;
       document.getElementById('clearDraftBtn').style.display = 'none';
+
+      existingManagerFiles = [];
+      stagedManagerFiles = [];
+      renderManagerStagedFiles();
+
       updateProfitPreview();
       populateOrderWorkerSelect('ALL');
-      existingEditingPhotos = [];
-      stagedFiles = [];
-      renderStagedPhotos();
       restoreDraft();
       document.getElementById('orderSheet').classList.add('open');
       haptic('light');
@@ -1547,76 +1642,20 @@
       document.getElementById('fDesc').value = o.instruction || '';
       document.getElementById('fUrgent').checked = !!m.isUrgent;
       document.getElementById('clearDraftBtn').style.display = 'none';
+
+      existingManagerFiles = Array.isArray(m.materialFiles) ? [...m.materialFiles] : [];
+      stagedManagerFiles = [];
+      renderManagerStagedFiles();
+
       updateProfitPreview();
       populateOrderWorkerSelect(m.workerId || 'ALL');
-      existingEditingPhotos = Array.isArray(o.photos) ? [...o.photos] : [];
-      stagedFiles = [];
-      renderStagedPhotos();
       document.getElementById('orderSheet').classList.add('open');
       haptic('light');
     }
 
     function closeOrderSheet() { document.getElementById('orderSheet').classList.remove('open'); }
 
-    function compressImage(file, maxWidth = 1200, quality = 0.75) {
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const img = new Image();
-          img.onload = () => {
-            const canvas = document.createElement('canvas');
-            let w = img.width, h = img.height;
-            if (w > maxWidth) { h = Math.round((h * maxWidth) / w); w = maxWidth; }
-            canvas.width = w; canvas.height = h;
-            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-            canvas.toBlob(blob => resolve({ blob: blob || file, previewUrl: URL.createObjectURL(blob || file) }), 'image/jpeg', quality);
-          };
-          img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-
-    async function handleFilesSelect(fileList) {
-      const files = Array.from(fileList);
-      if (files.length === 0) return;
-      showToast('Сжатие скриншотов...', 'info');
-      const compressed = await Promise.all(files.map(f => compressImage(f)));
-      stagedFiles.push(...compressed);
-      renderStagedPhotos();
-      haptic('light');
-    }
-
-    window.addEventListener('paste', async (e) => {
-      if (!currentAccount) return;
-      const items = e.clipboardData?.items || [];
-      const files = [];
-      for (let item of items) {
-        if (item.type.includes('image')) files.push(item.getAsFile());
-      }
-      if (files.length > 0) {
-        if (!document.getElementById('orderSheet').classList.contains('open')) openOrderSheet();
-        await handleFilesSelect(files);
-      }
-    });
-
-    function renderStagedPhotos() {
-      const box = document.getElementById('stagedGrid');
-      const ex = existingEditingPhotos.map((url, idx) => `
-        <div class="staged-item">
-          <img src="${url}">
-          <button class="staged-remove" onclick="existingEditingPhotos.splice(${idx},1);renderStagedPhotos();">✕</button>
-        </div>
-      `).join('');
-      const st = stagedFiles.map((item, idx) => `
-        <div class="staged-item">
-          <img src="${item.previewUrl}">
-          <button class="staged-remove" onclick="stagedFiles.splice(${idx},1);renderStagedPhotos();">✕</button>
-        </div>
-      `).join('');
-      box.innerHTML = ex + st;
-    }
-
+    // СОХРАНЕНИЕ ЗАКАЗА МЕНЕДЖЕРОМ (С ЗАГРУЗКОЙ ДОКУМЕНТОВ)
     async function saveOrder() {
       const editId = document.getElementById('editOrderId').value;
       const title = document.getElementById('fTitle').value.trim();
@@ -1637,24 +1676,32 @@
       const workerName = workerObj ? workerObj.name : 'Любой свободный автор';
 
       const btn = document.getElementById('saveOrderBtn');
-      btn.disabled = true; btn.innerText = 'Загрузка материалов...';
+      btn.disabled = true; btn.innerText = 'Загрузка документов...';
 
       try {
-        const uploadedUrls = [...existingEditingPhotos];
-        for (let i = 0; i < stagedFiles.length; i++) {
-          const fname = `order_${Date.now()}_${i}_${Math.random().toString(36).substring(2, 6)}.jpg`;
-          const pubUrl = await storageUploadPhoto(fname, stagedFiles[i].blob);
-          uploadedUrls.push(pubUrl);
+        const uploadedMaterialFiles = [...existingManagerFiles];
+        for (let i = 0; i < stagedManagerFiles.length; i++) {
+          const file = stagedManagerFiles[i];
+          btn.innerText = `Загрузка файла (${i + 1}/${stagedManagerFiles.length})...`;
+          const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          const fname = `mat_${Date.now()}_${Math.random().toString(36).substring(2,6)}_${cleanName}`;
+          const pubUrl = await storageUploadAnyFile(fname, file);
+          uploadedMaterialFiles.push({
+            name: file.name,
+            url: pubUrl,
+            size: file.size
+          });
         }
 
-        btn.innerText = 'Сохранение...';
+        btn.innerText = 'Сохранение заказа...';
 
         if (editId) {
           const old = allOrders.find(x => x.id === Number(editId));
           const oldMeta = old ? parseOrderMeta(old) : {};
           const meta = packOrderMeta({
             ...oldMeta,
-            workType, workerId, workerName, deadline, volume, materialsUrl, isUrgent
+            workType, workerId, workerName, deadline, volume, materialsUrl, isUrgent,
+            materialFiles: uploadedMaterialFiles
           });
 
           await sbFetch(`orders?id=eq.${editId}`, {
@@ -1666,13 +1713,14 @@
               instruction: desc,
               initial_price: clientPrice,
               final_price: workerPrice,
-              photos: uploadedUrls,
               worker_comment: meta
             })
           });
         } else {
           const meta = packOrderMeta({
             workType, workerId, workerName, deadline, volume, materialsUrl, isUrgent,
+            materialFiles: uploadedMaterialFiles,
+            resultFiles: [],
             agentId: currentAccount.id, agentName: currentAccount.name,
             prepaid: false, postpaid: false, revisions: [], resultUrl: '', note: ''
           });
@@ -1688,7 +1736,6 @@
               final_price: workerPrice,
               status: 'В работе',
               payment_status: 'Не выплачено',
-              photos: uploadedUrls,
               worker_comment: meta
             })
           });
@@ -1707,7 +1754,7 @@
       }
     }
 
-    // ШТОРКА ПРАВОК (ДЛЯ МЕНЕДЖЕРА)
+    // ШТОРКА ПРАВОК
     function openRevisionSheet(id) {
       document.getElementById('revOrderId').value = id;
       document.getElementById('revComment').value = '';
@@ -1746,7 +1793,7 @@
       await fetchAllData(false);
     }
 
-    // ШТОРКА СДАЧИ АВТОРА
+    // ШТОРКА СДАЧИ АВТОРА (С ЗАГРУЗКОЙ ГОТОВЫХ РАБОТ)
     function openWorkerSheet(id) {
       const o = allOrders.find(x => x.id === id);
       if (!o) return;
@@ -1756,6 +1803,10 @@
       document.getElementById('wStatus').value = o.status || 'В работе';
       document.getElementById('wResultUrl').value = m.resultUrl || '';
       document.getElementById('wComment').value = '';
+
+      existingWorkerFiles = Array.isArray(m.resultFiles) ? [...m.resultFiles] : [];
+      stagedWorkerFiles = [];
+      renderWorkerStagedFiles();
 
       document.getElementById('workerSheet').classList.add('open');
       haptic('light');
@@ -1773,9 +1824,23 @@
       const note = document.getElementById('wComment').value.trim();
 
       const btn = document.getElementById('workerSaveBtn');
-      btn.disabled = true; btn.innerText = 'Отправка...';
+      btn.disabled = true; btn.innerText = 'Загрузка готовой работы...';
 
       try {
+        const uploadedResultFiles = [...existingWorkerFiles];
+        for (let i = 0; i < stagedWorkerFiles.length; i++) {
+          const file = stagedWorkerFiles[i];
+          btn.innerText = `Загрузка работы (${i + 1}/${stagedWorkerFiles.length})...`;
+          const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          const fname = `res_${Date.now()}_${Math.random().toString(36).substring(2,6)}_${cleanName}`;
+          const pubUrl = await storageUploadAnyFile(fname, file);
+          uploadedResultFiles.push({
+            name: file.name,
+            url: pubUrl,
+            size: file.size
+          });
+        }
+
         if (note) {
           const now = new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
           oldMeta.revisions.push({
@@ -1788,6 +1853,7 @@
         const updatedMeta = packOrderMeta({
           ...oldMeta,
           resultUrl,
+          resultFiles: uploadedResultFiles,
           workerId: oldMeta.workerId === 'ALL' && currentAccount.role === 'worker' ? currentAccount.id : oldMeta.workerId,
           workerName: oldMeta.workerId === 'ALL' && currentAccount.role === 'worker' ? currentAccount.name : oldMeta.workerName
         });
@@ -1800,10 +1866,10 @@
 
         closeWorkerSheet();
         haptic('success');
-        showToast('Отчёт отправлен менеджеру', 'success');
+        showToast('Работа успешно сдана!', 'success');
         await fetchAllData(false);
       } catch (e) {
-        showToast('Ошибка: ' + e.message, 'error');
+        showToast('Ошибка загрузки: ' + e.message, 'error');
       } finally {
         btn.disabled = false; btn.innerText = 'Отправить отчёт менеджеру';
       }
@@ -1957,35 +2023,12 @@
       renderAll();
     }
 
-    // ГАЛЕРЕЯ
-    let touchStartX = 0;
-    const lbElem = document.getElementById('lightbox');
-    lbElem.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
-    lbElem.addEventListener('touchend', (e) => {
-      const touchEndX = e.changedTouches[0].screenX;
-      if (touchStartX - touchEndX > 45) nextPhoto();
-      if (touchEndX - touchStartX > 45) prevPhoto();
-    }, { passive: true });
-
-    function openLightbox(photos, idx) {
-      lbPhotos = photos; lbIndex = idx; updateLightbox();
-      document.getElementById('lightbox').classList.add('open');
-      haptic('light');
-    }
-    function updateLightbox() {
-      document.getElementById('lbImg').src = lbPhotos[lbIndex];
-      document.getElementById('lbCount').innerText = `${lbIndex + 1} / ${lbPhotos.length}`;
-    }
-    function prevPhoto() { lbIndex = (lbIndex - 1 + lbPhotos.length) % lbPhotos.length; updateLightbox(); haptic('light'); }
-    function nextPhoto() { lbIndex = (lbIndex + 1) % lbPhotos.length; updateLightbox(); haptic('light'); }
-    function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
-
     function escapeHtml(str) {
       if (!str) return '';
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // СТАРТ: если была сессия — рендерим мгновенно, без задержки
+    // СТАРТ
     renderAll();
     fetchAllData(false);
   </script>
