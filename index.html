@@ -6,7 +6,7 @@
   <link rel="icon" href="data:,">
   <title>Академ CRM — Заказы Авито</title>
 
-  <!-- Telegram WebApp SDK -->
+  <!-- Официальный Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
@@ -54,19 +54,36 @@
       }
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body {
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* НАМЕРТВО БЛОКИРУЕМ ГОРИЗОНТАЛЬНЫЙ СДВИГ И РЕЗИНКУ ВЛЕВО/ВПРАВО */
+    html, body {
+      width: 100% !important;
+      max-width: 100vw !important;
+      min-height: 100vh;
+      overflow-x: hidden !important;
+      overscroll-behavior-x: none !important;
+      touch-action: pan-y !important; /* Разрешает двигаться ТОЛЬКО вверх-вниз */
+      position: relative;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg);
       color: var(--text);
-      min-height: 100vh;
       padding-bottom: calc(90px + env(safe-area-inset-bottom, 16px));
-      overflow-x: hidden;
     }
 
-    .app-shell { max-width: 500px; margin: 0 auto; padding: 12px 14px; }
+    .app-shell {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 12px 14px;
+      width: 100%;
+    }
 
-    /* TOASTS */
+    /* УВЕДОМЛЕНИЯ (TOASTS) */
     .toast-container {
       position: fixed;
       top: calc(12px + env(safe-area-inset-top, 0px));
@@ -91,7 +108,7 @@
     .toast.info { border-left: 4px solid var(--primary); }
     @keyframes toastIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* АВТОРИЗАЦИЯ */
+    /* ЭКРАН ВХОДА */
     .auth-screen {
       position: fixed; inset: 0; background: var(--bg); z-index: 500;
       display: none; flex-direction: column; justify-content: center; align-items: center; padding: 16px;
@@ -174,8 +191,12 @@
     .mini-stat-lbl { font-size: 11px; opacity: 0.75; }
     .mini-stat-val { font-size: 14px; font-weight: 800; margin-top: 2px; }
 
-    /* ЧИПСЫ ФИЛЬТРОВ ПО ДЕДЛАЙНУ */
-    .chip-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px; }
+    /* ЧИПСЫ ФИЛЬТРОВ СРОКОВ (листаются только они) */
+    .chip-scroll {
+      display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px;
+      touch-action: pan-x !important;
+      overscroll-behavior-x: contain !important;
+    }
     .filter-chip {
       padding: 6px 12px; border-radius: 12px; font-size: 11px; font-weight: 700;
       border: 1px solid var(--border); background: var(--surface); color: var(--muted);
@@ -340,15 +361,31 @@
       display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
     }
 
-    /* ШТОРКИ */
+    /* ШТОРКИ (МОДАЛКИ) */
     .sheet-backdrop {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 200;
-      display: none; align-items: flex-end; justify-content: center;
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.65);
+      z-index: 200;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      overflow-x: hidden !important;
     }
     .sheet-backdrop.open { display: flex; }
     .bottom-sheet {
-      background: var(--surface); width: 100%; max-width: 500px; border-radius: 26px 26px 0 0;
-      padding: 18px 18px calc(22px + env(safe-area-inset-bottom, 12px)); max-height: 92vh; overflow-y: auto;
+      background: var(--surface);
+      width: 100% !important;
+      max-width: 100vw !important;
+      box-sizing: border-box !important;
+      overflow-x: hidden !important;
+      overscroll-behavior-y: contain;
+      border-radius: 26px 26px 0 0;
+      padding: 18px 16px calc(24px + env(safe-area-inset-bottom, 12px));
+      max-height: 90vh;
+      overflow-y: auto;
     }
     .sheet-handle { width: 38px; height: 5px; background: var(--border); border-radius: 10px; margin: 0 auto 12px; }
     .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
@@ -358,15 +395,50 @@
       color: var(--muted); font-size: 16px; cursor: pointer;
     }
 
-    .form-group { margin-bottom: 12px; }
+    .form-group { margin-bottom: 12px; width: 100%; }
     .form-label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 5px; }
-    .f-input {
-      width: 100%; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;
-      padding: 10px 12px; font-size: 14px; color: var(--text); outline: none; font-family: inherit;
+
+    /* ФОРМЫ: шрифт 16px убирает авто-зум на iPhone */
+    .f-input, select.f-input, textarea.f-input, input.f-input {
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 16px !important;
+      color: var(--text);
+      outline: none;
+      font-family: inherit;
+      box-sizing: border-box !important;
     }
     .f-input:focus { border-color: var(--primary); }
     textarea.f-input { min-height: 70px; resize: vertical; }
-    .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* Защита от распирания сетки длинным текстом селектов */
+    .f-row {
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+      gap: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .f-row > .form-group {
+      min-width: 0 !important;
+      width: 100%;
+      overflow: hidden;
+    }
+    select.f-input {
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+    }
+    input[type="datetime-local"] {
+      max-width: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+    }
 
     .drop-area {
       border: 2px dashed var(--border); background: var(--surface-2); border-radius: 14px;
@@ -745,10 +817,29 @@
   </div>
 
   <script>
-    // 1. ИНИЦИАЛИЗАЦИЯ TELEGRAM
+    // 1. ИНИЦИАЛИЗАЦИЯ TELEGRAM НА ВЕСЬ ЭКРАН (FULLSCREEN)
     const tg = window.Telegram?.WebApp;
     if (tg) {
-      try { tg.ready(); tg.expand(); tg.enableClosingConfirmation(); } catch (e) {}
+      try {
+        tg.ready();
+        tg.expand();
+
+        // Полноэкранный режим (как в VPN) [1.1.1, 1.2.8]
+        if (typeof tg.requestFullscreen === 'function') {
+          tg.requestFullscreen();
+        }
+
+        // Запрет сворачивания свайпом вниз
+        if (typeof tg.disableVerticalSwipes === 'function') {
+          tg.disableVerticalSwipes();
+        }
+
+        // Окраска статус-бара
+        if (tg.setHeaderColor) tg.setHeaderColor('#090d16');
+        if (tg.setBackgroundColor) tg.setBackgroundColor('#090d16');
+
+        tg.enableClosingConfirmation();
+      } catch (e) {}
     }
 
     function haptic(type = 'light') {
@@ -809,13 +900,13 @@
     let currentDeadlineFilter = 'all';
     let allOrders = [];
 
-    // Файлы менеджера и автора
+    // Файлы
     let existingManagerFiles = [];
     let stagedManagerFiles = [];
     let existingWorkerFiles = [];
     let stagedWorkerFiles = [];
 
-    // АВТОВХОД
+    // АВТОВХОД (чтение из кэша до сети)
     try {
       const acc = localStorage.getItem('academ_crm_acc');
       if (acc) currentAccount = JSON.parse(acc);
@@ -845,7 +936,7 @@
       }
     }
 
-    // УНИВЕРСАЛЬНАЯ ЗАГРУЗКА ЛЮБЫХ ФАЙЛОВ (PDF, DOCX, ZIP, PPTX)
+    // ЗАГРУЗКА ЛЮБЫХ ФАЙЛОВ
     async function storageUploadAnyFile(fileName, file) {
       const mime = file.type || 'application/octet-stream';
       const res = await fetch(`${SUPABASE_URL}/storage/v1/object/avito-screens/${encodeURIComponent(fileName)}`, {
@@ -1017,7 +1108,7 @@
       localStorage.setItem('academ_crm_last_login', currentAccount.login);
       document.getElementById('loginPass').value = '';
       haptic('success');
-      showToast(`Добро пожаловать, ${currentAccount.name}!`, 'success');
+      showToast(`С возвращением, ${currentAccount.name}!`, 'success');
       renderAll();
     }
 
@@ -1276,7 +1367,7 @@
       return `<span class="deadline-pill deadline-ok">📅 Дедлайн: ${dt}</span>`;
     }
 
-    // ГЕНЕРАТОР КАРТОЧКИ С ФАЙЛАМИ
+    // ГЕНЕРАТОР КАРТОЧКИ
     function renderOrderCardHtml(o, role) {
       const m = parseOrderMeta(o);
       const isDone = o.status === 'Сдан';
@@ -1340,7 +1431,7 @@
         </div>
       `;
 
-      // БЛОК МАТЕРИАЛОВ И МЕТОДИЧЕК (СКАЧИВАНИЕ ФАЙЛОВ)
+      // БЛОК МАТЕРИАЛОВ (СКАЧИВАНИЕ ФАЙЛОВ)
       const matFilesHtml = (m.materialFiles && m.materialFiles.length > 0) ? `
         <div class="file-group-box">
           <div class="file-group-title">📎 Материалы и методички (${m.materialFiles.length}):</div>
@@ -1355,7 +1446,7 @@
         </div>
       ` : '';
 
-      // БЛОК ГОТОВОЙ РАБОТЫ (СКАЧИВАНИЕ ФАЙЛОВ ОТ АВТОРА)
+      // БЛОК ГОТОВОЙ РАБОТЫ (СКАЧИВАНИЕ ФАЙЛОВ)
       const resFilesHtml = (m.resultFiles && m.resultFiles.length > 0) ? `
         <div class="file-group-box result">
           <div class="file-group-title">🎓 Готовая работа от автора (${m.resultFiles.length}):</div>
@@ -1409,7 +1500,6 @@
           ${payStepsHtml}
           ${priceHtml}
 
-          <!-- СПИСОК ПРИКРЕПЛЕННЫХ ФАЙЛОВ ДЛЯ СКАЧИВАНИЯ -->
           ${matFilesHtml}
           ${resFilesHtml}
 
@@ -1428,7 +1518,7 @@
       `;
     }
 
-    // ГЕНЕРАТОР СООБЩЕНИЯ ДЛЯ СТУДЕНТА (БЕЗ ОРИГИНАЛЬНОСТИ)
+    // ГЕНЕРАТОР СООБЩЕНИЯ СТУДЕНТУ (БЕЗ ОРИГИНАЛЬНОСТИ)
     function copyClientMessage(id) {
       const o = allOrders.find(x => x.id === id);
       if (!o) return;
@@ -1445,7 +1535,7 @@
       if (m.resultUrl) {
         text += `📁 Ссылка на диск: ${m.resultUrl}\n`;
       } else if (m.resultFiles && m.resultFiles.length > 0) {
-        text += `📁 Ссылка на скачивание файла: ${m.resultFiles[0].url}\n`;
+        text += `📁 Ссылка на файл: ${m.resultFiles[0].url}\n`;
       }
       text += `\n${paymentNote}`;
 
@@ -1484,7 +1574,7 @@
       await fetchAllData(false);
     }
 
-    // АВТОСОХРАНЕНИЕ ЧЕРНОВИКА
+    // ЧЕРНОВИК
     function saveDraft() {
       if (document.getElementById('editOrderId').value) return;
       const draft = {
@@ -1538,7 +1628,7 @@
       document.getElementById('profitPreview').innerText = `${p >= 0 ? '+' : ''}${p.toLocaleString('ru-RU')} ₽`;
     }
 
-    // ОБРАБОТКА ФАЙЛОВ МЕНЕДЖЕРА
+    // ФАЙЛЫ МЕНЕДЖЕРА
     function handleManagerFilesSelect(files) {
       for (const f of Array.from(files)) {
         stagedManagerFiles.push(f);
@@ -1564,7 +1654,7 @@
       box.innerHTML = ex + st;
     }
 
-    // ОБРАБОТКА ФАЙЛОВ АВТОРА
+    // ФАЙЛЫ АВТОРА
     function handleWorkerFilesSelect(files) {
       for (const f of Array.from(files)) {
         stagedWorkerFiles.push(f);
@@ -1655,7 +1745,7 @@
 
     function closeOrderSheet() { document.getElementById('orderSheet').classList.remove('open'); }
 
-    // СОХРАНЕНИЕ ЗАКАЗА МЕНЕДЖЕРОМ (С ЗАГРУЗКОЙ ДОКУМЕНТОВ)
+    // СОХРАНЕНИЕ ЗАКАЗА
     async function saveOrder() {
       const editId = document.getElementById('editOrderId').value;
       const title = document.getElementById('fTitle').value.trim();
@@ -1693,7 +1783,7 @@
           });
         }
 
-        btn.innerText = 'Сохранение заказа...';
+        btn.innerText = 'Сохранение...';
 
         if (editId) {
           const old = allOrders.find(x => x.id === Number(editId));
@@ -1754,7 +1844,7 @@
       }
     }
 
-    // ШТОРКА ПРАВОК
+    // ПРАВКИ
     function openRevisionSheet(id) {
       document.getElementById('revOrderId').value = id;
       document.getElementById('revComment').value = '';
@@ -1793,7 +1883,7 @@
       await fetchAllData(false);
     }
 
-    // ШТОРКА СДАЧИ АВТОРА (С ЗАГРУЗКОЙ ГОТОВЫХ РАБОТ)
+    // СДАЧА АВТОРА
     function openWorkerSheet(id) {
       const o = allOrders.find(x => x.id === id);
       if (!o) return;
@@ -1824,7 +1914,7 @@
       const note = document.getElementById('wComment').value.trim();
 
       const btn = document.getElementById('workerSaveBtn');
-      btn.disabled = true; btn.innerText = 'Загрузка готовой работы...';
+      btn.disabled = true; btn.innerText = 'Загрузка файлов...';
 
       try {
         const uploadedResultFiles = [...existingWorkerFiles];
@@ -1869,7 +1959,7 @@
         showToast('Работа успешно сдана!', 'success');
         await fetchAllData(false);
       } catch (e) {
-        showToast('Ошибка загрузки: ' + e.message, 'error');
+        showToast('Ошибка: ' + e.message, 'error');
       } finally {
         btn.disabled = false; btn.innerText = 'Отправить отчёт менеджеру';
       }
@@ -2028,7 +2118,7 @@
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // СТАРТ
+    // СТАРТ: Автовход из кэша работает мгновенно без мерцания формы входа
     renderAll();
     fetchAllData(false);
   </script>
