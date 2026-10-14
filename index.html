@@ -4,87 +4,80 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <link rel="icon" href="data:,">
-  <title>Заказы Авито</title>
+  <title>Академ CRM — Заказы Авито</title>
 
-  <!-- Официальный Telegram WebApp SDK -->
+  <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <style>
     :root {
-      --bg: #f1f5f9;
+      --bg: #f8fafc;
       --surface: #ffffff;
-      --surface-2: #f8fafc;
+      --surface-2: #f1f5f9;
       --text: #0f172a;
       --muted: #64748b;
       --border: #e2e8f0;
-      --primary: #2563eb;
-      --primary-soft: rgba(37, 99, 235, 0.1);
+      --primary: #4f46e5;
+      --primary-soft: rgba(79, 70, 229, 0.1);
       --success: #10b981;
       --success-soft: rgba(16, 185, 129, 0.12);
       --warning: #f59e0b;
       --warning-soft: rgba(245, 158, 11, 0.14);
       --danger: #ef4444;
       --danger-soft: rgba(239, 68, 68, 0.12);
+      --purple: #8b5cf6;
+      --purple-soft: rgba(139, 92, 246, 0.12);
       --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
-      --radius-lg: 22px;
-      --radius-md: 16px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #0b0f19;
-        --surface: #151d2e;
-        --surface-2: #1e293b;
+        --bg: #090d16;
+        --surface: #131b2e;
+        --surface-2: #1c263c;
         --text: #f8fafc;
         --muted: #94a3b8;
-        --border: rgba(255, 255, 255, 0.09);
-        --primary: #3b82f6;
-        --primary-soft: rgba(59, 130, 246, 0.16);
+        --border: rgba(255, 255, 255, 0.08);
+        --primary: #6366f1;
+        --primary-soft: rgba(99, 102, 241, 0.18);
         --success: #10b981;
         --success-soft: rgba(16, 185, 129, 0.18);
         --warning: #fbbf24;
-        --warning-soft: rgba(251, 191, 36, 0.16);
+        --warning-soft: rgba(251, 191, 36, 0.18);
         --danger: #f87171;
         --danger-soft: rgba(248, 113, 113, 0.18);
-        --shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.45);
+        --purple: #a78bfa;
+        --purple-soft: rgba(167, 139, 250, 0.18);
+        --shadow: 0 8px 25px -4px rgba(0, 0, 0, 0.5);
       }
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding-bottom: calc(96px + env(safe-area-inset-bottom, 16px));
+      padding-bottom: calc(90px + env(safe-area-inset-bottom, 16px));
       overflow-x: hidden;
-      touch-action: pan-y;
     }
 
-    .app-shell {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 12px 14px;
-    }
+    .app-shell { max-width: 500px; margin: 0 auto; padding: 12px 14px; }
 
-    /* УВЕДОМЛЕНИЯ (TOASTS) */
+    /* TOASTS */
     .toast-container {
       position: fixed;
-      top: calc(14px + env(safe-area-inset-top, 0px));
+      top: calc(12px + env(safe-area-inset-top, 0px));
       left: 50%;
       transform: translateX(-50%);
       z-index: 1000;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      width: calc(100% - 32px);
-      max-width: 400px;
+      width: calc(100% - 28px);
+      max-width: 420px;
       pointer-events: none;
     }
     .toast {
@@ -95,731 +88,297 @@
       padding: 12px 16px;
       font-size: 13px;
       font-weight: 700;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
       display: flex;
       align-items: center;
       gap: 10px;
-      animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       pointer-events: auto;
+      animation: toastIn 0.22s ease-out forwards;
     }
     .toast.success { border-left: 4px solid var(--success); }
     .toast.error { border-left: 4px solid var(--danger); }
     .toast.info { border-left: 4px solid var(--primary); }
-    @keyframes toastIn {
-      from { opacity: 0; transform: translateY(-12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes toastIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ЭКРАН ВХОДА И РЕГИСТРАЦИИ */
+    /* АВТОРИЗАЦИЯ */
     .auth-screen {
-      position: fixed;
-      inset: 0;
-      background: var(--bg);
-      z-index: 500;
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 18px;
-      overflow-y: auto;
+      position: fixed; inset: 0; background: var(--bg); z-index: 500;
+      display: none; flex-direction: column; justify-content: center; align-items: center; padding: 16px;
     }
     .auth-screen.open { display: flex; }
     .auth-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 26px;
-      padding: 24px 20px;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: var(--shadow);
+      background: var(--surface); border: 1px solid var(--border); border-radius: 26px;
+      padding: 24px 20px; width: 100%; max-width: 400px; box-shadow: var(--shadow);
     }
     .auth-logo {
-      width: 56px;
-      height: 56px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, #2563eb, #4f46e5);
-      color: #fff;
-      font-size: 26px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 12px;
-      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+      width: 54px; height: 54px; border-radius: 16px;
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      color: #fff; font-size: 26px; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 12px; box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35);
     }
     .auth-title { font-size: 20px; font-weight: 800; text-align: center; margin-bottom: 4px; }
     .auth-sub { font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 16px; }
 
     .auth-tabs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      background: var(--surface-2);
-      padding: 4px;
-      border-radius: 14px;
-      margin-bottom: 16px;
-      border: 1px solid var(--border);
+      display: grid; grid-template-columns: 1fr 1fr; background: var(--surface-2);
+      padding: 4px; border-radius: 14px; margin-bottom: 16px; border: 1px solid var(--border);
     }
     .auth-tab {
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      padding: 9px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
+      border: none; background: transparent; color: var(--muted); padding: 9px;
+      border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer;
     }
-    .auth-tab.active {
-      background: var(--primary);
-      color: #fff;
-    }
+    .auth-tab.active { background: var(--primary); color: #fff; }
 
-    .role-selector {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
+    .role-selector { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
     .role-option {
-      border: 2px solid var(--border);
-      background: var(--surface-2);
-      color: var(--text);
-      padding: 10px 8px;
-      border-radius: 14px;
-      font-size: 13px;
-      font-weight: 700;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.15s;
+      border: 2px solid var(--border); background: var(--surface-2); color: var(--text);
+      padding: 10px 6px; border-radius: 14px; font-size: 13px; font-weight: 700; text-align: center; cursor: pointer;
     }
-    .role-option.selected {
-      border-color: var(--primary);
-      background: var(--primary-soft);
-      color: var(--primary);
-    }
+    .role-option.selected { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
 
     /* ШАПКА */
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-      padding: 4px 2px;
-    }
-    .user-chip {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .user-chip { display: flex; align-items: center; gap: 10px; min-width: 0; }
     .avatar-circle {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--primary), #6366f1);
-      color: #fff;
-      font-weight: 800;
-      font-size: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
+      width: 42px; height: 42px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), #8b5cf6);
+      color: #fff; font-weight: 800; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
-    .user-meta { display: flex; flex-direction: column; min-width: 0; }
-    .user-name {
-      font-size: 15px;
-      font-weight: 800;
-      line-height: 1.2;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .role-badge {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--primary);
-      margin-top: 2px;
-    }
-    .top-actions { display: flex; gap: 8px; flex-shrink: 0; }
+    .user-name { font-size: 15px; font-weight: 800; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .role-badge { font-size: 11px; font-weight: 700; color: var(--primary); margin-top: 2px; }
+    .top-actions { display: flex; gap: 8px; }
     .icon-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text);
-      font-size: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
+      width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--border);
+      background: var(--surface); color: var(--text); font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer;
     }
 
-    /* НАВИГАЦИЯ АДМИНИСТРАТОРА */
+    /* АДМИН НАВИГАЦИЯ */
     .admin-nav {
-      display: none;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      background: var(--surface);
-      padding: 5px;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      margin-bottom: 14px;
+      display: none; grid-template-columns: repeat(3, 1fr); gap: 6px; background: var(--surface);
+      padding: 5px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 14px;
     }
     .admin-nav.visible { display: grid; }
     .admin-nav-btn {
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      padding: 9px 4px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
+      border: none; background: transparent; color: var(--muted); padding: 8px 4px;
+      border-radius: 11px; font-size: 12px; font-weight: 700; cursor: pointer;
     }
-    .admin-nav-btn.active {
-      background: var(--primary);
-      color: #fff;
-    }
+    .admin-nav-btn.active { background: var(--primary); color: #fff; }
 
-    /* ФИНАНСОВАЯ ПЛАШКА */
+    /* ФИНАНСОВЫЙ БАННЕР */
     .hero-card {
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      color: #ffffff;
-      border-radius: var(--radius-lg);
-      padding: 18px;
-      margin-bottom: 12px;
-      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25);
+      background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+      color: #fff; border-radius: var(--radius-lg); padding: 18px; margin-bottom: 12px;
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.35); border: 1px solid rgba(255,255,255,0.06);
     }
-    .hero-card.has-debt {
-      background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
-      box-shadow: 0 10px 25px -5px rgba(185, 28, 28, 0.3);
-    }
-    .hero-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-    .hero-label {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-      opacity: 0.8;
-      margin-bottom: 4px;
-    }
-    .hero-amount {
-      font-size: 28px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      line-height: 1.1;
-    }
+    .hero-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .hero-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; opacity: 0.75; margin-bottom: 4px; }
+    .hero-amount { font-size: 27px; font-weight: 800; line-height: 1.1; }
     .hero-sub { font-size: 12px; opacity: 0.85; margin-top: 4px; }
     .hero-pay-btn {
-      background: #ffffff;
-      color: #991b1b;
-      border: none;
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-      white-space: nowrap;
-      flex-shrink: 0;
+      background: #fff; color: #1e1b4b; border: none; border-radius: 12px;
+      padding: 9px 12px; font-size: 12px; font-weight: 800; cursor: pointer;
     }
     .hero-stats {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(255,255,255,0.14);
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+      padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.12);
     }
-    .mini-stat-label { font-size: 11px; opacity: 0.75; }
-    .mini-stat-val { font-size: 14px; font-weight: 700; margin-top: 2px; }
+    .mini-stat-lbl { font-size: 11px; opacity: 0.75; }
+    .mini-stat-val { font-size: 14px; font-weight: 800; margin-top: 2px; }
 
-    /* ПОЛЕ ПОИСКА И ФИЛЬТРЫ */
-    .search-input-wrap {
-      position: relative;
-      margin-bottom: 10px;
-    }
+    /* ПОИСК И ФИЛЬТРЫ */
+    .search-input-wrap { position: relative; margin-bottom: 10px; }
     .search-input {
-      width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 10px 14px 10px 36px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-      outline: none;
+      width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 10px 14px 10px 36px; font-size: 13px; font-weight: 600; color: var(--text); outline: none;
     }
-    .search-input:focus { border-color: var(--primary); }
-    .search-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 14px;
-      color: var(--muted);
-      pointer-events: none;
-    }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--muted); }
 
-    .worker-filter-bar {
-      margin-bottom: 10px;
-      display: none;
-    }
-    .worker-filter-bar.visible { display: block; }
-    .worker-filter-select {
-      width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 10px 12px;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text);
-      outline: none;
+    .filter-bar { margin-bottom: 10px; display: none; }
+    .filter-bar.visible { display: block; }
+    .filter-select {
+      width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 9px 12px; font-size: 13px; font-weight: 700; color: var(--text); outline: none;
     }
 
     .tabs-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      background: var(--surface);
-      padding: 5px;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      margin-bottom: 14px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: var(--surface);
+      padding: 4px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 14px;
     }
     .seg-tab {
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      padding: 9px 4px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
+      border: none; background: transparent; color: var(--muted); padding: 8px 2px;
+      border-radius: 12px; font-size: 11px; font-weight: 700; cursor: pointer; text-align: center;
     }
-    .seg-tab.active {
-      background: var(--text);
-      color: var(--surface);
-    }
-    .seg-badge {
-      font-size: 11px;
-      padding: 1px 6px;
-      border-radius: 8px;
-      background: rgba(128,128,128,0.2);
-    }
+    .seg-tab.active { background: var(--text); color: var(--surface); }
 
     /* КАРТОЧКА ЗАКАЗА */
     .order-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 16px;
-      margin-bottom: 12px;
-      box-shadow: var(--shadow);
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); position: relative;
     }
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 8px;
-      margin-bottom: 8px;
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+    .work-type-tag {
+      font-size: 11px; font-weight: 800; text-transform: uppercase; padding: 3px 8px;
+      border-radius: 7px; background: var(--primary-soft); color: var(--primary); display: inline-block;
     }
-    .card-id-date { font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 2px; }
-    .card-title { font-size: 16px; font-weight: 800; line-height: 1.3; word-break: break-word; }
-    .card-title.done { text-decoration: line-through; opacity: 0.65; }
-    .status-pills { display: flex; gap: 5px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
-    .pill { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 8px; white-space: nowrap; }
-    .pill-work { background: var(--warning-soft); color: var(--warning); }
-    .pill-done { background: var(--primary-soft); color: var(--primary); }
-    .pill-unpaid { background: var(--danger-soft); color: var(--danger); }
-    .pill-paid { background: var(--success-soft); color: var(--success); }
+    .card-title { font-size: 16px; font-weight: 800; line-height: 1.35; margin: 4px 0 6px; }
 
-    .people-row {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
+    /* ДЕДЛАЙН БЕЙДЖИ */
+    .deadline-pill {
+      display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 800;
+      padding: 4px 9px; border-radius: 9px; white-space: nowrap;
     }
-    .person-tag {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 8px;
-      border-radius: 8px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
+    .deadline-urgent { background: var(--danger-soft); color: var(--danger); }
+    .deadline-warn { background: var(--warning-soft); color: var(--warning); }
+    .deadline-ok { background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); }
 
-    .price-banner {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 10px 12px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .status-pill { font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 8px; white-space: nowrap; }
+    .st-work { background: var(--warning-soft); color: var(--warning); }
+    .st-check { background: var(--purple-soft); color: var(--purple); }
+    .st-revision { background: rgba(239, 68, 68, 0.15); color: #dc2626; border: 1px dashed var(--danger); }
+    .st-done { background: var(--success-soft); color: var(--success); }
+
+    .spec-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 10px;
     }
-    .price-label { font-size: 11px; color: var(--muted); font-weight: 600; }
-    .price-val { font-size: 18px; font-weight: 800; }
-    .price-initial { font-size: 12px; color: var(--muted); text-decoration: line-through; margin-left: 6px; }
-    .price-diff {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 7px;
-      border-radius: 6px;
-      background: var(--primary-soft);
-      color: var(--primary);
+    .spec-item {
+      background: var(--surface-2); padding: 7px 10px; border-radius: 10px; font-size: 12px;
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .spec-lbl { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+    .spec-val { font-weight: 800; color: var(--text); }
+
+    /* ФИНАНСЫ В КАРТОЧКЕ */
+    .price-box {
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px;
+      padding: 10px 12px; margin-bottom: 10px;
+    }
+    .price-row-agent {
+      display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700;
+    }
+    .price-sub { font-size: 11px; color: var(--muted); margin-top: 3px; display: flex; justify-content: space-between; }
+    .net-profit { color: var(--success); font-weight: 800; }
+
+    .links-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .btn-link {
+      display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700;
+      padding: 6px 10px; border-radius: 9px; text-decoration: none; border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+    }
+    .btn-link.primary { background: var(--primary-soft); color: var(--primary); border-color: transparent; }
+
+    .report-box {
+      background: var(--purple-soft); border-left: 3px solid var(--purple);
+      padding: 9px 12px; border-radius: 8px; margin-bottom: 10px; font-size: 12px; line-height: 1.4;
     }
 
-    .desc-box {
-      font-size: 13px;
-      line-height: 1.45;
-      margin-bottom: 10px;
-      white-space: pre-wrap;
-      background: var(--surface-2);
-      padding: 10px 12px;
-      border-radius: 12px;
-    }
-    .worker-report {
-      font-size: 13px;
-      background: var(--primary-soft);
-      border-left: 3px solid var(--primary);
-      padding: 9px 12px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      line-height: 1.4;
-    }
-    .link-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
-    .avito-btn-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--primary);
-      background: var(--primary-soft);
-      padding: 7px 12px;
-      border-radius: 10px;
-      text-decoration: none;
-    }
-    .copy-btn-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--muted);
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      padding: 6px 10px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-
-    .photos-row {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-      margin-bottom: 10px;
-    }
+    .photos-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 10px; }
     .photo-thumb-wrap {
-      width: 82px;
-      height: 82px;
-      flex-shrink: 0;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      cursor: pointer;
+      width: 76px; height: 76px; flex-shrink: 0; border-radius: 12px; overflow: hidden;
+      border: 1px solid var(--border); cursor: pointer;
     }
     .photo-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; }
 
     .card-footer {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-      gap: 8px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 6px;
+      padding-top: 10px; border-top: 1px solid var(--border);
     }
     .c-btn {
-      border: 1px solid var(--border);
-      background: var(--surface-2);
-      color: var(--text);
-      padding: 10px 8px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      white-space: nowrap;
+      border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+      padding: 9px 6px; border-radius: 11px; font-size: 12px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 4px; text-align: center;
     }
     .c-btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
     .c-btn.success { background: var(--success); color: #fff; border-color: var(--success); }
     .c-btn.danger { color: var(--danger); background: var(--danger-soft); border-color: transparent; }
-
-    /* СТАТИСТИКА */
-    .stats-section { display: none; }
-    .stats-section.visible { display: block; }
-    .stat-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-    .stat-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 14px;
-      box-shadow: var(--shadow);
-    }
-    .stat-box-lbl { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
-    .stat-box-val { font-size: 20px; font-weight: 800; margin-top: 4px; }
-    .stat-box-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
-
-    .section-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 16px;
-      margin-bottom: 14px;
-      box-shadow: var(--shadow);
-    }
-    .section-card-title { font-size: 15px; font-weight: 800; margin-bottom: 12px; }
-    .person-stat-row {
-      padding: 12px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      margin-bottom: 8px;
-    }
-    .person-stat-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-      font-weight: 800;
-      font-size: 14px;
-    }
-    .person-stat-metrics {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      font-size: 11px;
-      color: var(--muted);
-    }
-    .person-stat-metrics b { color: var(--text); display: block; font-size: 13px; margin-top: 2px; }
-
-    /* АККАУНТЫ */
-    .users-section { display: none; }
-    .users-section.visible { display: block; }
-    .user-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      margin-bottom: 8px;
-      gap: 8px;
-    }
-    .user-item-name { font-size: 14px; font-weight: 800; }
-    .user-item-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .c-btn.warn { color: var(--warning); background: var(--warning-soft); border-color: transparent; }
 
     /* НИЖНЯЯ ПАНЕЛЬ */
     .bottom-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 8px));
-      z-index: 60;
-      display: flex;
-      justify-content: center;
+      position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface);
+      border-top: 1px solid var(--border); padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 8px));
+      z-index: 60; display: flex; justify-content: center;
     }
-    .bottom-bar-inner { width: 100%; max-width: 480px; }
     .main-add-btn {
-      width: 100%;
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      border-radius: 16px;
-      padding: 14px;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
-    }
-    .main-add-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
+      width: 100%; max-width: 500px; background: var(--primary); color: #fff; border: none;
+      border-radius: 16px; padding: 14px; font-size: 15px; font-weight: 800; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
     }
 
-    /* ШТОРКИ (МОДАЛКИ) */
+    /* ШТОРКИ */
     .sheet-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.6);
-      z-index: 200;
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 200;
+      display: none; align-items: flex-end; justify-content: center;
     }
     .sheet-backdrop.open { display: flex; }
     .bottom-sheet {
-      background: var(--surface);
-      width: 100%;
-      max-width: 480px;
-      border-radius: 26px 26px 0 0;
-      padding: 18px 18px calc(22px + env(safe-area-inset-bottom, 12px));
-      max-height: 92vh;
-      overflow-y: auto;
+      background: var(--surface); width: 100%; max-width: 500px; border-radius: 26px 26px 0 0;
+      padding: 18px 18px calc(22px + env(safe-area-inset-bottom, 12px)); max-height: 92vh; overflow-y: auto;
     }
-    .sheet-handle { width: 40px; height: 5px; background: var(--border); border-radius: 10px; margin: 0 auto 14px; }
+    .sheet-handle { width: 38px; height: 5px; background: var(--border); border-radius: 10px; margin: 0 auto 12px; }
     .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
     .sheet-title { font-size: 18px; font-weight: 800; }
     .sheet-close {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: none;
-      background: var(--surface-2);
-      color: var(--muted);
-      font-size: 16px;
-      cursor: pointer;
+      width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--surface-2);
+      color: var(--muted); font-size: 16px; cursor: pointer;
     }
 
     .form-group { margin-bottom: 12px; }
     .form-label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 5px; }
     .f-input {
-      width: 100%;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      padding: 11px 13px;
-      font-size: 14px;
-      color: var(--text);
-      outline: none;
-      font-family: inherit;
+      width: 100%; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;
+      padding: 10px 12px; font-size: 14px; color: var(--text); outline: none; font-family: inherit;
     }
     .f-input:focus { border-color: var(--primary); }
-    textarea.f-input { min-height: 76px; resize: vertical; }
+    textarea.f-input { min-height: 70px; resize: vertical; }
     .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
     .drop-area {
-      border: 2px dashed var(--border);
-      background: var(--surface-2);
-      border-radius: 16px;
-      padding: 14px;
-      text-align: center;
-      cursor: pointer;
-      margin-bottom: 10px;
+      border: 2px dashed var(--border); background: var(--surface-2); border-radius: 14px;
+      padding: 12px; text-align: center; cursor: pointer; margin-bottom: 8px; font-size: 12px; color: var(--muted);
     }
     .staged-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-    .staged-item { position: relative; width: 66px; height: 66px; }
-    .staged-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; border: 1px solid var(--border); }
+    .staged-item { position: relative; width: 62px; height: 62px; }
+    .staged-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
     .staged-remove {
-      position: absolute;
-      top: -6px;
-      right: -6px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--danger);
-      color: #fff;
-      border: none;
-      font-size: 11px;
-      font-weight: 800;
-      cursor: pointer;
+      position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; border-radius: 50%;
+      background: var(--danger); color: #fff; border: none; font-size: 11px; cursor: pointer;
     }
 
-    /* ПОЛНОЭКРАННАЯ ГАЛЕРЕЯ */
+    /* LIGHTBOX */
     .lightbox {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.94);
-      z-index: 400;
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 16px;
-      touch-action: none;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.94); z-index: 400;
+      display: none; flex-direction: column; justify-content: center; align-items: center; padding: 16px; touch-action: none;
     }
     .lightbox.open { display: flex; }
     .lightbox img { max-width: 100%; max-height: 78vh; border-radius: 12px; object-fit: contain; }
     .lb-bar { display: flex; gap: 10px; margin-top: 18px; }
-    .lb-btn {
-      background: rgba(255,255,255,0.16);
-      color: #fff;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-    }
+    .lb-btn { background: rgba(255,255,255,0.18); color: #fff; border: none; padding: 9px 16px; border-radius: 20px; font-weight: 700; cursor: pointer; }
 
     .empty-state {
-      background: var(--surface);
-      border: 1px dashed var(--border);
-      border-radius: var(--radius-lg);
-      padding: 36px 20px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.5;
+      background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius-lg);
+      padding: 34px 20px; text-align: center; color: var(--muted); font-size: 14px; line-height: 1.5;
     }
   </style>
 </head>
 <body>
 
-  <!-- Всплывающие уведомления (Toasts) -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- ЭКРАН ВХОДА И РЕГИСТРАЦИИ АККАУНТА -->
+  <!-- ЭКРАН ВХОДА И РЕГИСТРАЦИИ -->
   <div class="auth-screen" id="authScreen">
     <div class="auth-card">
-      <div class="auth-logo">📦</div>
-      <div class="auth-title">Заказы Авито</div>
-      <div class="auth-sub">Система учёта заказов для посредников и исполнителей</div>
+      <div class="auth-logo">🎓</div>
+      <div class="auth-title">Академ CRM</div>
+      <div class="auth-sub">Система заказов студенческих работ с Авито</div>
 
       <div class="auth-tabs">
         <button class="auth-tab active" id="authTabLogin" onclick="switchAuthTab('login')">🔑 Вход</button>
         <button class="auth-tab" id="authTabReg" onclick="switchAuthTab('register')">✨ Создать аккаунт</button>
       </div>
 
-      <!-- ВХОД -->
       <div id="loginBox">
         <div class="form-group">
           <label class="form-label">Логин</label>
-          <input type="text" id="loginUser" class="f-input" placeholder="Введите ваш логин" autocapitalize="none">
+          <input type="text" id="loginUser" class="f-input" placeholder="Введите логин" autocapitalize="none">
         </div>
         <div class="form-group">
           <label class="form-label">Пароль</label>
@@ -828,22 +387,21 @@
         <button class="main-add-btn" id="loginBtn" onclick="handleLogin()">Войти в аккаунт</button>
       </div>
 
-      <!-- РЕГИСТРАЦИЯ -->
       <div id="registerBox" style="display:none;">
         <div class="form-group">
-          <label class="form-label">Выберите вашу роль</label>
+          <label class="form-label">Ваша роль в системе</label>
           <div class="role-selector">
-            <div class="role-option selected" id="regRoleAgent" onclick="selectRegRole('agent')">💼 Посредник</div>
-            <div class="role-option" id="regRoleWorker" onclick="selectRegRole('worker')">🛠 Исполнитель</div>
+            <div class="role-option selected" id="regRoleAgent" onclick="selectRegRole('agent')">💼 Менеджер (Посредник)</div>
+            <div class="role-option" id="regRoleWorker" onclick="selectRegRole('worker')">✍️ Автор (Исполнитель)</div>
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Ваше имя / Никнейм *</label>
-          <input type="text" id="regName" class="f-input" placeholder="Например: Алексей">
+          <label class="form-label">Имя / Позывной *</label>
+          <input type="text" id="regName" class="f-input" placeholder="Например: Иван (Курсовые)">
         </div>
         <div class="form-group">
           <label class="form-label">Придумайте логин *</label>
-          <input type="text" id="regLogin" class="f-input" placeholder="Например: alex_avito" autocapitalize="none">
+          <input type="text" id="regLogin" class="f-input" placeholder="ivan_author" autocapitalize="none">
         </div>
         <div class="form-group">
           <label class="form-label">Придумайте пароль *</label>
@@ -854,7 +412,7 @@
     </div>
   </div>
 
-  <!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
+  <!-- ОСНОВНОЙ ЭКРАН -->
   <div class="app-shell">
     <div class="top-bar">
       <div class="user-chip">
@@ -865,207 +423,219 @@
         </div>
       </div>
       <div class="top-actions">
-        <button class="icon-btn" onclick="fetchAllData(true)" title="Обновить данные">🔄</button>
-        <button class="icon-btn" onclick="logoutAccount()" title="Выйти из аккаунта">🚪</button>
+        <button class="icon-btn" onclick="fetchAllData(true)" title="Обновить">🔄</button>
+        <button class="icon-btn" onclick="logoutAccount()" title="Выйти">🚪</button>
       </div>
     </div>
 
     <!-- Навигация Администратора -->
     <div class="admin-nav" id="adminNav">
       <button class="admin-nav-btn active" id="admTab-orders" onclick="switchAdminSection('orders')">📋 Заказы</button>
-      <button class="admin-nav-btn" id="admTab-stats" onclick="switchAdminSection('stats')">📊 Статистика</button>
-      <button class="admin-nav-btn" id="admTab-users" onclick="switchAdminSection('users')">👥 Аккаунты</button>
+      <button class="admin-nav-btn" id="admTab-stats" onclick="switchAdminSection('stats')">📊 Финансы</button>
+      <button class="admin-nav-btn" id="admTab-users" onclick="switchAdminSection('users')">👥 Пользователи</button>
     </div>
 
-    <!-- СЕКЦИЯ 1: ЗАКАЗЫ -->
+    <!-- СЕКЦИЯ 1: СПИСОК ЗАКАЗОВ -->
     <div id="sectionOrders">
-      <!-- Финансовое табло -->
+      <!-- Финансовый дашборд -->
       <div class="hero-card" id="heroCard">
         <div class="hero-top">
           <div>
-            <div class="hero-label" id="heroLabel">К ВЫПЛАТЕ ИСПОЛНИТЕЛЮ</div>
+            <div class="hero-label" id="heroLabel">ЧИСТАЯ ПРИБЫЛЬ</div>
             <div class="hero-amount" id="heroAmount">0 ₽</div>
-            <div class="hero-sub" id="heroSub">Все выполненные заказы оплачены</div>
+            <div class="hero-sub" id="heroSub">Загрузка аналитики...</div>
           </div>
-          <button class="hero-pay-btn" id="heroPayAllBtn" style="display:none;" onclick="payAllFiltered()">💳 Выплатить всё</button>
+          <button class="hero-pay-btn" id="heroPayAllBtn" style="display:none;" onclick="payAllCompleted()">💳 Выплатить авторам</button>
         </div>
         <div class="hero-stats">
           <div>
-            <div class="mini-stat-label">В работе сейчас</div>
-            <div class="mini-stat-val" id="statActiveSum">0 шт. • 0 ₽</div>
+            <div class="mini-stat-lbl" id="heroStat1Lbl">В работе сейчас</div>
+            <div class="mini-stat-val" id="heroStat1Val">0 шт.</div>
           </div>
           <div>
-            <div class="mini-stat-label">Уже выплачено</div>
-            <div class="mini-stat-val" id="statPaidSum">0 ₽</div>
+            <div class="mini-stat-lbl" id="heroStat2Lbl">К выплате авторам</div>
+            <div class="mini-stat-val" id="heroStat2Val">0 ₽</div>
           </div>
         </div>
       </div>
 
-      <!-- Живой поиск -->
+      <!-- Поиск по заказам -->
       <div class="search-input-wrap">
         <span class="search-icon">🔍</span>
-        <input type="text" class="search-input" id="orderSearchInput" placeholder="Поиск по номеру, названию или исполнителю..." oninput="renderOrdersSection()">
+        <input type="text" class="search-input" id="orderSearchInput" placeholder="Поиск по теме, автору или номеру..." oninput="renderOrdersSection()">
       </div>
 
-      <!-- Фильтр по исполнителю -->
-      <div class="worker-filter-bar" id="workerFilterBar">
-        <select class="worker-filter-select" id="workerFilterSelect" onchange="renderAll()">
-          <option value="ALL">👤 Все исполнители (показать все заказы)</option>
-        </select>
+      <!-- Фильтр менеджеров (для Админа) -->
+      <div class="filter-bar" id="agentFilterBar">
+        <select class="filter-select" id="agentFilterSelect" onchange="renderAll()"></select>
       </div>
 
-      <!-- Вкладки фильтров -->
+      <!-- Вкладки по статусам -->
       <div class="tabs-grid">
-        <button class="seg-tab active" id="tab-active" onclick="setOrderFilter('active')">
-          🔥 В работе <span class="seg-badge" id="cnt-active">0</span>
-        </button>
-        <button class="seg-tab" id="tab-unpaid" onclick="setOrderFilter('unpaid')">
-          ⏳ К оплате <span class="seg-badge" id="cnt-unpaid">0</span>
-        </button>
-        <button class="seg-tab" id="tab-all" onclick="setOrderFilter('all')">
-          📁 Все <span class="seg-badge" id="cnt-all">0</span>
-        </button>
+        <button class="seg-tab active" id="tab-active" onclick="setOrderFilter('active')">🔥 В работе (<span id="cnt-active">0</span>)</button>
+        <button class="seg-tab" id="tab-check" onclick="setOrderFilter('check')">👀 Проверка (<span id="cnt-check">0</span>)</button>
+        <button class="seg-tab" id="tab-revision" onclick="setOrderFilter('revision')">🟠 Правки (<span id="cnt-revision">0</span>)</button>
+        <button class="seg-tab" id="tab-done" onclick="setOrderFilter('done')">✅ Сданы (<span id="cnt-done">0</span>)</button>
       </div>
 
-      <!-- Список заказов -->
+      <!-- Контейнер заказов -->
       <div id="ordersContainer">
         <div class="empty-state">Загрузка заказов...</div>
       </div>
     </div>
 
     <!-- СЕКЦИЯ 2: СТАТИСТИКА (АДМИН) -->
-    <div class="stats-section" id="sectionStats">
-      <div class="stat-grid">
-        <div class="stat-box">
-          <div class="stat-box-lbl">Всего заказов</div>
-          <div class="stat-box-val" id="stTotalOrders">0</div>
-          <div class="stat-box-sub" id="stDoneOrders">Выполнено: 0</div>
+    <div class="stats-section" id="sectionStats" style="display:none;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:12px;">
+          <div style="font-size:11px; color:var(--muted); font-weight:700;">ОБОРОТ (СТУДЕНТЫ)</div>
+          <div style="font-size:19px; font-weight:800; margin-top:4px;" id="stTotalVolume">0 ₽</div>
         </div>
-        <div class="stat-box">
-          <div class="stat-box-lbl">Общий оборот</div>
-          <div class="stat-box-val" id="stTotalVolume">0 ₽</div>
-          <div class="stat-box-sub" id="stBargainDiff">Экономия торга: 0 ₽</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-box-lbl">Ждут выплаты</div>
-          <div class="stat-box-val" style="color:var(--danger);" id="stUnpaidSum">0 ₽</div>
-          <div class="stat-box-sub" id="stUnpaidCount">Заказов: 0 шт.</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-box-lbl">Всего выплачено</div>
-          <div class="stat-box-val" style="color:var(--success);" id="stPaidTotal">0 ₽</div>
-          <div class="stat-box-sub" id="stPaidCount">Закрыто: 0 шт.</div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:12px;">
+          <div style="font-size:11px; color:var(--muted); font-weight:700;">ЧИСТАЯ МАРЖА</div>
+          <div style="font-size:19px; font-weight:800; color:var(--success); margin-top:4px;" id="stNetProfit">0 ₽</div>
         </div>
       </div>
-
-      <div class="section-card">
-        <div class="section-card-title">🛠 Статистика по исполнителям</div>
-        <div id="statsByWorkers"></div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-card-title">💼 Статистика по посредникам</div>
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:14px; margin-bottom:12px;">
+        <div style="font-size:14px; font-weight:800; margin-bottom:8px;">💼 Статистика по менеджерам</div>
         <div id="statsByAgents"></div>
+      </div>
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:14px;">
+        <div style="font-size:14px; font-weight:800; margin-bottom:8px;">✍️ Нагрузка авторов</div>
+        <div id="statsByWorkers"></div>
       </div>
     </div>
 
     <!-- СЕКЦИЯ 3: УПРАВЛЕНИЕ АККАУНТАМИ (АДМИН) -->
-    <div class="users-section" id="sectionUsers">
-      <div class="section-card">
-        <div class="section-card-title">＋ Создать новый аккаунт</div>
+    <div class="users-section" id="sectionUsers" style="display:none;">
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:16px; margin-bottom:14px;">
+        <div style="font-size:15px; font-weight:800; margin-bottom:12px;">＋ Добавить пользователя</div>
         <div class="form-group">
           <label class="form-label">Имя пользователя *</label>
-          <input type="text" id="admNewName" class="f-input" placeholder="Например: Дмитрий (Исполнитель)">
+          <input type="text" id="admNewName" class="f-input" placeholder="Например: Анна (Презентации)">
         </div>
         <div class="f-row">
           <div class="form-group">
             <label class="form-label">Логин *</label>
-            <input type="text" id="admNewLogin" class="f-input" placeholder="dmitry" autocapitalize="none">
+            <input type="text" id="admNewLogin" class="f-input" placeholder="anna_work" autocapitalize="none">
           </div>
           <div class="form-group">
             <label class="form-label">Пароль *</label>
-            <input type="password" id="admNewPass" class="f-input" placeholder="Пароль входа">
+            <input type="password" id="admNewPass" class="f-input" placeholder="Пароль">
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Роль в системе</label>
+          <label class="form-label">Роль</label>
           <select id="admNewRole" class="f-input">
-            <option value="worker">🛠 Исполнитель</option>
-            <option value="agent">💼 Посредник</option>
+            <option value="worker">✍️ Автор (Исполнитель)</option>
+            <option value="agent">💼 Менеджер (Посредник)</option>
             <option value="admin">👑 Администратор</option>
           </select>
         </div>
-        <button class="main-add-btn" onclick="adminCreateUser()">Создать пользователя</button>
+        <button class="main-add-btn" onclick="adminCreateUser()">Создать аккаунт</button>
       </div>
 
-      <div class="section-card">
-        <div class="section-card-title">👥 Зарегистрированные пользователи</div>
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:16px;">
+        <div style="font-size:15px; font-weight:800; margin-bottom:10px;">👥 Список пользователей</div>
         <div id="adminUsersList"></div>
       </div>
     </div>
   </div>
 
-  <!-- НИЖНЯЯ КНОПКА СОЗДАНИЯ -->
+  <!-- КНОПКА СОЗДАНИЯ ЗАКАЗА (МЕНЕДЖЕР / АДМИН) -->
   <div class="bottom-bar" id="bottomBar" style="display:none;">
-    <div class="bottom-bar-inner">
-      <button class="main-add-btn" onclick="openOrderSheet()">
-        <span>＋</span> Новый заказ с Авито
-      </button>
-    </div>
+    <button class="main-add-btn" onclick="openOrderSheet()">
+      <span>＋</span> Новый заказ со студентом
+    </button>
   </div>
 
-  <!-- ШТОРКА СОЗДАНИЯ / РЕДАКТИРОВАНИЯ ЗАКАЗА -->
+  <!-- ШТОРКА СОЗДАНИЯ И РЕДАКТИРОВАНИЯ ЗАКАЗА (МЕНЕДЖЕР) -->
   <div class="sheet-backdrop" id="orderSheet" onclick="closeOrderSheet()">
     <div class="bottom-sheet" onclick="event.stopPropagation()">
       <div class="sheet-handle"></div>
       <div class="sheet-header">
-        <div class="sheet-title" id="orderSheetTitle">Новый заказ с Авито</div>
+        <div class="sheet-title" id="orderSheetTitle">Новый студенческий заказ</div>
         <button class="sheet-close" onclick="closeOrderSheet()">✕</button>
       </div>
 
-      <input type="hidden" id="editOrderId" value="">
+      <input type="hidden" id="editOrderId">
 
       <div class="form-group">
-        <label class="form-label">Название товара / задачи *</label>
-        <input type="text" id="fTitle" class="f-input" placeholder="Например: Видеокарта RTX 3060">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">👤 Назначить исполнителя *</label>
-        <select id="fWorkerSelect" class="f-input"></select>
+        <label class="form-label">Тема работы / Дисциплина *</label>
+        <input type="text" id="fTitle" class="f-input" placeholder="Например: Курсовая по макроэкономике">
       </div>
 
       <div class="f-row">
         <div class="form-group">
-          <label class="form-label">Цена / Бюджет (₽)</label>
-          <input type="number" id="fPrice" class="f-input" placeholder="0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Статус выплаты</label>
-          <select id="fPaid" class="f-input">
-            <option value="Не выплачено">Не выплачено</option>
-            <option value="Выплачено">Выплачено</option>
+          <label class="form-label">Тип работы</label>
+          <select id="fWorkType" class="f-input">
+            <option value="Курсовая">Курсовая работа</option>
+            <option value="Диплом / ВКР">Диплом / ВКР</option>
+            <option value="Презентация">Презентация</option>
+            <option value="Реферат">Реферат / Доклад</option>
+            <option value="Отчет по практике">Отчет по практике</option>
+            <option value="Контрольная">Контрольная / Задачи</option>
+            <option value="Эссе">Эссе / Статья</option>
+            <option value="Другое">Другое задание</option>
           </select>
         </div>
+        <div class="form-group">
+          <label class="form-label">✍️ Назначить автора *</label>
+          <select id="fWorkerSelect" class="f-input"></select>
+        </div>
       </div>
 
       <div class="form-group">
-        <label class="form-label">Ссылка на Авито</label>
-        <input type="url" id="fUrl" class="f-input" placeholder="https://www.avito.ru/...">
+        <label class="form-label">⏰ Срок сдачи (Дедлайн) *</label>
+        <input type="datetime-local" id="fDeadline" class="f-input">
+      </div>
+
+      <div class="f-row">
+        <div class="form-group">
+          <label class="form-label">Сумма со студента (₽) *</label>
+          <input type="number" id="fClientPrice" class="f-input" placeholder="5000" oninput="updateProfitPreview()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Оплата автору (₽) *</label>
+          <input type="number" id="fWorkerPrice" class="f-input" placeholder="2500" oninput="updateProfitPreview()">
+        </div>
+      </div>
+
+      <div style="background:var(--surface-2); padding:8px 12px; border-radius:10px; margin-bottom:12px; font-size:12px; display:flex; justify-content:space-between;">
+        <span>Ваша чистая прибыль:</span>
+        <b style="color:var(--success);" id="profitPreview">0 ₽</b>
+      </div>
+
+      <div class="f-row">
+        <div class="form-group">
+          <label class="form-label">Антиплагиат</label>
+          <input type="text" id="fAntiplag" class="f-input" placeholder="АП.ВУЗ от 75%">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Объём работы</label>
+          <input type="text" id="fVolume" class="f-input" placeholder="30-35 стр. / 15 слайдов">
+        </div>
       </div>
 
       <div class="form-group">
-        <label class="form-label">Инструкция для исполнителя</label>
-        <textarea id="fDesc" class="f-input" placeholder="Что проверить, насколько сторговаться, доставка..."></textarea>
+        <label class="form-label">📁 Ссылка на методичку / материалы (Облако)</label>
+        <input type="url" id="fMaterialsUrl" class="f-input" placeholder="https://disk.yandex.ru/d/...">
       </div>
 
       <div class="form-group">
-        <label class="form-label">Скриншоты с Авито (любое количество)</label>
+        <label class="form-label">🔗 Ссылка на диалог Авито (для менеджера)</label>
+        <input type="url" id="fAvitoUrl" class="f-input" placeholder="https://www.avito.ru/...">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Требования студента / План</label>
+        <textarea id="fDesc" class="f-input" placeholder="План работы, требования преподавателя, оформление по ГОСТ..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Скриншоты задания / методички</label>
         <div class="drop-area" onclick="document.getElementById('fFiles').click()">
-          <div style="font-size:22px; margin-bottom:4px;">📷</div>
-          <div style="font-size:13px; color:var(--muted);">
-            Нажмите для выбора скриншотов из галереи<br>или вставьте через <b>Ctrl + V</b>
-          </div>
+          📷 Прикрепить файлы из галереи или вставить через Ctrl + V
           <input type="file" id="fFiles" multiple accept="image/*" style="display:none" onchange="handleFilesSelect(this.files)">
         </div>
         <div class="staged-grid" id="stagedGrid"></div>
@@ -1075,40 +645,47 @@
     </div>
   </div>
 
-  <!-- ШТОРКА ИСПОЛНИТЕЛЯ (ОТЧЁТ) -->
+  <!-- ШТОРКА СДАЧИ РАБОТЫ (ДЛЯ АВТОРА) -->
   <div class="sheet-backdrop" id="workerSheet" onclick="closeWorkerSheet()">
     <div class="bottom-sheet" onclick="event.stopPropagation()">
       <div class="sheet-handle"></div>
       <div class="sheet-header">
-        <div class="sheet-title">Цена выкупа и отчёт</div>
+        <div class="sheet-title">Сдача работы / Отчёт автора</div>
         <button class="sheet-close" onclick="closeWorkerSheet()">✕</button>
       </div>
 
       <input type="hidden" id="wOrderId">
 
       <div class="form-group">
-        <label class="form-label">Итоговая цена выкупа (₽)</label>
-        <input type="number" id="wFinalPrice" class="f-input" placeholder="Финальная сумма">
-      </div>
-
-      <div class="form-group">
         <label class="form-label">Статус выполнения</label>
         <select id="wStatus" class="f-input">
-          <option value="В работе">🔥 В работе</option>
-          <option value="Выполнен">✅ Выполнен</option>
+          <option value="В работе">🔥 В процессе написания</option>
+          <option value="На проверке">👀 Готово (передано на проверку студенту)</option>
+          <option value="Правки">🟠 Вносятся правки</option>
+          <option value="Сдан">✅ Сдан и зачтен преподавателем</option>
         </select>
       </div>
 
       <div class="form-group">
-        <label class="form-label">Отчёт исполнителя / Трек-номер</label>
-        <textarea id="wComment" class="f-input" placeholder="Напишите результат проверки, трек-номер или причину изменения цены..."></textarea>
+        <label class="form-label">📁 Ссылка на готовую работу (Яндекс/Google Диск)</label>
+        <input type="url" id="wResultUrl" class="f-input" placeholder="Ссылка на файл docx / pptx">
       </div>
 
-      <button class="main-add-btn" id="workerSaveBtn" onclick="saveWorkerUpdate()">Сохранить изменения</button>
+      <div class="form-group">
+        <label class="form-label">Фактический процент Антиплагиата</label>
+        <input type="text" id="wResultPlag" class="f-input" placeholder="Например: 81% по АП.ВУЗ">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Комментарий для менеджера и студента</label>
+        <textarea id="wComment" class="f-input" placeholder="Что сделано, на что обратить внимание при защите, какие замечания учтены..."></textarea>
+      </div>
+
+      <button class="main-add-btn" id="workerSaveBtn" onclick="saveWorkerUpdate()">Отправить отчёт</button>
     </div>
   </div>
 
-  <!-- ПОЛНОЭКРАННАЯ ГАЛЕРЕЯ (LIGHTBOX СО СВАЙПАМИ) -->
+  <!-- LIGHTBOX -->
   <div class="lightbox" id="lightbox" onclick="closeLightbox()">
     <img id="lbImg" src="" onclick="event.stopPropagation()">
     <div class="lb-bar" onclick="event.stopPropagation()">
@@ -1120,30 +697,21 @@
   </div>
 
   <script>
-    // 1. ИНИЦИАЛИЗАЦИЯ TELEGRAM WEBAPP
+    // 1. TELEGRAM SDK & HAPTIC
     const tg = window.Telegram?.WebApp;
     if (tg) {
-      try {
-        tg.ready();
-        tg.expand();
-        tg.enableClosingConfirmation();
-      } catch (e) {}
+      try { tg.ready(); tg.expand(); tg.enableClosingConfirmation(); } catch (e) {}
     }
 
-    // Тактильный отклик (Haptic Feedback)
     function haptic(type = 'light') {
       try {
         if (tg?.HapticFeedback) {
-          if (['success', 'error', 'warning'].includes(type)) {
-            tg.HapticFeedback.notificationOccurred(type);
-          } else {
-            tg.HapticFeedback.impactOccurred(type);
-          }
+          if (['success', 'error', 'warning'].includes(type)) tg.HapticFeedback.notificationOccurred(type);
+          else tg.HapticFeedback.impactOccurred(type);
         }
       } catch (e) {}
     }
 
-    // Всплывающие уведомления (вместо alert)
     function showToast(msg, type = 'info') {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
@@ -1153,26 +721,22 @@
       container.appendChild(toast);
       setTimeout(() => {
         toast.style.opacity = '0';
-        toast.style.transform = 'translateY(-8px)';
-        toast.style.transition = 'all 0.2s ease';
+        toast.style.transform = 'translateY(-10px)';
+        toast.style.transition = 'all 0.2s';
         setTimeout(() => toast.remove(), 200);
       }, 3000);
     }
 
-    // Безопасное подтверждение действий
     function confirmAction(text) {
       return new Promise(resolve => {
-        if (tg?.showConfirm) {
-          tg.showConfirm(text, ok => resolve(ok));
-        } else {
-          resolve(window.confirm(text));
-        }
+        if (tg?.showConfirm) tg.showConfirm(text, ok => resolve(ok));
+        else resolve(window.confirm(text));
       });
     }
 
-    // 2. ХЕШИРОВАНИЕ ПАРОЛЕЙ (SHA-256)
+    // 2. БЕЗОПАСНОСТЬ (ХЕШИРОВАНИЕ ПАРОЛЕЙ)
     async function hashPassword(str) {
-      const enc = new TextEncoder().encode(str + "_avito_crm_salt_2026");
+      const enc = new TextEncoder().encode(str + "_academ_crm_salt_2026");
       const hashBuf = await crypto.subtle.digest('SHA-256', enc);
       return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
     }
@@ -1184,38 +748,33 @@
 
     const DEFAULT_ADMIN = {
       id: 'usr_admin_root',
-      name: 'Главный Администратор',
+      name: 'Руководитель Агентства',
       login: 'admin',
       pass: 'Avito#Admin2026!',
       role: 'admin'
     };
 
-    let sysConfig = {
-      rowId: null,
-      users: [DEFAULT_ADMIN]
-    };
-
+    let sysConfig = { rowId: null, users: [DEFAULT_ADMIN] };
     let currentAccount = null;
     let selectedRegRole = 'agent';
     let currentAdminSection = 'orders';
-    let currentOrderFilter = 'active';
+    let currentOrderFilter = 'active'; // 'active', 'check', 'revision', 'done'
     let allOrders = [];
     let existingEditingPhotos = [];
     let stagedFiles = [];
     let lbPhotos = [];
     let lbIndex = 0;
 
-    // Быстрая загрузка из кэша
+    // Загрузка локального кэша
     try {
-      const savedAcc = localStorage.getItem('avito_pro_account');
-      if (savedAcc) currentAccount = JSON.parse(savedAcc);
-      const savedCfg = localStorage.getItem('avito_pro_config');
-      if (savedCfg) sysConfig = JSON.parse(savedCfg);
-      const savedOrders = localStorage.getItem('avito_pro_orders');
-      if (savedOrders) allOrders = JSON.parse(savedOrders);
+      const acc = localStorage.getItem('academ_crm_acc');
+      if (acc) currentAccount = JSON.parse(acc);
+      const cfg = localStorage.getItem('academ_crm_cfg');
+      if (cfg) sysConfig = JSON.parse(cfg);
+      const ord = localStorage.getItem('academ_crm_ord');
+      if (ord) allOrders = JSON.parse(ord);
     } catch (e) {}
 
-    // Быстрый fetch с таймаутом
     async function sbFetch(path, options = {}) {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 8000);
@@ -1251,21 +810,27 @@
       return `${SUPABASE_URL}/storage/v1/object/public/avito-screens/${fileName}`;
     }
 
+    // РАЗБОР МЕТАДАННЫХ АКАДЕМИЧЕСКОГО ЗАКАЗА
     function parseOrderMeta(o) {
       let meta = {
+        workType: 'Курсовая',
+        deadline: '',
+        antiplag: '',
+        volume: '',
+        materialsUrl: '',
+        resultUrl: '',
+        resultPlag: '',
         note: '',
         workerId: 'ALL',
-        workerName: 'Любой исполнитель',
+        workerName: 'Любой свободный автор',
         agentId: '',
-        agentName: 'Посредник'
+        agentName: 'Менеджер'
       };
       if (o.worker_comment) {
         if (o.worker_comment.trim().startsWith('{')) {
           try {
             meta = { ...meta, ...JSON.parse(o.worker_comment) };
-          } catch (e) {
-            meta.note = o.worker_comment;
-          }
+          } catch (e) { meta.note = o.worker_comment; }
         } else {
           meta.note = o.worker_comment;
         }
@@ -1273,14 +838,12 @@
       return meta;
     }
 
-    function packOrderMeta(metaObj) {
-      return JSON.stringify(metaObj);
-    }
+    function packOrderMeta(m) { return JSON.stringify(m); }
 
-    // Загрузка данных с оптимизацией (limit=50)
-    async function fetchAllData(showSuccessToast = false) {
+    // СИНХРОНИЗАЦИЯ С БАЗОЙ
+    async function fetchAllData(showToastAlert = false) {
       try {
-        const res = await sbFetch('orders?select=*&order=id.desc&limit=50');
+        const res = await sbFetch('orders?select=*&order=id.desc&limit=60');
         const rows = await res.json();
 
         const cfgRow = rows.find(r => r.title === CONFIG_MARKER);
@@ -1293,37 +856,31 @@
               sysConfig.users.unshift(DEFAULT_ADMIN);
             }
           }
-        } else {
-          sysConfig.users = [DEFAULT_ADMIN];
         }
 
         allOrders = rows.filter(r => r.title !== CONFIG_MARKER);
 
-        localStorage.setItem('avito_pro_config', JSON.stringify(sysConfig));
-        localStorage.setItem('avito_pro_orders', JSON.stringify(allOrders));
+        localStorage.setItem('academ_crm_cfg', JSON.stringify(sysConfig));
+        localStorage.setItem('academ_crm_ord', JSON.stringify(allOrders));
 
         if (currentAccount) {
           const found = sysConfig.users.find(u => u.id === currentAccount.id || u.login === currentAccount.login);
           if (found) {
             currentAccount = found;
-            localStorage.setItem('avito_pro_account', JSON.stringify(currentAccount));
+            localStorage.setItem('academ_crm_acc', JSON.stringify(currentAccount));
           }
         }
 
         renderAll();
-        if (showSuccessToast) showToast('Данные обновлены', 'success');
+        if (showToastAlert) showToast('Данные актуализированы', 'success');
       } catch (err) {
-        if (showSuccessToast) showToast('Ошибка связи: ' + err.message, 'error');
+        if (showToastAlert) showToast('Ошибка соединения: ' + err.message, 'error');
         renderAll();
       }
     }
 
     async function saveConfigToSupabase() {
-      const payload = {
-        title: CONFIG_MARKER,
-        status: CONFIG_MARKER,
-        photos: [{ users: sysConfig.users }]
-      };
+      const payload = { title: CONFIG_MARKER, status: CONFIG_MARKER, photos: [{ users: sysConfig.users }] };
       if (sysConfig.rowId) {
         await sbFetch(`orders?id=eq.${sysConfig.rowId}`, {
           method: 'PATCH',
@@ -1337,7 +894,7 @@
           body: JSON.stringify(payload)
         });
       }
-      localStorage.setItem('avito_pro_config', JSON.stringify(sysConfig));
+      localStorage.setItem('academ_crm_cfg', JSON.stringify(sysConfig));
     }
 
     // АВТОРИЗАЦИЯ
@@ -1360,36 +917,28 @@
       if (!login || !pass) return showToast('Введите логин и пароль!', 'error');
 
       const btn = document.getElementById('loginBtn');
-      btn.disabled = true;
-      btn.innerText = 'Проверка...';
+      btn.disabled = true; btn.innerText = 'Проверка...';
 
       await fetchAllData(false);
+      const hash = await hashPassword(pass);
+      const matched = sysConfig.users.find(u => u.login.toLowerCase() === login && (u.pass === hash || u.pass === pass));
 
-      const passHash = await hashPassword(pass);
-      const matched = sysConfig.users.find(u =>
-        u.login.toLowerCase() === login && (u.pass === passHash || u.pass === pass)
-      );
-
-      btn.disabled = false;
-      btn.innerText = 'Войти в аккаунт';
-
+      btn.disabled = false; btn.innerText = 'Войти в аккаунт';
       if (!matched) {
         haptic('error');
-        showToast('Неверный логин или пароль!', 'error');
-        return;
+        return showToast('Неверный логин или пароль!', 'error');
       }
 
-      // Обновляем старый пароль на хеш
       if (matched.pass === pass) {
-        matched.pass = passHash;
+        matched.pass = hash;
         saveConfigToSupabase();
       }
 
       currentAccount = matched;
-      localStorage.setItem('avito_pro_account', JSON.stringify(currentAccount));
+      localStorage.setItem('academ_crm_acc', JSON.stringify(currentAccount));
       document.getElementById('loginPass').value = '';
       haptic('success');
-      showToast(`Добро пожаловать, ${currentAccount.name}!`, 'success');
+      showToast(`С возвращением, ${currentAccount.name}!`, 'success');
       renderAll();
     }
 
@@ -1398,47 +947,41 @@
       const login = document.getElementById('regLogin').value.trim().toLowerCase();
       const pass = document.getElementById('regPass').value.trim();
 
-      if (!name || !login || !pass) return showToast('Заполните все поля!', 'error');
-      if (pass.length < 6) return showToast('Пароль минимум 6 символов!', 'error');
+      if (!name || !login || !pass) return showToast('Заполните все обязательные поля!', 'error');
+      if (pass.length < 6) return showToast('Пароль минимум 6 знаков!', 'error');
 
       const btn = document.getElementById('regBtn');
-      btn.disabled = true;
-      btn.innerText = 'Создание...';
+      btn.disabled = true; btn.innerText = 'Создание...';
 
       try {
         await fetchAllData(false);
         if (sysConfig.users.some(u => u.login.toLowerCase() === login)) {
-          showToast('Этот логин уже занят!', 'error');
-          return;
+          return showToast('Этот логин уже занят!', 'error');
         }
 
         const newUser = {
           id: 'usr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
-          name: name,
-          login: login,
-          pass: await hashPassword(pass),
-          role: selectedRegRole
+          name, login, pass: await hashPassword(pass), role: selectedRegRole
         };
 
         sysConfig.users.push(newUser);
         await saveConfigToSupabase();
 
         currentAccount = newUser;
-        localStorage.setItem('avito_pro_account', JSON.stringify(currentAccount));
+        localStorage.setItem('academ_crm_acc', JSON.stringify(currentAccount));
         haptic('success');
-        showToast('Аккаунт успешно создан!', 'success');
+        showToast('Профиль успешно создан!', 'success');
         renderAll();
-      } catch (err) {
-        showToast('Ошибка регистрации: ' + err.message, 'error');
+      } catch (e) {
+        showToast('Ошибка регистрации: ' + e.message, 'error');
       } finally {
-        btn.disabled = false;
-        btn.innerText = 'Создать аккаунт';
+        btn.disabled = false; btn.innerText = 'Создать аккаунт';
       }
     }
 
     function logoutAccount() {
       currentAccount = null;
-      localStorage.removeItem('avito_pro_account');
+      localStorage.removeItem('academ_crm_acc');
       haptic('light');
       renderAll();
     }
@@ -1454,14 +997,17 @@
 
     function setOrderFilter(f) {
       currentOrderFilter = f;
-      ['active', 'unpaid', 'all'].forEach(k => {
+      ['active', 'check', 'revision', 'done'].forEach(k => {
         document.getElementById('tab-' + k).classList.toggle('active', k === f);
       });
       haptic('light');
-      renderAll();
+      renderOrdersSection();
     }
 
-    // РЕНДЕРИНГ ИНТЕРФЕЙСА
+    function getWorkersList() { return sysConfig.users.filter(u => u.role === 'worker'); }
+    function getAgentsList() { return sysConfig.users.filter(u => u.role === 'agent'); }
+
+    // ГЛАВНЫЙ РЕНДЕР
     function renderAll() {
       if (!currentAccount) {
         document.getElementById('authScreen').classList.add('open');
@@ -1470,210 +1016,305 @@
       document.getElementById('authScreen').classList.remove('open');
 
       const role = currentAccount.role;
-      const roleLabels = {
-        agent: '💼 Посредник',
-        worker: '🛠 Исполнитель',
-        admin: '👑 Администратор'
-      };
-
+      const roleLabels = { agent: '💼 Менеджер', worker: '✍️ Автор работ', admin: '👑 Администратор' };
       document.getElementById('uName').innerText = currentAccount.name;
-      document.getElementById('uAvatar').innerText = (currentAccount.name || 'U')[0].toUpperCase();
+      document.getElementById('uAvatar').innerText = (currentAccount.name || 'A')[0].toUpperCase();
       document.getElementById('uRole').innerText = roleLabels[role] || role;
 
       const isAdm = role === 'admin';
       document.getElementById('adminNav').classList.toggle('visible', isAdm);
 
-      const showOrdersSec = !isAdm || currentAdminSection === 'orders';
-      const showStatsSec = isAdm && currentAdminSection === 'stats';
-      const showUsersSec = isAdm && currentAdminSection === 'users';
+      const showOrders = !isAdm || currentAdminSection === 'orders';
+      const showStats = isAdm && currentAdminSection === 'stats';
+      const showUsers = isAdm && currentAdminSection === 'users';
 
-      document.getElementById('sectionOrders').style.display = showOrdersSec ? 'block' : 'none';
-      document.getElementById('sectionStats').classList.toggle('visible', showStatsSec);
-      document.getElementById('sectionUsers').classList.toggle('visible', showUsersSec);
+      document.getElementById('sectionOrders').style.display = showOrders ? 'block' : 'none';
+      document.getElementById('sectionStats').style.display = showStats ? 'block' : 'none';
+      document.getElementById('sectionUsers').style.display = showUsers ? 'block' : 'none';
 
-      document.getElementById('bottomBar').style.display =
-        (showOrdersSec && (role === 'agent' || role === 'admin')) ? 'flex' : 'none';
+      // Кнопка создания заказа (только для Менеджера и Админа)
+      document.getElementById('bottomBar').style.display = (showOrders && (role === 'agent' || role === 'admin')) ? 'flex' : 'none';
 
-      populateWorkerFilterDropdown();
+      populateAgentFilterDropdown();
 
-      if (showOrdersSec) renderOrdersSection();
-      if (showStatsSec) renderAdminStats();
-      if (showUsersSec) renderAdminUsers();
+      if (showOrders) renderOrdersSection();
+      if (showStats) renderAdminStats();
+      if (showUsers) renderAdminUsers();
     }
 
-    function getWorkersList() {
-      return sysConfig.users.filter(u => u.role === 'worker');
-    }
-
-    function populateWorkerFilterDropdown() {
-      const bar = document.getElementById('workerFilterBar');
-      const sel = document.getElementById('workerFilterSelect');
-      if (currentAccount.role === 'agent' || currentAccount.role === 'admin') {
+    function populateAgentFilterDropdown() {
+      const bar = document.getElementById('agentFilterBar');
+      const sel = document.getElementById('agentFilterSelect');
+      if (currentAccount.role === 'admin') {
         bar.classList.add('visible');
-        const prevVal = sel.value || 'ALL';
-        const workers = getWorkersList();
-        sel.innerHTML = `<option value="ALL">👤 Все исполнители (${workers.length})</option>` +
-          workers.map(w => `<option value="${w.id}">🛠 ${escapeHtml(w.name)}</option>`).join('');
-        if ([...sel.options].some(o => o.value === prevVal)) sel.value = prevVal;
+        const prev = sel.value || 'ALL';
+        const agents = getAgentsList();
+        sel.innerHTML = `<option value="ALL">👤 Все менеджеры (${agents.length})</option>` +
+          agents.map(a => `<option value="${a.id}">💼 Менеджер: ${escapeHtml(a.name)}</option>`).join('');
+        if ([...sel.options].some(o => o.value === prev)) sel.value = prev;
       } else {
         bar.classList.remove('visible');
       }
     }
 
-    // РЕНДЕР КАРТОЧЕК С ЖИВЫМ ПОИСКОМ
+    // РЕНДЕР КАРТОЧЕК С ИЗОЛЯЦИЕЙ И ДЕДЛАЙНАМИ
     function renderOrdersSection() {
       const role = currentAccount.role;
-      const selectedWorkerId = document.getElementById('workerFilterSelect')?.value || 'ALL';
+      const selectedAgentId = document.getElementById('agentFilterSelect')?.value || 'ALL';
       const searchVal = (document.getElementById('orderSearchInput')?.value || '').toLowerCase().trim();
 
-      const visibleOrders = allOrders.filter(o => {
+      // СТРОГАЯ ИЗОЛЯЦИЯ:
+      // Менеджер видит ТОЛЬКО свои созданные заказы.
+      // Автор видит ТОЛЬКО работы, где он назначен исполнителем (или общий пул).
+      const scopedOrders = allOrders.filter(o => {
         const m = parseOrderMeta(o);
-        if (role === 'worker' && m.workerId !== currentAccount.id && m.workerId !== 'ALL') {
-          return false;
+        if (role === 'agent') {
+          return m.agentId === currentAccount.id;
         }
-        if ((role === 'agent' || role === 'admin') && selectedWorkerId !== 'ALL' && m.workerId !== selectedWorkerId) {
-          return false;
+        if (role === 'worker') {
+          return m.workerId === currentAccount.id || m.workerId === 'ALL';
         }
-        if (searchVal) {
-          const matchTitle = (o.title || '').toLowerCase().includes(searchVal);
-          const matchId = String(o.id).includes(searchVal);
-          const matchWorker = (m.workerName || '').toLowerCase().includes(searchVal);
-          if (!matchTitle && !matchId && !matchWorker) return false;
+        if (role === 'admin' && selectedAgentId !== 'ALL') {
+          return m.agentId === selectedAgentId;
         }
         return true;
       });
 
-      const activeOrders = visibleOrders.filter(o => o.status !== 'Выполнен');
-      const unpaidCompleted = visibleOrders.filter(o => o.status === 'Выполнен' && o.payment_status === 'Не выплачено');
-      const paidOrders = visibleOrders.filter(o => o.payment_status === 'Выплачено');
+      // Поиск
+      const filteredBySearch = scopedOrders.filter(o => {
+        if (!searchVal) return true;
+        const m = parseOrderMeta(o);
+        return (o.title || '').toLowerCase().includes(searchVal) ||
+               String(o.id).includes(searchVal) ||
+               (m.workerName || '').toLowerCase().includes(searchVal) ||
+               (m.workType || '').toLowerCase().includes(searchVal);
+      });
 
-      document.getElementById('cnt-active').innerText = activeOrders.length;
-      document.getElementById('cnt-unpaid').innerText = unpaidCompleted.length;
-      document.getElementById('cnt-all').innerText = visibleOrders.length;
+      // Сортировка: самые горящие дедлайны наверх
+      filteredBySearch.sort((a, b) => {
+        const mA = parseOrderMeta(a);
+        const mB = parseOrderMeta(b);
+        if (!mA.deadline) return 1;
+        if (!mB.deadline) return -1;
+        return new Date(mA.deadline) - new Date(mB.deadline);
+      });
 
-      const debtSum = unpaidCompleted.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
-      const activeSum = activeOrders.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
-      const paidSum = paidOrders.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+      // Счетчики по статусам
+      const cActive = filteredBySearch.filter(o => o.status === 'В работе').length;
+      const cCheck = filteredBySearch.filter(o => o.status === 'На проверке').length;
+      const cRevision = filteredBySearch.filter(o => o.status === 'Правки').length;
+      const cDone = filteredBySearch.filter(o => o.status === 'Сдан').length;
 
-      document.getElementById('heroLabel').innerText = role === 'worker' ? 'ОЖИДАЮ К ВЫПЛАТЕ' : 'К ВЫПЛАТЕ ИСПОЛНИТЕЛЮ';
-      document.getElementById('heroCard').classList.toggle('has-debt', debtSum > 0);
-      document.getElementById('heroAmount').innerText = debtSum.toLocaleString('ru-RU') + ' ₽';
-      document.getElementById('heroSub').innerText = unpaidCompleted.length > 0
-        ? `Выполнено и ждёт оплаты: ${unpaidCompleted.length} шт.`
-        : 'Все выполненные заказы оплачены ✨';
+      document.getElementById('cnt-active').innerText = cActive;
+      document.getElementById('cnt-check').innerText = cCheck;
+      document.getElementById('cnt-revision').innerText = cRevision;
+      document.getElementById('cnt-done').innerText = cDone;
 
-      document.getElementById('statActiveSum').innerText = `${activeOrders.length} шт. • ${activeSum.toLocaleString('ru-RU')} ₽`;
-      document.getElementById('statPaidSum').innerText = `${paidSum.toLocaleString('ru-RU')} ₽`;
+      // Аналитика в Hero-карточке
+      renderHeroDashboard(scopedOrders);
 
-      document.getElementById('heroPayAllBtn').style.display =
-        (unpaidCompleted.length > 0 && (role === 'agent' || role === 'admin')) ? 'block' : 'none';
-
-      let list = visibleOrders;
-      if (currentOrderFilter === 'active') list = activeOrders;
-      else if (currentOrderFilter === 'unpaid') list = unpaidCompleted;
+      // Фильтрация по текущей вкладке
+      let displayList = [];
+      if (currentOrderFilter === 'active') displayList = filteredBySearch.filter(o => o.status === 'В работе');
+      else if (currentOrderFilter === 'check') displayList = filteredBySearch.filter(o => o.status === 'На проверке');
+      else if (currentOrderFilter === 'revision') displayList = filteredBySearch.filter(o => o.status === 'Правки');
+      else if (currentOrderFilter === 'done') displayList = filteredBySearch.filter(o => o.status === 'Сдан');
 
       const box = document.getElementById('ordersContainer');
-      if (list.length === 0) {
-        box.innerHTML = `<div class="empty-state">Заказов не найдено ✨</div>`;
+      if (displayList.length === 0) {
+        box.innerHTML = `<div class="empty-state">В этой категории пока нет заказов 🎓</div>`;
         return;
       }
 
-      box.innerHTML = list.map(o => {
-        const isDone = o.status === 'Выполнен';
-        const isPaid = o.payment_status === 'Выплачено';
-        const photos = Array.isArray(o.photos) ? o.photos : [];
-        const initP = Number(o.initial_price) || 0;
-        const finP = Number(o.final_price) || 0;
-        const priceChanged = initP !== finP;
-        const diff = finP - initP;
-        const meta = parseOrderMeta(o);
-
-        const dateStr = o.created_at
-          ? new Date(o.created_at).toLocaleDateString('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
-          : '';
-
-        const photosHtml = photos.length > 0
-          ? `<div class="photos-row">` +
-              photos.map((url, idx) => `
-                <div class="photo-thumb-wrap" onclick='openLightbox(${JSON.stringify(photos)}, ${idx})'>
-                  <img src="${url}" loading="lazy">
-                </div>
-              `).join('') +
-            `</div>`
-          : '';
-
-        let footerBtns = '';
-        if (role === 'worker' || role === 'admin') {
-          footerBtns += `
-            <button class="c-btn ${isDone ? '' : 'primary'}" onclick="quickToggleDone(${o.id}, '${o.status}')">
-              ${isDone ? '↩ В работу' : '✅ Выполнено'}
-            </button>
-            <button class="c-btn" onclick="openWorkerSheet(${o.id})">
-              ✏️ Цена / Отчёт
-            </button>
-          `;
-        }
-        if (role === 'agent' || role === 'admin') {
-          footerBtns += `
-            <button class="c-btn ${isPaid ? '' : 'success'}" onclick="quickTogglePaid(${o.id}, '${o.payment_status}')">
-              ${isPaid ? '🔄 Снять оплату' : '💳 Выплачено'}
-            </button>
-            <button class="c-btn" onclick="openEditOrderSheet(${o.id})">
-              ⚙️ Изменить
-            </button>
-            <button class="c-btn danger" onclick="removeOrder(${o.id})">
-              🗑
-            </button>
-          `;
-        }
-
-        return `
-          <div class="order-card">
-            <div class="card-header">
-              <div>
-                <div class="card-id-date">Заказ #${o.id} • ${dateStr}</div>
-                <div class="card-title ${isDone ? 'done' : ''}">${escapeHtml(o.title)}</div>
-              </div>
-              <div class="status-pills">
-                <span class="pill ${isDone ? 'pill-done' : 'pill-work'}">${o.status}</span>
-                <span class="pill ${isPaid ? 'pill-paid' : 'pill-unpaid'}">${o.payment_status}</span>
-              </div>
-            </div>
-
-            <div class="people-row">
-              <span class="person-tag">🛠 Исполнитель: ${escapeHtml(meta.workerName || 'Любой')}</span>
-              ${meta.agentName ? `<span class="person-tag">💼 Посредник: ${escapeHtml(meta.agentName)}</span>` : ''}
-            </div>
-
-            <div class="price-banner">
-              <div>
-                <div class="price-label">${priceChanged ? 'Итоговая цена выкупа' : 'Цена / Бюджет'}</div>
-                <div>
-                  <span class="price-val">${finP.toLocaleString('ru-RU')} ₽</span>
-                  ${priceChanged ? `<span class="price-initial">${initP.toLocaleString('ru-RU')} ₽</span>` : ''}
-                </div>
-              </div>
-              ${priceChanged ? `<span class="price-diff">${diff > 0 ? '+' + diff : diff} ₽</span>` : ''}
-            </div>
-
-            ${o.instruction ? `<div class="desc-box">${escapeHtml(o.instruction)}</div>` : ''}
-            ${meta.note ? `<div class="worker-report"><b>Отчёт исполнителя:</b><br>${escapeHtml(meta.note)}</div>` : ''}
-
-            <div class="link-row">
-              ${o.avito_url ? `<a href="${o.avito_url}" target="_blank" class="avito-btn-link">🔗 На Авито</a>` : ''}
-              <button class="copy-btn-link" onclick="copyOrderDetails(${o.id}, '${escapeHtml(o.title)}', ${finP}, '${o.avito_url || ''}')">📋 Скопировать</button>
-            </div>
-
-            ${photosHtml}
-
-            <div class="card-footer">${footerBtns}</div>
-          </div>
-        `;
-      }).join('');
+      box.innerHTML = displayList.map(o => renderOrderCardHtml(o, role)).join('');
     }
 
-    function copyOrderDetails(id, title, price, url) {
-      const text = `Заказ #${id}: ${title}\nЦена: ${price} ₽${url ? '\nСсылка: ' + url : ''}`;
+    // ДАШБОРД ВЕРХНЕЙ ПЛАШКИ
+    function renderHeroDashboard(orders) {
+      const role = currentAccount.role;
+      const doneOrders = orders.filter(o => o.status === 'Сдан');
+      const inWorkCount = orders.filter(o => o.status === 'В работе' || o.status === 'Правки').length;
+
+      if (role === 'worker') {
+        // Автор видит только свою заработную плату
+        const toPay = doneOrders.filter(o => o.payment_status === 'Не выплачено')
+          .reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+        const totalEarned = orders.filter(o => o.payment_status === 'Выплачено')
+          .reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+
+        document.getElementById('heroLabel').innerText = 'К ВЫПЛАТЕ АВТОРУ';
+        document.getElementById('heroAmount').innerText = toPay.toLocaleString('ru-RU') + ' ₽';
+        document.getElementById('heroSub').innerText = toPay > 0 ? 'Сдано и ожидает выплаты' : 'Все сданные работы оплачены ✨';
+        document.getElementById('heroStat1Lbl').innerText = 'В работе';
+        document.getElementById('heroStat1Val').innerText = `${inWorkCount} заказов`;
+        document.getElementById('heroStat2Lbl').innerText = 'Уже выплачено';
+        document.getElementById('heroStat2Val').innerText = `${totalEarned.toLocaleString('ru-RU')} ₽`;
+        document.getElementById('heroPayAllBtn').style.display = 'none';
+      } else {
+        // Менеджер или Админ видит Чистую Прибыль и долг авторам
+        const totalClient = orders.reduce((s, o) => s + (Number(o.initial_price) || 0), 0);
+        const totalAuthor = orders.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+        const netProfit = totalClient - totalAuthor;
+
+        const debtToAuthors = doneOrders.filter(o => o.payment_status === 'Не выплачено')
+          .reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+
+        document.getElementById('heroLabel').innerText = role === 'agent' ? 'МОЯ ЧИСТАЯ МАРЖА' : 'ОБЩАЯ ЧИСТАЯ МАРЖА';
+        document.getElementById('heroAmount').innerText = (netProfit >= 0 ? '+' : '') + netProfit.toLocaleString('ru-RU') + ' ₽';
+        document.getElementById('heroSub').innerText = `Оборот: ${totalClient.toLocaleString('ru-RU')} ₽ (Авторам: ${totalAuthor.toLocaleString('ru-RU')} ₽)`;
+        document.getElementById('heroStat1Lbl').innerText = 'Заказов в работе';
+        document.getElementById('heroStat1Val').innerText = `${inWorkCount} шт.`;
+        document.getElementById('heroStat2Lbl').innerText = 'Долг перед авторами';
+        document.getElementById('heroStat2Val').innerText = `${debtToAuthors.toLocaleString('ru-RU')} ₽`;
+
+        document.getElementById('heroPayAllBtn').style.display = (debtToAuthors > 0) ? 'block' : 'none';
+      }
+    }
+
+    // РАСЧЁТ ДЕДЛАЙНА
+    function formatDeadline(dl, isDone) {
+      if (!dl) return `<span class="deadline-pill deadline-ok">Срок не указан</span>`;
+      if (isDone) return `<span class="deadline-pill deadline-ok">✅ Заказ сдан</span>`;
+
+      const diffMs = new Date(dl) - new Date();
+      const diffHours = Math.round(diffMs / (1000 * 60 * 60));
+      const dt = new Date(dl).toLocaleDateString('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+      if (diffHours < 0) return `<span class="deadline-pill deadline-urgent">🔥 ПРОСРОЧЕН (${dt})</span>`;
+      if (diffHours <= 24) return `<span class="deadline-pill deadline-urgent">🔥 ${diffHours} ч. до сдачи (${dt})</span>`;
+      if (diffHours <= 72) return `<span class="deadline-pill deadline-warn">⏳ ${Math.round(diffHours / 24)} дн. (${dt})</span>`;
+      return `<span class="deadline-pill deadline-ok">📅 Дедлайн: ${dt}</span>`;
+    }
+
+    // ГЕНЕРАТОР HTML КАРТОЧКИ
+    function renderOrderCardHtml(o, role) {
+      const m = parseOrderMeta(o);
+      const isDone = o.status === 'Сдан';
+      const isPaid = o.payment_status === 'Выплачено';
+      const photos = Array.isArray(o.photos) ? o.photos : [];
+
+      const clientP = Number(o.initial_price) || 0;
+      const workerP = Number(o.final_price) || 0;
+      const margin = clientP - workerP;
+
+      const statusClasses = {
+        'В работе': 'st-work',
+        'На проверке': 'st-check',
+        'Правки': 'st-revision',
+        'Сдан': 'st-done'
+      };
+
+      // Кнопки управления в зависимости от роли
+      let footerBtns = '';
+      if (role === 'worker') {
+        footerBtns = `
+          <button class="c-btn primary" onclick="openWorkerSheet(${o.id})">
+            ✍️ Сдать / Отчёт
+          </button>
+          <button class="c-btn" onclick="quickWorkerStatus(${o.id})">
+            🔄 Сменить статус
+          </button>
+        `;
+      } else if (role === 'agent' || role === 'admin') {
+        footerBtns = `
+          <button class="c-btn ${isPaid ? '' : 'success'}" onclick="quickTogglePaid(${o.id}, '${o.payment_status}')">
+            ${isPaid ? 'Снять оплату' : '💳 Выплачено автору'}
+          </button>
+          <button class="c-btn warn" onclick="sendToRevision(${o.id})">
+            🟠 На правки
+          </button>
+          <button class="c-btn" onclick="openEditOrderSheet(${o.id})">
+            ⚙️ Изменить
+          </button>
+          <button class="c-btn danger" onclick="removeOrder(${o.id})">
+            🗑
+          </button>
+        `;
+      }
+
+      // Блок цен: автор видит ТОЛЬКО свою ставку
+      const priceHtml = (role === 'worker') ? `
+        <div class="price-box">
+          <div class="price-row-agent">
+            <span>Ваша выплата за работу:</span>
+            <span style="font-size:17px; font-weight:800; color:var(--primary);">${workerP.toLocaleString('ru-RU')} ₽</span>
+          </div>
+          <div class="price-sub">
+            <span>Статус оплаты: <b>${o.payment_status}</b></span>
+          </div>
+        </div>
+      ` : `
+        <div class="price-box">
+          <div class="price-row-agent">
+            <span>Студент платит: ${clientP.toLocaleString('ru-RU')} ₽</span>
+            <span class="net-profit">Маржа: +${margin.toLocaleString('ru-RU')} ₽</span>
+          </div>
+          <div class="price-sub">
+            <span>Автору: <b>${workerP.toLocaleString('ru-RU')} ₽</b> (${o.payment_status})</span>
+          </div>
+        </div>
+      `;
+
+      return `
+        <div class="order-card">
+          <div class="card-top">
+            <span class="work-type-tag">${escapeHtml(m.workType || 'Работа')}</span>
+            <div style="display:flex; gap:5px; align-items:center;">
+              <span class="status-pill ${statusClasses[o.status] || 'st-work'}">${o.status}</span>
+            </div>
+          </div>
+
+          <div class="card-title">${escapeHtml(o.title)}</div>
+          <div style="margin-bottom:8px;">${formatDeadline(m.deadline, isDone)}</div>
+
+          <div class="spec-grid">
+            <div class="spec-item">
+              <span class="spec-lbl">Антиплагиат</span>
+              <span class="spec-val">${escapeHtml(m.antiplag || 'Не указан')}</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-lbl">Объём</span>
+              <span class="spec-val">${escapeHtml(m.volume || 'По заданию')}</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-lbl">Автор</span>
+              <span class="spec-val">${escapeHtml(m.workerName || 'Не назначен')}</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-lbl">Менеджер</span>
+              <span class="spec-val">${escapeHtml(m.agentName || 'Менеджер')}</span>
+            </div>
+          </div>
+
+          ${priceHtml}
+
+          <div class="links-bar">
+            ${m.materialsUrl ? `<a href="${m.materialsUrl}" target="_blank" class="btn-link primary">📁 Методичка / Диск</a>` : ''}
+            ${m.resultUrl ? `<a href="${m.resultUrl}" target="_blank" class="btn-link" style="color:var(--purple); font-weight:800;">🎓 Готовая работа</a>` : ''}
+            ${(role !== 'worker' && o.avito_url) ? `<a href="${o.avito_url}" target="_blank" class="btn-link">🔗 Авито</a>` : ''}
+            <button class="btn-link" onclick="copyOrderDetails(${o.id}, '${escapeHtml(o.title)}', '${escapeHtml(m.workType)}', '${m.deadline || ''}')">📋 Копия</button>
+          </div>
+
+          ${o.instruction ? `<div style="font-size:12px; background:var(--surface-2); padding:8px 10px; border-radius:10px; margin-bottom:8px; white-space:pre-wrap;"><b>Задание:</b> ${escapeHtml(o.instruction)}</div>` : ''}
+          ${m.resultPlag ? `<div class="report-box"><b>Факт. оригинальность:</b> ${escapeHtml(m.resultPlag)}<br>${escapeHtml(m.note || '')}</div>` : ''}
+
+          ${photos.length > 0 ? `
+            <div class="photos-row">
+              ${photos.map((u, i) => `
+                <div class="photo-thumb-wrap" onclick='openLightbox(${JSON.stringify(photos)}, ${i})'>
+                  <img src="${u}" loading="lazy">
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+
+          <div class="card-footer">${footerBtns}</div>
+        </div>
+      `;
+    }
+
+    function copyOrderDetails(id, title, type, dl) {
+      const text = `Заказ #${id}: ${type} — "${title}"\nДедлайн: ${dl ? new Date(dl).toLocaleString('ru-RU') : 'Не указан'}`;
       if (navigator.clipboard?.writeText) {
         navigator.clipboard.writeText(text).then(() => {
           haptic('light');
@@ -1682,157 +1323,36 @@
       }
     }
 
-    // СТАТИСТИКА
-    function renderAdminStats() {
-      const total = allOrders.length;
-      const done = allOrders.filter(o => o.status === 'Выполнен');
-      const unpaid = done.filter(o => o.payment_status === 'Не выплачено');
-      const paid = allOrders.filter(o => o.payment_status === 'Выплачено');
-
-      const totalVol = allOrders.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
-      const initVol = allOrders.reduce((s, o) => s + (Number(o.initial_price) || 0), 0);
-      const unpaidSum = unpaid.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
-      const paidSum = paid.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
-      const savedBargain = initVol - totalVol;
-
-      document.getElementById('stTotalOrders').innerText = total;
-      document.getElementById('stDoneOrders').innerText = `Выполнено: ${done.length} шт.`;
-      document.getElementById('stTotalVolume').innerText = totalVol.toLocaleString('ru-RU') + ' ₽';
-      document.getElementById('stBargainDiff').innerText = `Торг/разница: ${savedBargain >= 0 ? '-' + savedBargain : '+' + Math.abs(savedBargain)} ₽`;
-      document.getElementById('stUnpaidSum').innerText = unpaidSum.toLocaleString('ru-RU') + ' ₽';
-      document.getElementById('stUnpaidCount').innerText = `Ждут оплаты: ${unpaid.length} шт.`;
-      document.getElementById('stPaidTotal').innerText = paidSum.toLocaleString('ru-RU') + ' ₽';
-      document.getElementById('stPaidCount').innerText = `Оплачено: ${paid.length} шт.`;
-
-      const workers = sysConfig.users.filter(u => u.role === 'worker');
-      const wBox = document.getElementById('statsByWorkers');
-      wBox.innerHTML = workers.length === 0 ? `<div style="color:var(--muted); font-size:13px;">Нет исполнителей</div>` :
-        workers.map(w => {
-          const wOrders = allOrders.filter(o => parseOrderMeta(o).workerId === w.id);
-          const wActive = wOrders.filter(o => o.status !== 'Выполнен').length;
-          const wUnpaid = wOrders.filter(o => o.status === 'Выполнен' && o.payment_status === 'Не выплачено')
-            .reduce((s, o) => s + (Number(o.final_price) || 0), 0);
-          const wPaid = wOrders.filter(o => o.payment_status === 'Выплачено')
-            .reduce((s, o) => s + (Number(o.final_price) || 0), 0);
-
-          return `
-            <div class="person-stat-row">
-              <div class="person-stat-top">
-                <span>🛠 ${escapeHtml(w.name)}</span>
-                <span>Заказов: ${wOrders.length}</span>
-              </div>
-              <div class="person-stat-metrics">
-                <div>В работе<b>${wActive} шт.</b></div>
-                <div>К выплате<b style="color:var(--danger);">${wUnpaid.toLocaleString('ru-RU')} ₽</b></div>
-                <div>Выплачено<b style="color:var(--success);">${wPaid.toLocaleString('ru-RU')} ₽</b></div>
-              </div>
-            </div>
-          `;
-        }).join('');
-
-      const agents = sysConfig.users.filter(u => u.role === 'agent');
-      const aBox = document.getElementById('statsByAgents');
-      aBox.innerHTML = agents.length === 0 ? `<div style="color:var(--muted); font-size:13px;">Нет посредников</div>` :
-        agents.map(a => {
-          const aOrders = allOrders.filter(o => parseOrderMeta(o).agentId === a.id);
-          const aDebt = aOrders.filter(o => o.status === 'Выполнен' && o.payment_status === 'Не выплачено')
-            .reduce((s, o) => s + (Number(o.final_price) || 0), 0);
-          const aPaid = aOrders.filter(o => o.payment_status === 'Выплачено')
-            .reduce((s, o) => s + (Number(o.final_price) || 0), 0);
-
-          return `
-            <div class="person-stat-row">
-              <div class="person-stat-top">
-                <span>💼 ${escapeHtml(a.name)}</span>
-                <span>Создал: ${aOrders.length} шт.</span>
-              </div>
-              <div class="person-stat-metrics">
-                <div>Активных<b>${aOrders.filter(o => o.status !== 'Выполнен').length} шт.</b></div>
-                <div>Должен<b style="color:var(--danger);">${aDebt.toLocaleString('ru-RU')} ₽</b></div>
-                <div>Выплатил<b style="color:var(--success);">${aPaid.toLocaleString('ru-RU')} ₽</b></div>
-              </div>
-            </div>
-          `;
-        }).join('');
+    function updateProfitPreview() {
+      const c = parseFloat(document.getElementById('fClientPrice').value) || 0;
+      const w = parseFloat(document.getElementById('fWorkerPrice').value) || 0;
+      const p = c - w;
+      document.getElementById('profitPreview').innerText = `${p >= 0 ? '+' : ''}${p.toLocaleString('ru-RU')} ₽`;
     }
 
-    // АККАУНТЫ
-    function renderAdminUsers() {
-      const box = document.getElementById('adminUsersList');
-      const roleBadges = { admin: '👑 Админ', agent: '💼 Посредник', worker: '🛠 Исполнитель' };
-      box.innerHTML = sysConfig.users.map(u => `
-        <div class="user-item">
-          <div>
-            <div class="user-item-name">${escapeHtml(u.name)} <span style="color:var(--primary); font-size:12px;">(${roleBadges[u.role] || u.role})</span></div>
-            <div class="user-item-meta">Логин: <b>${escapeHtml(u.login)}</b> • Пароль: <b>••••••••</b></div>
-          </div>
-          ${u.login !== DEFAULT_ADMIN.login ? `
-            <button class="c-btn danger" style="padding:8px 10px;" onclick="adminDeleteUser('${u.id}')">🗑</button>
-          ` : ''}
-        </div>
-      `).join('');
-    }
-
-    async function adminCreateUser() {
-      const name = document.getElementById('admNewName').value.trim();
-      const login = document.getElementById('admNewLogin').value.trim().toLowerCase();
-      const pass = document.getElementById('admNewPass').value.trim();
-      const role = document.getElementById('admNewRole').value;
-
-      if (!name || !login || !pass) return showToast('Заполните имя, логин и пароль!', 'error');
-      if (sysConfig.users.some(u => u.login.toLowerCase() === login)) {
-        return showToast('Пользователь с таким логином уже есть!', 'error');
-      }
-
-      sysConfig.users.push({
-        id: 'usr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
-        name,
-        login,
-        pass: await hashPassword(pass),
-        role
-      });
-
-      await saveConfigToSupabase();
-      document.getElementById('admNewName').value = '';
-      document.getElementById('admNewLogin').value = '';
-      document.getElementById('admNewPass').value = '';
-      haptic('success');
-      showToast('Пользователь добавлен', 'success');
-      renderAll();
-    }
-
-    async function adminDeleteUser(uid) {
-      const ok = await confirmAction('Удалить этого пользователя навсегда?');
-      if (!ok) return;
-
-      sysConfig.users = sysConfig.users.filter(u => u.id !== uid);
-      await saveConfigToSupabase();
-      haptic('warning');
-      showToast('Пользователь удален', 'info');
-      renderAll();
-    }
-
-    // РАБОТА С ЗАКАЗОМ
+    // СОЗДАНИЕ И РЕДАКТИРОВАНИЕ ЗАКАЗА МЕНЕДЖЕРОМ
     function populateOrderWorkerSelect(selectedId = 'ALL') {
       const sel = document.getElementById('fWorkerSelect');
       const workers = getWorkersList();
-      sel.innerHTML = `<option value="ALL">🌐 Любой исполнитель (Общий пул)</option>` +
-        workers.map(w => `<option value="${w.id}">🛠 ${escapeHtml(w.name)} (@${escapeHtml(w.login)})</option>`).join('');
-      if ([...sel.options].some(o => o.value === selectedId)) {
-        sel.value = selectedId;
-      } else if (workers.length === 1) {
-        sel.value = workers[0].id;
-      }
+      sel.innerHTML = `<option value="ALL">🌐 Свободный заказ (любой автор)</option>` +
+        workers.map(w => `<option value="${w.id}">✍️ ${escapeHtml(w.name)} (@${escapeHtml(w.login)})</option>`).join('');
+      if ([...sel.options].some(o => o.value === selectedId)) sel.value = selectedId;
     }
 
     function openOrderSheet() {
       document.getElementById('editOrderId').value = '';
-      document.getElementById('orderSheetTitle').innerText = 'Новый заказ с Авито';
+      document.getElementById('orderSheetTitle').innerText = 'Новый заказ со студентом';
       document.getElementById('fTitle').value = '';
-      document.getElementById('fPrice').value = '';
-      document.getElementById('fPaid').value = 'Не выплачено';
-      document.getElementById('fUrl').value = '';
+      document.getElementById('fWorkType').value = 'Курсовая';
+      document.getElementById('fDeadline').value = '';
+      document.getElementById('fClientPrice').value = '';
+      document.getElementById('fWorkerPrice').value = '';
+      document.getElementById('fAntiplag').value = '';
+      document.getElementById('fVolume').value = '';
+      document.getElementById('fMaterialsUrl').value = '';
+      document.getElementById('fAvitoUrl').value = '';
       document.getElementById('fDesc').value = '';
+      updateProfitPreview();
       populateOrderWorkerSelect('ALL');
       existingEditingPhotos = [];
       stagedFiles = [];
@@ -1841,18 +1361,25 @@
       haptic('light');
     }
 
-    function openEditOrderSheet(orderId) {
-      const o = allOrders.find(x => x.id === orderId);
+    function openEditOrderSheet(id) {
+      const o = allOrders.find(x => x.id === id);
       if (!o) return;
-      const meta = parseOrderMeta(o);
+      const m = parseOrderMeta(o);
+
       document.getElementById('editOrderId').value = o.id;
       document.getElementById('orderSheetTitle').innerText = `Изменить заказ #${o.id}`;
       document.getElementById('fTitle').value = o.title || '';
-      document.getElementById('fPrice').value = o.final_price || '';
-      document.getElementById('fPaid').value = o.payment_status || 'Не выплачено';
-      document.getElementById('fUrl').value = o.avito_url || '';
+      document.getElementById('fWorkType').value = m.workType || 'Курсовая';
+      document.getElementById('fDeadline').value = m.deadline || '';
+      document.getElementById('fClientPrice').value = o.initial_price || '';
+      document.getElementById('fWorkerPrice').value = o.final_price || '';
+      document.getElementById('fAntiplag').value = m.antiplag || '';
+      document.getElementById('fVolume').value = m.volume || '';
+      document.getElementById('fMaterialsUrl').value = m.materialsUrl || '';
+      document.getElementById('fAvitoUrl').value = o.avito_url || '';
       document.getElementById('fDesc').value = o.instruction || '';
-      populateOrderWorkerSelect(meta.workerId || 'ALL');
+      updateProfitPreview();
+      populateOrderWorkerSelect(m.workerId || 'ALL');
       existingEditingPhotos = Array.isArray(o.photos) ? [...o.photos] : [];
       stagedFiles = [];
       renderStagedPhotos();
@@ -1860,9 +1387,7 @@
       haptic('light');
     }
 
-    function closeOrderSheet() {
-      document.getElementById('orderSheet').classList.remove('open');
-    }
+    function closeOrderSheet() { document.getElementById('orderSheet').classList.remove('open'); }
 
     function compressImage(file, maxWidth = 1200, quality = 0.75) {
       return new Promise((resolve) => {
@@ -1875,9 +1400,7 @@
             if (w > maxWidth) { h = Math.round((h * maxWidth) / w); w = maxWidth; }
             canvas.width = w; canvas.height = h;
             canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-            canvas.toBlob((blob) => {
-              resolve({ blob: blob || file, previewUrl: URL.createObjectURL(blob || file) });
-            }, 'image/jpeg', quality);
+            canvas.toBlob(blob => resolve({ blob: blob || file, previewUrl: URL.createObjectURL(blob || file) }), 'image/jpeg', quality);
           };
           img.src = e.target.result;
         };
@@ -1885,11 +1408,10 @@
       });
     }
 
-    // Параллельное сжатие изображений
     async function handleFilesSelect(fileList) {
       const files = Array.from(fileList);
       if (files.length === 0) return;
-      showToast('Обработка изображений...', 'info');
+      showToast('Сжатие скриншотов...', 'info');
       const compressed = await Promise.all(files.map(f => compressImage(f)));
       stagedFiles.push(...compressed);
       renderStagedPhotos();
@@ -1897,7 +1419,7 @@
     }
 
     window.addEventListener('paste', async (e) => {
-      if (!currentAccount || currentAccount.role === 'worker') return;
+      if (!currentAccount) return;
       const items = e.clipboardData?.items || [];
       const files = [];
       for (let item of items) {
@@ -1929,55 +1451,61 @@
     async function saveOrder() {
       const editId = document.getElementById('editOrderId').value;
       const title = document.getElementById('fTitle').value.trim();
-      const price = parseFloat(document.getElementById('fPrice').value) || 0;
-      const paid = document.getElementById('fPaid').value;
-      const url = document.getElementById('fUrl').value.trim();
-      const desc = document.getElementById('fDesc').value.trim();
+      const workType = document.getElementById('fWorkType').value;
       const workerId = document.getElementById('fWorkerSelect').value;
+      const deadline = document.getElementById('fDeadline').value;
+      const clientPrice = parseFloat(document.getElementById('fClientPrice').value) || 0;
+      const workerPrice = parseFloat(document.getElementById('fWorkerPrice').value) || 0;
+      const antiplag = document.getElementById('fAntiplag').value.trim();
+      const volume = document.getElementById('fVolume').value.trim();
+      const materialsUrl = document.getElementById('fMaterialsUrl').value.trim();
+      const avitoUrl = document.getElementById('fAvitoUrl').value.trim();
+      const desc = document.getElementById('fDesc').value.trim();
 
-      if (!title) return showToast('Введите название заказа!', 'error');
+      if (!title) return showToast('Укажите тему работы!', 'error');
 
       const workerObj = sysConfig.users.find(u => u.id === workerId);
-      const workerName = workerObj ? workerObj.name : 'Любой исполнитель';
+      const workerName = workerObj ? workerObj.name : 'Любой свободный автор';
 
       const btn = document.getElementById('saveOrderBtn');
-      btn.disabled = true;
-      btn.innerText = 'Загрузка фото...';
+      btn.disabled = true; btn.innerText = 'Загрузка материалов...';
 
       try {
         const uploadedUrls = [...existingEditingPhotos];
         for (let i = 0; i < stagedFiles.length; i++) {
-          const fname = `order_${Date.now()}_${i}_${Math.random().toString(36).substring(2, 7)}.jpg`;
+          const fname = `order_${Date.now()}_${i}_${Math.random().toString(36).substring(2, 6)}.jpg`;
           const pubUrl = await storageUploadPhoto(fname, stagedFiles[i].blob);
           uploadedUrls.push(pubUrl);
         }
 
         btn.innerText = 'Сохранение...';
+
         if (editId) {
-          const oldOrder = allOrders.find(x => x.id === Number(editId));
-          const oldMeta = oldOrder ? parseOrderMeta(oldOrder) : {};
-          const updatedMeta = packOrderMeta({ ...oldMeta, workerId, workerName });
+          const old = allOrders.find(x => x.id === Number(editId));
+          const oldMeta = old ? parseOrderMeta(old) : {};
+          const meta = packOrderMeta({
+            ...oldMeta,
+            workType, workerId, workerName, deadline, antiplag, volume, materialsUrl
+          });
 
           await sbFetch(`orders?id=eq.${editId}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
             body: JSON.stringify({
               title,
-              avito_url: url,
+              avito_url: avitoUrl,
               instruction: desc,
-              final_price: price,
-              payment_status: paid,
+              initial_price: clientPrice,
+              final_price: workerPrice,
               photos: uploadedUrls,
-              worker_comment: updatedMeta
+              worker_comment: meta
             })
           });
         } else {
-          const newMeta = packOrderMeta({
-            note: '',
-            workerId,
-            workerName,
-            agentId: currentAccount.id,
-            agentName: currentAccount.name
+          const meta = packOrderMeta({
+            workType, workerId, workerName, deadline, antiplag, volume, materialsUrl,
+            agentId: currentAccount.id, agentName: currentAccount.name,
+            resultUrl: '', resultPlag: '', note: ''
           });
 
           await sbFetch('orders', {
@@ -1985,62 +1513,65 @@
             headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
             body: JSON.stringify({
               title,
-              avito_url: url,
+              avito_url: avitoUrl,
               instruction: desc,
-              initial_price: price,
-              final_price: price,
+              initial_price: clientPrice,
+              final_price: workerPrice,
               status: 'В работе',
-              payment_status: paid,
+              payment_status: 'Не выплачено',
               photos: uploadedUrls,
-              worker_comment: newMeta
+              worker_comment: meta
             })
           });
         }
 
         closeOrderSheet();
         haptic('success');
-        showToast('Заказ сохранён!', 'success');
+        showToast('Заказ успешно сохранен!', 'success');
         await fetchAllData(false);
-      } catch (err) {
-        showToast('Ошибка сохранения: ' + err.message, 'error');
+      } catch (e) {
+        showToast('Ошибка сохранения: ' + e.message, 'error');
       } finally {
-        btn.disabled = false;
-        btn.innerText = 'Сохранить заказ';
+        btn.disabled = false; btn.innerText = 'Сохранить заказ';
       }
     }
 
-    // ШТОРКА ИСПОЛНИТЕЛЯ
-    function openWorkerSheet(orderId) {
-      const o = allOrders.find(x => x.id === orderId);
+    // ШТОРКА СДАЧИ АВТОРА
+    function openWorkerSheet(id) {
+      const o = allOrders.find(x => x.id === id);
       if (!o) return;
-      const meta = parseOrderMeta(o);
+      const m = parseOrderMeta(o);
+
       document.getElementById('wOrderId').value = o.id;
-      document.getElementById('wFinalPrice').value = o.final_price || 0;
       document.getElementById('wStatus').value = o.status || 'В работе';
-      document.getElementById('wComment').value = meta.note || '';
+      document.getElementById('wResultUrl').value = m.resultUrl || '';
+      document.getElementById('wResultPlag').value = m.resultPlag || '';
+      document.getElementById('wComment').value = m.note || '';
+
       document.getElementById('workerSheet').classList.add('open');
       haptic('light');
     }
 
-    function closeWorkerSheet() {
-      document.getElementById('workerSheet').classList.remove('open');
-    }
+    function closeWorkerSheet() { document.getElementById('workerSheet').classList.remove('open'); }
 
     async function saveWorkerUpdate() {
+      const id = Number(document.getElementById('wOrderId').value);
+      const o = allOrders.find(x => x.id === id);
+      const oldMeta = o ? parseOrderMeta(o) : {};
+
+      const status = document.getElementById('wStatus').value;
+      const resultUrl = document.getElementById('wResultUrl').value.trim();
+      const resultPlag = document.getElementById('wResultPlag').value.trim();
+      const note = document.getElementById('wComment').value.trim();
+
       const btn = document.getElementById('workerSaveBtn');
-      btn.disabled = true;
-      btn.innerText = 'Сохранение...';
+      btn.disabled = true; btn.innerText = 'Отправка...';
 
       try {
-        const id = Number(document.getElementById('wOrderId').value);
-        const o = allOrders.find(x => x.id === id);
-        const oldMeta = o ? parseOrderMeta(o) : {};
-        const finalPrice = parseFloat(document.getElementById('wFinalPrice').value) || 0;
-        const status = document.getElementById('wStatus').value;
-        const note = document.getElementById('wComment').value.trim();
-
         const updatedMeta = packOrderMeta({
           ...oldMeta,
+          resultUrl,
+          resultPlag,
           note,
           workerId: oldMeta.workerId === 'ALL' && currentAccount.role === 'worker' ? currentAccount.id : oldMeta.workerId,
           workerName: oldMeta.workerId === 'ALL' && currentAccount.role === 'worker' ? currentAccount.name : oldMeta.workerName
@@ -2049,69 +1580,177 @@
         await sbFetch(`orders?id=eq.${id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-          body: JSON.stringify({
-            final_price: finalPrice,
-            status: status,
-            worker_comment: updatedMeta
-          })
+          body: JSON.stringify({ status, worker_comment: updatedMeta })
         });
 
         closeWorkerSheet();
         haptic('success');
-        showToast('Отчёт отправлен', 'success');
+        showToast('Отчёт отправлен менеджеру', 'success');
         await fetchAllData(false);
       } catch (e) {
         showToast('Ошибка: ' + e.message, 'error');
       } finally {
-        btn.disabled = false;
-        btn.innerText = 'Сохранить изменения';
+        btn.disabled = false; btn.innerText = 'Отправить отчёт';
       }
     }
 
-    async function quickToggleDone(id, currentStatus) {
-      const next = currentStatus === 'Выполнен' ? 'В работе' : 'Выполнен';
-      haptic(next === 'Выполнен' ? 'success' : 'light');
+    async function quickWorkerStatus(id) {
+      const o = allOrders.find(x => x.id === id);
+      if (!o) return;
+      const nextStatus = o.status === 'В работе' ? 'На проверке' : 'В работе';
       await sbFetch(`orders?id=eq.${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-        body: JSON.stringify({ status: next })
+        body: JSON.stringify({ status: nextStatus })
       });
+      haptic('light');
+      showToast(`Статус: ${nextStatus}`, 'info');
+      await fetchAllData(false);
+    }
+
+    async function sendToRevision(id) {
+      await sbFetch(`orders?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ status: 'Правки' })
+      });
+      haptic('warning');
+      showToast('Заказ возвращён автору на правки', 'info');
       await fetchAllData(false);
     }
 
     async function quickTogglePaid(id, currentPaid) {
       const next = currentPaid === 'Выплачено' ? 'Не выплачено' : 'Выплачено';
-      haptic(next === 'Выплачено' ? 'success' : 'light');
       await sbFetch(`orders?id=eq.${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
         body: JSON.stringify({ payment_status: next })
       });
+      haptic(next === 'Выплачено' ? 'success' : 'light');
+      showToast(`Статус выплаты: ${next}`, 'info');
       await fetchAllData(false);
     }
 
-    async function payAllFiltered() {
-      const ok = await confirmAction('Отметить все завершенные заказы как выплаченные?');
+    async function payAllCompleted() {
+      const ok = await confirmAction('Выплатить вознаграждение авторам за все сданные работы?');
       if (!ok) return;
 
-      await sbFetch(`orders?status=eq.Выполнен&payment_status=eq.Не выплачено`, {
+      await sbFetch(`orders?status=eq.Сдан&payment_status=eq.Не выплачено`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
         body: JSON.stringify({ payment_status: 'Выплачено' })
       });
       haptic('success');
-      showToast('Все выполненные заказы оплачены', 'success');
+      showToast('Все сданные работы оплачены!', 'success');
       await fetchAllData(false);
     }
 
     async function removeOrder(id) {
-      const ok = await confirmAction(`Удалить заказ #${id}?`);
+      const ok = await confirmAction(`Удалить студенческий заказ #${id}?`);
       if (!ok) return;
 
       await sbFetch(`orders?id=eq.${id}`, { method: 'DELETE' });
       haptic('warning');
       showToast('Заказ удален', 'info');
       await fetchAllData(false);
+    }
+
+    // СТАТИСТИКА И ПОЛЬЗОВАТЕЛИ (АДМИН)
+    function renderAdminStats() {
+      const totalClient = allOrders.reduce((s, o) => s + (Number(o.initial_price) || 0), 0);
+      const totalAuthor = allOrders.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+      const net = totalClient - totalAuthor;
+
+      document.getElementById('stTotalVolume').innerText = totalClient.toLocaleString('ru-RU') + ' ₽';
+      document.getElementById('stNetProfit').innerText = (net >= 0 ? '+' : '') + net.toLocaleString('ru-RU') + ' ₽';
+
+      const agents = getAgentsList();
+      const aBox = document.getElementById('statsByAgents');
+      aBox.innerHTML = agents.length === 0 ? '<div style="color:var(--muted); font-size:12px;">Менеджеров нет</div>' :
+        agents.map(a => {
+          const aOrders = allOrders.filter(o => parseOrderMeta(o).agentId === a.id);
+          const aRev = aOrders.reduce((s, o) => s + (Number(o.initial_price) || 0), 0);
+          const aCost = aOrders.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+          return `
+            <div style="background:var(--surface-2); padding:10px; border-radius:12px; margin-bottom:6px; font-size:12px;">
+              <div style="display:flex; justify-content:space-between; font-weight:800;">
+                <span>💼 ${escapeHtml(a.name)}</span>
+                <span style="color:var(--success);">+${(aRev - aCost).toLocaleString('ru-RU')} ₽</span>
+              </div>
+              <div style="color:var(--muted); margin-top:2px;">Заказов: ${aOrders.length} • Оборот: ${aRev.toLocaleString('ru-RU')} ₽</div>
+            </div>
+          `;
+        }).join('');
+
+      const workers = getWorkersList();
+      const wBox = document.getElementById('statsByWorkers');
+      wBox.innerHTML = workers.length === 0 ? '<div style="color:var(--muted); font-size:12px;">Авторов нет</div>' :
+        workers.map(w => {
+          const wOrders = allOrders.filter(o => parseOrderMeta(o).workerId === w.id);
+          const active = wOrders.filter(o => o.status === 'В работе' || o.status === 'Правки').length;
+          const done = wOrders.filter(o => o.status === 'Сдан').length;
+          return `
+            <div style="background:var(--surface-2); padding:10px; border-radius:12px; margin-bottom:6px; font-size:12px;">
+              <div style="display:flex; justify-content:space-between; font-weight:800;">
+                <span>✍️ ${escapeHtml(w.name)}</span>
+                <span>${wOrders.length} работ</span>
+              </div>
+              <div style="color:var(--muted); margin-top:2px;">В работе: <b>${active}</b> • Сдано: <b>${done}</b></div>
+            </div>
+          `;
+        }).join('');
+    }
+
+    function renderAdminUsers() {
+      const box = document.getElementById('adminUsersList');
+      const roleBadges = { admin: '👑 Админ', agent: '💼 Менеджер', worker: '✍️ Автор' };
+      box.innerHTML = sysConfig.users.map(u => `
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:var(--surface-2); border-radius:12px; margin-bottom:6px; font-size:13px;">
+          <div>
+            <b>${escapeHtml(u.name)}</b> <span style="font-size:11px; color:var(--primary);">(${roleBadges[u.role] || u.role})</span>
+            <div style="font-size:11px; color:var(--muted);">Логин: ${escapeHtml(u.login)} • Пароль: ••••••••</div>
+          </div>
+          ${u.login !== DEFAULT_ADMIN.login ? `
+            <button class="c-btn danger" style="padding:6px 10px;" onclick="adminDeleteUser('${u.id}')">🗑</button>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    async function adminCreateUser() {
+      const name = document.getElementById('admNewName').value.trim();
+      const login = document.getElementById('admNewLogin').value.trim().toLowerCase();
+      const pass = document.getElementById('admNewPass').value.trim();
+      const role = document.getElementById('admNewRole').value;
+
+      if (!name || !login || !pass) return showToast('Заполните все поля!', 'error');
+      if (sysConfig.users.some(u => u.login.toLowerCase() === login)) {
+        return showToast('Логин уже занят!', 'error');
+      }
+
+      sysConfig.users.push({
+        id: 'usr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+        name, login, pass: await hashPassword(pass), role
+      });
+
+      await saveConfigToSupabase();
+      document.getElementById('admNewName').value = '';
+      document.getElementById('admNewLogin').value = '';
+      document.getElementById('admNewPass').value = '';
+      haptic('success');
+      showToast('Пользователь создан', 'success');
+      renderAll();
+    }
+
+    async function adminDeleteUser(uid) {
+      const ok = await confirmAction('Удалить этого пользователя навсегда?');
+      if (!ok) return;
+
+      sysConfig.users = sysConfig.users.filter(u => u.id !== uid);
+      await saveConfigToSupabase();
+      haptic('warning');
+      showToast('Пользователь удален', 'info');
+      renderAll();
     }
 
     // ГАЛЕРЕЯ СО СВАЙПАМИ
@@ -2142,7 +1781,7 @@
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // Запуск
+    // СТАРТ
     renderAll();
     fetchAllData(false);
   </script>
