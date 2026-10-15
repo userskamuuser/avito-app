@@ -6,8 +6,10 @@
   <link rel="icon" href="data:,">
   <title>Академ CRM — Заказы Авито</title>
 
-  <!-- Официальный Telegram WebApp SDK -->
+  <!-- Telegram WebApp SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Официальный Supabase JS SDK v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
@@ -57,7 +59,6 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-    /* БЛОКИРОВКА СДВИГА ВБОК */
     html, body {
       width: 100% !important;
       max-width: 100vw !important;
@@ -164,7 +165,7 @@
 
     /* АДМИН НАВИГАЦИЯ */
     .admin-nav {
-      display: none; grid-template-columns: repeat(3, 1fr); gap: 6px; background: var(--surface);
+      display: none; grid-template-columns: repeat(2, 1fr); gap: 6px; background: var(--surface);
       padding: 5px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 14px;
     }
     .admin-nav.visible { display: grid; }
@@ -212,14 +213,7 @@
     }
     .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--muted); }
 
-    .filter-bar { margin-bottom: 10px; display: none; }
-    .filter-bar.visible { display: block; }
-    .filter-select {
-      width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-      padding: 9px 12px; font-size: 13px; font-weight: 700; color: var(--text); outline: none;
-    }
-
-    /* АДАПТИВНЫЕ ВКЛАДКИ (5 ВКЛАДОК СО СКРОЛЛОМ) */
+    /* АДАПТИВНЫЕ ВКЛАДКИ */
     .tabs-grid {
       display: flex !important; gap: 5px; background: var(--surface); padding: 4px;
       border-radius: 14px; border: 1px solid var(--border); margin-bottom: 14px;
@@ -274,7 +268,7 @@
     .spec-lbl { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
     .spec-val { font-weight: 800; color: var(--text); }
 
-    /* ДВУХЭТАПНАЯ ОПЛАТА С РУЧНЫМИ СУММАМИ */
+    /* ДВУХЭТАПНАЯ ОПЛАТА */
     .pay-steps-row { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
     .pay-step-badge {
       display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px; border-radius: 9px;
@@ -294,7 +288,7 @@
     .price-sub { font-size: 11px; color: var(--muted); margin-top: 3px; display: flex; justify-content: space-between; }
     .net-profit { color: var(--success); font-weight: 800; }
 
-    /* БЛОК СКАЧИВАНИЯ ФАЙЛОВ */
+    /* ФАЙЛЫ */
     .file-group-box {
       background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;
       padding: 9px 11px; margin-bottom: 8px;
@@ -305,7 +299,7 @@
     .file-download-chip {
       display: flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border);
       padding: 6px 10px; border-radius: 9px; text-decoration: none; color: var(--text); font-size: 12px;
-      font-weight: 700; margin-bottom: 5px;
+      font-weight: 700; margin-bottom: 5px; cursor: pointer;
     }
     .file-download-chip:last-child { margin-bottom: 0; }
     .file-download-chip.highlight { border-color: rgba(139, 92, 246, 0.4); }
@@ -426,13 +420,13 @@
 
       <div class="auth-tabs">
         <button class="auth-tab active" id="authTabLogin" onclick="switchAuthTab('login')">🔑 Вход</button>
-        <button class="auth-tab" id="authTabReg" onclick="switchAuthTab('register')">✨ Создать аккаунт</button>
+        <button class="auth-tab" id="authTabReg" onclick="switchAuthTab('register')">✨ Регистрация</button>
       </div>
 
       <div id="loginBox">
         <div class="form-group">
-          <label class="form-label">Логин</label>
-          <input type="text" id="loginUser" class="f-input" placeholder="Введите логин" autocapitalize="none">
+          <label class="form-label">Email для входа</label>
+          <input type="email" id="loginEmail" class="f-input" placeholder="danil.danilka2003@list.ru" autocapitalize="none">
         </div>
         <div class="form-group">
           <label class="form-label">Пароль</label>
@@ -454,8 +448,8 @@
           <input type="text" id="regName" class="f-input" placeholder="Например: Иван (Курсовые)">
         </div>
         <div class="form-group">
-          <label class="form-label">Придумайте логин *</label>
-          <input type="text" id="regLogin" class="f-input" placeholder="ivan_author" autocapitalize="none">
+          <label class="form-label">Ваш Email *</label>
+          <input type="email" id="regEmail" class="f-input" placeholder="author@mail.ru" autocapitalize="none">
         </div>
         <div class="form-group">
           <label class="form-label">Придумайте пароль *</label>
@@ -486,7 +480,6 @@
     <div class="admin-nav" id="adminNav">
       <button class="admin-nav-btn active" id="admTab-orders" onclick="switchAdminSection('orders')">📋 Заказы</button>
       <button class="admin-nav-btn" id="admTab-stats" onclick="switchAdminSection('stats')">📊 Финансы</button>
-      <button class="admin-nav-btn" id="admTab-users" onclick="switchAdminSection('users')">👥 Пользователи</button>
     </div>
 
     <!-- СЕКЦИЯ 1: СПИСОК ЗАКАЗОВ -->
@@ -527,12 +520,7 @@
         <input type="text" class="search-input" id="orderSearchInput" placeholder="Поиск по теме, автору или номеру..." oninput="renderOrdersSection()">
       </div>
 
-      <!-- Фильтр менеджеров (для Админа) -->
-      <div class="filter-bar" id="agentFilterBar">
-        <select class="filter-select" id="agentFilterSelect" onchange="renderAll()"></select>
-      </div>
-
-      <!-- 5 Вкладок: В работе, Проверка, Правки, Сданы, Архив -->
+      <!-- 5 Вкладок -->
       <div class="tabs-grid">
         <button class="seg-tab active" id="tab-active" onclick="setOrderFilter('active')">🔥 В работе (<span id="cnt-active">0</span>)</button>
         <button class="seg-tab" id="tab-check" onclick="setOrderFilter('check')">👀 Проверка (<span id="cnt-check">0</span>)</button>
@@ -558,65 +546,6 @@
           <div style="font-size:11px; color:var(--muted); font-weight:700;">ЧИСТАЯ МАРЖА</div>
           <div style="font-size:19px; font-weight:800; color:var(--success); margin-top:4px;" id="stNetProfit">0 ₽</div>
         </div>
-      </div>
-      <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:14px; margin-bottom:12px;">
-        <div style="font-size:14px; font-weight:800; margin-bottom:8px;">💼 Статистика по менеджерам</div>
-        <div id="statsByAgents"></div>
-      </div>
-      <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:14px;">
-        <div style="font-size:14px; font-weight:800; margin-bottom:8px;">✍️ Нагрузка авторов</div>
-        <div id="statsByWorkers"></div>
-      </div>
-    </div>
-
-    <!-- СЕКЦИЯ 3: УПРАВЛЕНИЕ АККАУНТАМИ И БОТОМ (АДМИН) -->
-    <div class="users-section" id="sectionUsers" style="display:none;">
-      <div style="background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:16px; margin-bottom:14px;">
-        <div style="font-size:15px; font-weight:800; margin-bottom:4px;">🤖 Telegram Бот для авто-уведомлений</div>
-        <div style="font-size:12px; color:var(--muted); margin-bottom:10px;">Вставьте токен вашего бота из @BotFather. Сообщения о новых заказах и правках будут отправляться авторам автоматически в личку!</div>
-        <div class="form-group">
-          <label class="form-label">HTTP Bot Token</label>
-          <input type="text" id="admBotToken" class="f-input" placeholder="7123456789:AAH..." autocapitalize="none">
-        </div>
-        <button class="main-add-btn" style="padding:11px;" onclick="saveBotToken()">💾 Сохранить токен бота</button>
-      </div>
-
-      <div style="background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:16px; margin-bottom:14px;">
-        <div style="font-size:15px; font-weight:800; margin-bottom:12px;">＋ Добавить пользователя</div>
-        <div class="form-group">
-          <label class="form-label">Имя пользователя *</label>
-          <input type="text" id="admNewName" class="f-input" placeholder="Например: Анна (Презентации)">
-        </div>
-        <div class="f-row">
-          <div class="form-group">
-            <label class="form-label">Логин *</label>
-            <input type="text" id="admNewLogin" class="f-input" placeholder="anna_work" autocapitalize="none">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Пароль *</label>
-            <input type="password" id="admNewPass" class="f-input" placeholder="Пароль">
-          </div>
-        </div>
-        <div class="f-row">
-          <div class="form-group">
-            <label class="form-label">Роль</label>
-            <select id="admNewRole" class="f-input">
-              <option value="worker">✍️ Автор</option>
-              <option value="agent">💼 Менеджер</option>
-              <option value="admin">👑 Администратор</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Telegram ID (Chat ID)</label>
-            <input type="number" id="admNewTgId" class="f-input" placeholder="Например: 123456789">
-          </div>
-        </div>
-        <button class="main-add-btn" onclick="adminCreateUser()">Создать аккаунт</button>
-      </div>
-
-      <div style="background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:16px;">
-        <div style="font-size:15px; font-weight:800; margin-bottom:10px;">👥 Список пользователей</div>
-        <div id="adminUsersList"></div>
       </div>
     </div>
   </div>
@@ -676,7 +605,7 @@
         <input type="datetime-local" id="fDeadline" class="f-input" onchange="saveDraft()">
       </div>
 
-      <!-- РУЧНОЙ ВВОД СУММЫ СО СТУДЕНТА И ПРЕДОПЛАТЫ -->
+      <!-- РУЧНАЯ ПРЕДОПЛАТА И СУММЫ -->
       <div class="f-row">
         <div class="form-group">
           <label class="form-label">Сумма со студента (₽) *</label>
@@ -699,7 +628,6 @@
         </div>
       </div>
 
-      <!-- ИНФОРМАЦИЯ О РАСЧЁТАХ -->
       <div style="background:var(--surface-2); padding:10px 12px; border-radius:12px; margin-bottom:12px; font-size:12px; display:flex; justify-content:space-between; flex-direction:column; gap:4px;">
         <div style="display:flex; justify-content:space-between;">
           <span style="color:var(--muted);">Остаток со студента (доплата):</span>
@@ -723,11 +651,6 @@
           <input type="file" id="fDocFiles" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip,.rar,image/*" style="display:none" onchange="handleManagerFilesSelect(this.files)">
         </div>
         <div id="stagedManagerFilesList"></div>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">🔗 Ссылка на диалог Авито (для менеджера)</label>
-        <input type="url" id="fAvitoUrl" class="f-input" placeholder="https://www.avito.ru/..." oninput="saveDraft()">
       </div>
 
       <div class="form-group">
@@ -792,7 +715,7 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">Комментарий автора (что сделано / ответы на замечания)</label>
+        <label class="form-label">Комментарий автора</label>
         <textarea id="wComment" class="f-input" placeholder="Опишите, какие правки внесены или на что обратить внимание при сдаче..."></textarea>
       </div>
 
@@ -801,20 +724,19 @@
   </div>
 
   <script>
-    // 1. ИНИЦИАЛИЗАЦИЯ TELEGRAM И ВЕРХНЕГО ОТСТУПА
+    // 1. ИНИЦИАЛИЗАЦИЯ SUPABASE SDK V2
+    const SUPABASE_URL = 'https://vzsbdvwtwcvbqhcbssfi.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_yeu1O6x7OfgNi7sRhpV8SA_s3uxOGaU';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // 2. ИНИЦИАЛИЗАЦИЯ TELEGRAM
     const tg = window.Telegram?.WebApp;
     if (tg) {
       try {
         tg.ready();
         tg.expand();
-
-        if (typeof tg.requestFullscreen === 'function') {
-          tg.requestFullscreen();
-        }
-
-        if (typeof tg.disableVerticalSwipes === 'function') {
-          tg.disableVerticalSwipes();
-        }
+        if (typeof tg.requestFullscreen === 'function') tg.requestFullscreen();
+        if (typeof tg.disableVerticalSwipes === 'function') tg.disableVerticalSwipes();
 
         const updateSafeArea = () => {
           const sTop = tg.safeAreaInset?.top || 0;
@@ -871,109 +793,18 @@
       });
     }
 
-    async function hashPassword(str) {
-      const enc = new TextEncoder().encode(str + "_academ_crm_salt_2026");
-      const hashBuf = await crypto.subtle.digest('SHA-256', enc);
-      return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    // 2. НАСТРОЙКИ SUPABASE
-    const SUPABASE_URL = 'https://vzsbdvwtwcvbqhcbssfi.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_yeu1O6x7OfgNi7sRhpV8SA_s3uxOGaU';
-    const CONFIG_MARKER = '__SYSTEM_CONFIG__';
-
-    const DEFAULT_ADMIN = {
-      id: 'usr_admin_root',
-      name: 'Руководитель Агентства',
-      login: 'admin',
-      pass: 'Avito#Admin2026!',
-      role: 'admin'
-    };
-
-    let sysConfig = { rowId: null, users: [DEFAULT_ADMIN], botToken: '' };
     let currentAccount = null;
     let selectedRegRole = 'agent';
     let currentAdminSection = 'orders';
-    let currentOrderFilter = 'active'; // 'active', 'check', 'revision', 'done', 'archive'
+    let currentOrderFilter = 'active';
     let currentDeadlineFilter = 'all';
     let allOrders = [];
+    let allAuthors = [];
 
-    let existingManagerFiles = [];
     let stagedManagerFiles = [];
-    let existingWorkerFiles = [];
     let stagedWorkerFiles = [];
 
-    // АВТОВХОД
-    try {
-      const acc = localStorage.getItem('academ_crm_acc');
-      if (acc) currentAccount = JSON.parse(acc);
-      const cfg = localStorage.getItem('academ_crm_cfg');
-      if (cfg) sysConfig = JSON.parse(cfg);
-      const ord = localStorage.getItem('academ_crm_ord');
-      if (ord) allOrders = JSON.parse(ord);
-    } catch (e) {}
-
-    async function sbFetch(path, options = {}) {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 8000);
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
-          ...options,
-          signal: controller.signal,
-          headers: {
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            ...(options.headers || {})
-          }
-        });
-        if (!res.ok) throw new Error(await res.text());
-        return res;
-      } finally {
-        clearTimeout(timer);
-      }
-    }
-
-    async function storageUploadAnyFile(fileName, file) {
-      const mime = file.type || 'application/octet-stream';
-      const res = await fetch(`${SUPABASE_URL}/storage/v1/object/avito-screens/${encodeURIComponent(fileName)}`, {
-        method: 'POST',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': mime,
-          'x-upsert': 'true'
-        },
-        body: file
-      });
-      if (!res.ok) throw new Error(await res.text());
-      return `${SUPABASE_URL}/storage/v1/object/public/avito-screens/${encodeURIComponent(fileName)}`;
-    }
-
-    // АВТО-ОПОВЕЩЕНИЕ В TELEGRAM ЧЕРЕЗ BOT API
-    async function sendTelegramAlert(toUserId, textHtml) {
-      if (!sysConfig.botToken) return { ok: false, reason: 'no_token' };
-      const targetUser = sysConfig.users.find(u => u.id === toUserId);
-      if (!targetUser) return { ok: false, reason: 'no_user' };
-      if (!targetUser.tgId) return { ok: false, reason: 'no_tg_id' };
-
-      try {
-        const res = await fetch(`https://api.telegram.org/bot${sysConfig.botToken}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: targetUser.tgId,
-            text: textHtml,
-            parse_mode: 'HTML'
-          })
-        });
-        const data = await res.json();
-        if (data.ok) return { ok: true };
-        return { ok: false, reason: data.description || 'Ошибка API' };
-      } catch (err) {
-        return { ok: false, reason: err.message };
-      }
-    }
-
+    // ФАЙЛЫ
     function getFileIcon(filename) {
       const ext = (filename || '').split('.').pop().toLowerCase();
       if (['pdf'].includes(ext)) return '📕';
@@ -993,123 +824,50 @@
       return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     }
 
-    // МЕТАДАННЫЕ ЗАКАЗА С РУЧНОЙ ПРЕДОПЛАТОЙ И АРХИВОМ
-    function parseOrderMeta(o) {
-      const clientP = Number(o.initial_price) || 0;
-      let meta = {
-        workType: 'Курсовая',
-        deadline: '',
-        volume: '',
-        materialsUrl: '',
-        materialFiles: [],
-        resultUrl: '',
-        resultFiles: [],
-        note: '',
-        isUrgent: false,
-        prepaidAmount: Math.round(clientP / 2),
-        prepaid: false,
-        postpaid: false,
-        isArchived: false,
-        revisions: [],
-        workerId: 'ALL',
-        workerName: 'Любой свободный автор',
-        agentId: '',
-        agentName: 'Менеджер'
-      };
-      if (o.worker_comment) {
-        if (o.worker_comment.trim().startsWith('{')) {
-          try {
-            meta = { ...meta, ...JSON.parse(o.worker_comment) };
-          } catch (e) { meta.note = o.worker_comment; }
-        } else {
-          meta.note = o.worker_comment;
-        }
-      }
-      if (!Array.isArray(meta.revisions)) meta.revisions = [];
-      if (!Array.isArray(meta.materialFiles)) meta.materialFiles = [];
-      if (!Array.isArray(meta.resultFiles)) meta.resultFiles = [];
-      if (meta.prepaidAmount === undefined) meta.prepaidAmount = Math.round(clientP / 2);
-      return meta;
-    }
-
-    function packOrderMeta(m) { return JSON.stringify(m); }
-
-    // СИНХРОНИЗАЦИЯ
+    // ЗАГРУЗКА ДАННЫХ ИЗ НАСТОЯЩИХ ТАБЛИЦ С УЧЕТОМ RLS
     async function fetchAllData(showToastAlert = false) {
       try {
-        const res = await sbFetch('orders?select=*&order=id.desc&limit=60');
-        const rows = await res.json();
+        if (!currentAccount) return;
 
-        const cfgRow = rows.find(r => r.title === CONFIG_MARKER);
-        if (cfgRow) {
-          sysConfig.rowId = cfgRow.id;
-          const stored = (Array.isArray(cfgRow.photos) && cfgRow.photos[0]) ? cfgRow.photos[0] : {};
-          if (Array.isArray(stored.users) && stored.users.length > 0) {
-            sysConfig.users = stored.users;
-            if (!sysConfig.users.some(u => u.login === DEFAULT_ADMIN.login)) {
-              sysConfig.users.unshift(DEFAULT_ADMIN);
-            }
-          }
-          if (stored.botToken) sysConfig.botToken = stored.botToken;
-        }
+        // Загружаем авторов для выбора в заказах
+        const { data: authors } = await sb
+          .from('profiles')
+          .select('id, name, role')
+          .eq('role', 'worker');
+        allAuthors = authors || [];
 
-        allOrders = rows.filter(r => r.title !== CONFIG_MARKER);
+        // База данных САМА фильтрует заказы по RLS в зависимости от роли
+        const { data: orders, error } = await sb
+          .from('orders')
+          .select(`
+            *,
+            order_files (*),
+            order_revisions (*, sender:sender_id(name, role)),
+            worker:worker_id(name),
+            agent:agent_id(name)
+          `)
+          .order('deadline', { ascending: true });
 
-        localStorage.setItem('academ_crm_cfg', JSON.stringify(sysConfig));
-        localStorage.setItem('academ_crm_ord', JSON.stringify(allOrders));
-
-        if (currentAccount) {
-          const found = sysConfig.users.find(u => u.id === currentAccount.id || u.login === currentAccount.login);
-          if (found) {
-            if (tg?.initDataUnsafe?.user?.id && found.tgId !== tg.initDataUnsafe.user.id) {
-              found.tgId = tg.initDataUnsafe.user.id;
-              saveConfigToSupabase();
-            }
-            currentAccount = found;
-            localStorage.setItem('academ_crm_acc', JSON.stringify(currentAccount));
-          }
-        }
+        if (error) throw error;
+        allOrders = orders || [];
 
         renderAll();
         if (showToastAlert) showToast('Данные обновлены', 'success');
       } catch (err) {
-        if (showToastAlert) showToast('Ошибка соединения: ' + err.message, 'error');
+        if (showToastAlert) showToast('Ошибка: ' + err.message, 'error');
         renderAll();
       }
     }
 
-    // 4. ФОНОВОЕ АВТООБНОВЛЕНИЕ БАЗЫ (КАЖДЫЕ 15 СЕКУНД)
+    // ФОНОВОЕ АВТООБНОВЛЕНИЕ КАЖДЫЕ 15 СЕКУНД
     setInterval(() => {
-      // Обновляем только если пользователь залогинен и не открыта шторка ввода
       const isSheetOpen = document.querySelector('.sheet-backdrop.open');
       if (currentAccount && !isSheetOpen) {
         fetchAllData(false);
       }
     }, 15000);
 
-    async function saveConfigToSupabase() {
-      const payload = {
-        title: CONFIG_MARKER,
-        status: CONFIG_MARKER,
-        photos: [{ users: sysConfig.users, botToken: sysConfig.botToken || '' }]
-      };
-      if (sysConfig.rowId) {
-        await sbFetch(`orders?id=eq.${sysConfig.rowId}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-          body: JSON.stringify({ photos: payload.photos })
-        });
-      } else {
-        await sbFetch('orders', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-          body: JSON.stringify(payload)
-        });
-      }
-      localStorage.setItem('academ_crm_cfg', JSON.stringify(sysConfig));
-    }
-
-    // АВТОРИЗАЦИЯ
+    // АВТОРИЗАЦИЯ SUPABASE AUTH
     function switchAuthTab(tab) {
       document.getElementById('authTabLogin').classList.toggle('active', tab === 'login');
       document.getElementById('authTabReg').classList.toggle('active', tab === 'register');
@@ -1124,94 +882,92 @@
     }
 
     async function handleLogin() {
-      const login = document.getElementById('loginUser').value.trim().toLowerCase();
+      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
       const pass = document.getElementById('loginPass').value.trim();
-      if (!login || !pass) return showToast('Введите логин и пароль!', 'error');
+      if (!email || !pass) return showToast('Введите email и пароль!', 'error');
 
       const btn = document.getElementById('loginBtn');
-      btn.disabled = true; btn.innerText = 'Проверка...';
+      btn.disabled = true; btn.innerText = 'Вход...';
 
-      await fetchAllData(false);
-      const hash = await hashPassword(pass);
-      const matched = sysConfig.users.find(u => u.login.toLowerCase() === login && (u.pass === hash || u.pass === pass));
-
+      const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
       btn.disabled = false; btn.innerText = 'Войти в аккаунт';
-      if (!matched) {
+
+      if (error) {
         haptic('error');
-        return showToast('Неверный логин или пароль!', 'error');
+        return showToast('Неверный логин или пароль: ' + error.message, 'error');
       }
 
-      if (matched.pass === pass) {
-        matched.pass = hash;
-        saveConfigToSupabase();
-      }
-
-      if (tg?.initDataUnsafe?.user?.id) {
-        matched.tgId = tg.initDataUnsafe.user.id;
-        saveConfigToSupabase();
-      }
-
-      currentAccount = matched;
-      localStorage.setItem('academ_crm_acc', JSON.stringify(currentAccount));
-      localStorage.setItem('academ_crm_last_login', currentAccount.login);
-      document.getElementById('loginPass').value = '';
-      haptic('success');
-      showToast(`С возвращением, ${currentAccount.name}!`, 'success');
-      renderAll();
+      await syncCurrentUser();
     }
 
     async function handleRegister() {
       const name = document.getElementById('regName').value.trim();
-      const login = document.getElementById('regLogin').value.trim().toLowerCase();
+      const email = document.getElementById('regEmail').value.trim().toLowerCase();
       const pass = document.getElementById('regPass').value.trim();
 
-      if (!name || !login || !pass) return showToast('Заполните все поля!', 'error');
+      if (!name || !email || !pass) return showToast('Заполните все поля!', 'error');
       if (pass.length < 6) return showToast('Пароль минимум 6 знаков!', 'error');
 
       const btn = document.getElementById('regBtn');
       btn.disabled = true; btn.innerText = 'Создание...';
 
-      try {
-        await fetchAllData(false);
-        if (sysConfig.users.some(u => u.login.toLowerCase() === login)) {
-          return showToast('Этот логин уже занят!', 'error');
+      const { data, error } = await sb.auth.signUp({
+        email,
+        password: pass,
+        options: {
+          data: { name: name, role: selectedRegRole }
         }
+      });
 
-        const newUser = {
-          id: 'usr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
-          name, login, pass: await hashPassword(pass), role: selectedRegRole,
-          tgId: tg?.initDataUnsafe?.user?.id || null
-        };
+      btn.disabled = false; btn.innerText = 'Создать аккаунт';
 
-        sysConfig.users.push(newUser);
-        await saveConfigToSupabase();
-
-        currentAccount = newUser;
-        localStorage.setItem('academ_crm_acc', JSON.stringify(currentAccount));
-        localStorage.setItem('academ_crm_last_login', currentAccount.login);
-        haptic('success');
-        showToast('Профиль успешно создан!', 'success');
-        renderAll();
-      } catch (e) {
-        showToast('Ошибка регистрации: ' + e.message, 'error');
-      } finally {
-        btn.disabled = false; btn.innerText = 'Создать аккаунт';
+      if (error) {
+        return showToast('Ошибка: ' + error.message, 'error');
       }
+
+      showToast('Аккаунт создан!', 'success');
+      await syncCurrentUser();
     }
 
-    function logoutAccount() {
+    async function syncCurrentUser() {
+      const { data: { session } } = await sb.auth.getSession();
+      if (!session) {
+        currentAccount = null;
+        renderAll();
+        return;
+      }
+
+      const { data: profile } = await sb
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+
+      currentAccount = profile || { id: session.user.id, name: 'Пользователь', role: 'worker' };
+
+      // Привязка Telegram ID
+      if (tg?.initDataUnsafe?.user?.id && currentAccount.tg_id !== tg.initDataUnsafe.user.id) {
+        await sb.from('profiles').update({ tg_id: tg.initDataUnsafe.user.id }).eq('id', currentAccount.id);
+        currentAccount.tg_id = tg.initDataUnsafe.user.id;
+      }
+
+      haptic('success');
+      renderAll();
+      await fetchAllData(false);
+    }
+
+    async function logoutAccount() {
+      await sb.auth.signOut();
       currentAccount = null;
-      localStorage.removeItem('academ_crm_acc');
       haptic('light');
-      const lastLogin = localStorage.getItem('academ_crm_last_login') || '';
-      document.getElementById('loginUser').value = lastLogin;
       renderAll();
     }
 
     function switchAdminSection(sec) {
       currentAdminSection = sec;
-      ['orders', 'stats', 'users'].forEach(s => {
-        document.getElementById('admTab-' + s).classList.toggle('active', s === sec);
+      ['orders', 'stats'].forEach(s => {
+        const el = document.getElementById('admTab-' + s);
+        if (el) el.classList.toggle('active', s === sec);
       });
       haptic('light');
       renderAll();
@@ -1235,17 +991,10 @@
       renderOrdersSection();
     }
 
-    function getWorkersList() { return sysConfig.users.filter(u => u.role === 'worker'); }
-    function getAgentsList() { return sysConfig.users.filter(u => u.role === 'agent'); }
-
     // ГЛАВНЫЙ РЕНДЕР
     function renderAll() {
       if (!currentAccount) {
         document.getElementById('authScreen').classList.add('open');
-        const lastLogin = localStorage.getItem('academ_crm_last_login');
-        if (lastLogin && document.getElementById('loginUser')) {
-          document.getElementById('loginUser').value = lastLogin;
-        }
         return;
       }
       document.getElementById('authScreen').classList.remove('open');
@@ -1261,49 +1010,20 @@
 
       const showOrders = !isAdm || currentAdminSection === 'orders';
       const showStats = isAdm && currentAdminSection === 'stats';
-      const showUsers = isAdm && currentAdminSection === 'users';
 
       document.getElementById('sectionOrders').style.display = showOrders ? 'block' : 'none';
       document.getElementById('sectionStats').style.display = showStats ? 'block' : 'none';
-      document.getElementById('sectionUsers').style.display = showUsers ? 'block' : 'none';
 
       document.getElementById('bottomBar').style.display = (showOrders && (role === 'agent' || role === 'admin')) ? 'flex' : 'none';
 
-      populateAgentFilterDropdown();
-
       if (showOrders) renderOrdersSection();
       if (showStats) renderAdminStats();
-      if (showUsers) renderAdminUsers();
     }
 
-    function populateAgentFilterDropdown() {
-      const bar = document.getElementById('agentFilterBar');
-      const sel = document.getElementById('agentFilterSelect');
-      if (currentAccount.role === 'admin') {
-        bar.classList.add('visible');
-        const prev = sel.value || 'ALL';
-        const agents = getAgentsList();
-        sel.innerHTML = `<option value="ALL">👤 Все менеджеры (${agents.length})</option>` +
-          agents.map(a => `<option value="${a.id}">💼 Менеджер: ${escapeHtml(a.name)}</option>`).join('');
-        if ([...sel.options].some(o => o.value === prev)) sel.value = prev;
-      } else {
-        bar.classList.remove('visible');
-      }
-    }
-
-    // РЕНДЕР КАРТОЧЕК С УЧЕТОМ АРХИВА И РУЧНОЙ ПРЕДОПЛАТЫ
+    // РЕНДЕР КАРТОЧЕК
     function renderOrdersSection() {
       const role = currentAccount.role;
-      const selectedAgentId = document.getElementById('agentFilterSelect')?.value || 'ALL';
       const searchVal = (document.getElementById('orderSearchInput')?.value || '').toLowerCase().trim();
-
-      const scopedOrders = allOrders.filter(o => {
-        const m = parseOrderMeta(o);
-        if (role === 'agent') return m.agentId === currentAccount.id;
-        if (role === 'worker') return m.workerId === currentAccount.id || m.workerId === 'ALL';
-        if (role === 'admin' && selectedAgentId !== 'ALL') return m.agentId === selectedAgentId;
-        return true;
-      });
 
       const now = new Date();
       const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
@@ -1311,12 +1031,11 @@
       const endTomorrow = endToday + 86400000;
       const endWeek = startToday + 7 * 86400000;
 
-      const filteredByDeadline = scopedOrders.filter(o => {
-        const m = parseOrderMeta(o);
+      const filteredByDeadline = allOrders.filter(o => {
         if (currentDeadlineFilter === 'all') return true;
-        if (currentDeadlineFilter === 'urgent') return m.isUrgent === true;
-        if (!m.deadline) return false;
-        const dl = new Date(m.deadline).getTime();
+        if (currentDeadlineFilter === 'urgent') return o.is_urgent === true;
+        if (!o.deadline) return false;
+        const dl = new Date(o.deadline).getTime();
         if (currentDeadlineFilter === 'today') return dl >= startToday && dl <= endToday;
         if (currentDeadlineFilter === 'tomorrow') return dl > endToday && dl <= endTomorrow;
         if (currentDeadlineFilter === 'week') return dl >= startToday && dl <= endWeek;
@@ -1325,39 +1044,28 @@
 
       const filteredBySearch = filteredByDeadline.filter(o => {
         if (!searchVal) return true;
-        const m = parseOrderMeta(o);
+        const wName = o.worker?.name || '';
         return (o.title || '').toLowerCase().includes(searchVal) ||
                String(o.id).includes(searchVal) ||
-               (m.workerName || '').toLowerCase().includes(searchVal) ||
-               (m.workType || '').toLowerCase().includes(searchVal);
+               wName.toLowerCase().includes(searchVal) ||
+               (o.work_type || '').toLowerCase().includes(searchVal);
       });
 
-      filteredBySearch.sort((a, b) => {
-        const mA = parseOrderMeta(a);
-        const mB = parseOrderMeta(b);
-        if (mA.isUrgent && !mB.isUrgent) return -1;
-        if (!mA.isUrgent && mB.isUrgent) return 1;
-        if (!mA.deadline) return 1;
-        if (!mB.deadline) return -1;
-        return new Date(mA.deadline) - new Date(mB.deadline);
-      });
-
-      // Подсчет счетчиков (вкладки 1-4 не показывают архивные заказы)
-      const nonArchived = filteredBySearch.filter(o => !parseOrderMeta(o).isArchived);
+      const nonArchived = filteredBySearch.filter(o => !o.is_archived);
       document.getElementById('cnt-active').innerText = nonArchived.filter(o => o.status === 'В работе').length;
       document.getElementById('cnt-check').innerText = nonArchived.filter(o => o.status === 'На проверке').length;
       document.getElementById('cnt-revision').innerText = nonArchived.filter(o => o.status === 'Правки').length;
       document.getElementById('cnt-done').innerText = nonArchived.filter(o => o.status === 'Сдан').length;
-      document.getElementById('cnt-archive').innerText = filteredBySearch.filter(o => parseOrderMeta(o).isArchived).length;
+      document.getElementById('cnt-archive').innerText = filteredBySearch.filter(o => o.is_archived).length;
 
-      renderHeroDashboard(scopedOrders.filter(o => !parseOrderMeta(o).isArchived));
+      renderHeroDashboard(allOrders.filter(o => !o.is_archived));
 
       let displayList = [];
       if (currentOrderFilter === 'active') displayList = nonArchived.filter(o => o.status === 'В работе');
       else if (currentOrderFilter === 'check') displayList = nonArchived.filter(o => o.status === 'На проверке');
       else if (currentOrderFilter === 'revision') displayList = nonArchived.filter(o => o.status === 'Правки');
       else if (currentOrderFilter === 'done') displayList = nonArchived.filter(o => o.status === 'Сдан');
-      else if (currentOrderFilter === 'archive') displayList = filteredBySearch.filter(o => parseOrderMeta(o).isArchived);
+      else if (currentOrderFilter === 'archive') displayList = filteredBySearch.filter(o => o.is_archived);
 
       const box = document.getElementById('ordersContainer');
       if (displayList.length === 0) {
@@ -1375,9 +1083,9 @@
 
       if (role === 'worker') {
         const toPay = doneOrders.filter(o => o.payment_status === 'Не выплачено')
-          .reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+          .reduce((s, o) => s + (Number(o.worker_price) || 0), 0);
         const totalEarned = orders.filter(o => o.payment_status === 'Выплачено')
-          .reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+          .reduce((s, o) => s + (Number(o.worker_price) || 0), 0);
 
         document.getElementById('heroLabel').innerText = 'К ВЫПЛАТЕ АВТОРУ';
         document.getElementById('heroAmount').innerText = toPay.toLocaleString('ru-RU') + ' ₽';
@@ -1387,12 +1095,12 @@
         document.getElementById('heroStat2Lbl').innerText = 'Уже выплачено';
         document.getElementById('heroStat2Val').innerText = `${totalEarned.toLocaleString('ru-RU')} ₽`;
       } else {
-        const totalClient = orders.reduce((s, o) => s + (Number(o.initial_price) || 0), 0);
-        const totalAuthor = orders.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+        const totalClient = orders.reduce((s, o) => s + (Number(o.client_price) || 0), 0);
+        const totalAuthor = orders.reduce((s, o) => s + (Number(o.worker_price) || 0), 0);
         const netProfit = totalClient - totalAuthor;
 
         const debtToAuthors = doneOrders.filter(o => o.payment_status === 'Не выплачено')
-          .reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+          .reduce((s, o) => s + (Number(o.worker_price) || 0), 0);
 
         document.getElementById('heroLabel').innerText = role === 'agent' ? 'МОЯ ЧИСТАЯ МАРЖА' : 'ОБЩАЯ ЧИСТАЯ МАРЖА';
         document.getElementById('heroAmount').innerText = (netProfit >= 0 ? '+' : '') + netProfit.toLocaleString('ru-RU') + ' ₽';
@@ -1418,18 +1126,16 @@
       return `<span class="deadline-pill deadline-ok">📅 Дедлайн: ${dt}</span>`;
     }
 
-    // ГЕНЕРАТОР КАРТОЧКИ ЗАКАЗА
+    // КАРТОЧКА ЗАКАЗА
     function renderOrderCardHtml(o, role) {
-      const m = parseOrderMeta(o);
       const isDone = o.status === 'Сдан';
       const isPaid = o.payment_status === 'Выплачено';
 
-      const clientP = Number(o.initial_price) || 0;
-      const workerP = Number(o.final_price) || 0;
+      const clientP = Number(o.client_price) || 0;
+      const workerP = Number(o.worker_price) || 0;
       const margin = clientP - workerP;
 
-      // Ручная предоплата и остаток
-      const prepaidP = Number(m.prepaidAmount) || 0;
+      const prepaidP = Number(o.prepaid_amount) || 0;
       const remainderP = Math.max(0, clientP - prepaidP);
 
       const statusClasses = {
@@ -1439,26 +1145,23 @@
         'Сдан': 'st-done'
       };
 
-      // КНОПКИ ВНИЗУ КАРТОЧКИ
       let footerBtns = '';
       if (role === 'worker') {
         footerBtns = `
           <button class="c-btn primary" onclick="openWorkerSheet(${o.id})">✍️ Сдать / Отчёт</button>
-          <button class="c-btn" onclick="quickWorkerStatus(${o.id})">🔄 Сменить статус</button>
+          <button class="c-btn" onclick="quickWorkerStatus(${o.id}, '${o.status}')">🔄 Сменить статус</button>
         `;
       } else if (role === 'agent' || role === 'admin') {
-        // Персональная выплата автору под заказ
         let payAuthorBtn = '';
         if (isDone) {
           payAuthorBtn = isPaid
             ? `<button class="c-btn" onclick="quickTogglePaid(${o.id}, '${o.payment_status}')">↩ Снять оплату</button>`
-            : `<button class="c-btn success" onclick="quickPayAuthor(${o.id}, ${workerP}, '${escapeHtml(m.workerName)}')">💳 Выплатить ${workerP.toLocaleString('ru-RU')} ₽</button>`;
+            : `<button class="c-btn success" onclick="quickPayAuthor(${o.id}, ${workerP}, '${escapeHtml(o.worker?.name || 'Автор')}')">💳 Выплатить ${workerP.toLocaleString('ru-RU')} ₽</button>`;
         }
 
-        // Кнопка Архива (для завершенных заказов)
         let archiveBtn = '';
         if (isDone && isPaid) {
-          archiveBtn = `<button class="c-btn" onclick="quickToggleArchive(${o.id})">${m.isArchived ? '↩ Из архива' : '📁 В архив'}</button>`;
+          archiveBtn = `<button class="c-btn" onclick="quickToggleArchive(${o.id}, ${o.is_archived})">${o.is_archived ? '↩ Из архива' : '📁 В архив'}</button>`;
         }
 
         footerBtns = `
@@ -1470,14 +1173,13 @@
         `;
       }
 
-      // БЛОК ДВУХЭТАПНОЙ ОПЛАТЫ С ТОЧНЫМИ СУММАМИ
       const payStepsHtml = (role !== 'worker') ? `
         <div class="pay-steps-row">
-          <div class="pay-step-badge ${m.prepaid ? 'paid' : 'unpaid'}" onclick="quickTogglePaymentStep(${o.id}, 'prepaid')">
-            ${m.prepaid ? '✓ Предоплата: ' + prepaidP.toLocaleString('ru-RU') + ' ₽' : '⏳ Ждём предоплату: ' + prepaidP.toLocaleString('ru-RU') + ' ₽'}
+          <div class="pay-step-badge ${o.prepaid_received ? 'paid' : 'unpaid'}" onclick="quickTogglePaymentStep(${o.id}, 'prepaid_received', ${!o.prepaid_received})">
+            ${o.prepaid_received ? '✓ Предоплата: ' + prepaidP.toLocaleString('ru-RU') + ' ₽' : '⏳ Ждём предоплату: ' + prepaidP.toLocaleString('ru-RU') + ' ₽'}
           </div>
-          <div class="pay-step-badge ${m.postpaid ? 'paid' : 'unpaid'}" onclick="quickTogglePaymentStep(${o.id}, 'postpaid')">
-            ${m.postpaid ? '✓ Доплата: ' + remainderP.toLocaleString('ru-RU') + ' ₽' : '⏳ Ожидает доплаты: ' + remainderP.toLocaleString('ru-RU') + ' ₽'}
+          <div class="pay-step-badge ${o.postpaid_received ? 'paid' : 'unpaid'}" onclick="quickTogglePaymentStep(${o.id}, 'postpaid_received', ${!o.postpaid_received})">
+            ${o.postpaid_received ? '✓ Доплата: ' + remainderP.toLocaleString('ru-RU') + ' ₽' : '⏳ Ожидает доплаты: ' + remainderP.toLocaleString('ru-RU') + ' ₽'}
           </div>
         </div>
       ` : '';
@@ -1500,68 +1202,73 @@
         </div>
       `;
 
-      const matFilesHtml = (m.materialFiles && m.materialFiles.length > 0) ? `
+      const files = o.order_files || [];
+      const matFiles = files.filter(f => f.file_category === 'material');
+      const resFiles = files.filter(f => f.file_category === 'result');
+
+      const matFilesHtml = (matFiles.length > 0) ? `
         <div class="file-group-box">
-          <div class="file-group-title">📎 Материалы и методички (${m.materialFiles.length}):</div>
-          ${m.materialFiles.map(f => `
-            <a href="${f.url}" download="${escapeHtml(f.name)}" target="_blank" class="file-download-chip">
-              <span>${getFileIcon(f.name)}</span>
-              <span class="file-name-text">${escapeHtml(f.name)}</span>
-              <span class="file-size-text">${formatBytes(f.size)}</span>
+          <div class="file-group-title">📎 Материалы и методички (${matFiles.length}):</div>
+          ${matFiles.map(f => `
+            <div class="file-download-chip" onclick="downloadSignedFile('${f.file_path}')">
+              <span>${getFileIcon(f.file_name)}</span>
+              <span class="file-name-text">${escapeHtml(f.file_name)}</span>
+              <span class="file-size-text">${formatBytes(f.file_size)}</span>
               <span class="dl-btn-icon">⬇ Скачать</span>
-            </a>
+            </div>
           `).join('')}
         </div>
       ` : '';
 
-      const resFilesHtml = (m.resultFiles && m.resultFiles.length > 0) ? `
+      const resFilesHtml = (resFiles.length > 0) ? `
         <div class="file-group-box result">
-          <div class="file-group-title">🎓 Готовая работа от автора (${m.resultFiles.length}):</div>
-          ${m.resultFiles.map(f => `
-            <a href="${f.url}" download="${escapeHtml(f.name)}" target="_blank" class="file-download-chip highlight">
-              <span>${getFileIcon(f.name)}</span>
-              <span class="file-name-text">${escapeHtml(f.name)}</span>
-              <span class="file-size-text">${formatBytes(f.size)}</span>
+          <div class="file-group-title">🎓 Готовая работа от автора (${resFiles.length}):</div>
+          ${resFiles.map(f => `
+            <div class="file-download-chip highlight" onclick="downloadSignedFile('${f.file_path}')">
+              <span>${getFileIcon(f.file_name)}</span>
+              <span class="file-name-text">${escapeHtml(f.file_name)}</span>
+              <span class="file-size-text">${formatBytes(f.file_size)}</span>
               <span class="dl-btn-icon">⬇ Скачать</span>
-            </a>
+            </div>
           `).join('')}
         </div>
       ` : '';
 
-      const revTimelineHtml = (m.revisions && m.revisions.length > 0) ? `
+      const revisions = o.order_revisions || [];
+      const revTimelineHtml = (revisions.length > 0) ? `
         <div class="revisions-timeline">
-          <b style="color:var(--danger); display:block; margin-bottom:4px;">🟠 Замечания и правки (${m.revisions.length}):</b>
-          ${m.revisions.slice(-2).map(r => `
+          <b style="color:var(--danger); display:block; margin-bottom:4px;">🟠 Замечания и правки (${revisions.length}):</b>
+          ${revisions.slice(-2).map(r => `
             <div class="rev-item">
-              <div class="rev-meta">${escapeHtml(r.sender)} • ${escapeHtml(r.date)}</div>
-              <div>${escapeHtml(r.text)}</div>
+              <div class="rev-meta">${escapeHtml(r.sender?.name || 'Пользователь')} • ${new Date(r.created_at).toLocaleDateString('ru-RU')}</div>
+              <div>${escapeHtml(r.comment)}</div>
             </div>
           `).join('')}
         </div>
       ` : '';
 
       return `
-        <div class="order-card ${m.isUrgent ? 'urgent-card' : ''}">
+        <div class="order-card ${o.is_urgent ? 'urgent-card' : ''}">
           <div class="card-top">
             <div style="display:flex; align-items:center; gap:6px;">
-              <span class="work-type-tag">${escapeHtml(m.workType || 'Работа')}</span>
-              ${m.isUrgent ? `<span class="urgent-badge">🔥 СРОЧНЫЙ</span>` : ''}
-              ${m.isArchived ? `<span style="font-size:10px; background:var(--surface-2); padding:3px 6px; border-radius:6px; color:var(--muted);">📁 В архиве</span>` : ''}
+              <span class="work-type-tag">${escapeHtml(o.work_type || 'Работа')}</span>
+              ${o.is_urgent ? `<span class="urgent-badge">🔥 СРОЧНЫЙ</span>` : ''}
+              ${o.is_archived ? `<span style="font-size:10px; background:var(--surface-2); padding:3px 6px; border-radius:6px; color:var(--muted);">📁 В архиве</span>` : ''}
             </div>
             <span class="status-pill ${statusClasses[o.status] || 'st-work'}">${o.status}</span>
           </div>
 
           <div class="card-title">${escapeHtml(o.title)}</div>
-          <div style="margin-bottom:8px;">${formatDeadline(m.deadline, isDone)}</div>
+          <div style="margin-bottom:8px;">${formatDeadline(o.deadline, isDone)}</div>
 
           <div class="spec-grid">
             <div class="spec-item">
               <span class="spec-lbl">Объём</span>
-              <span class="spec-val">${escapeHtml(m.volume || 'По заданию')}</span>
+              <span class="spec-val">${escapeHtml(o.volume || 'По заданию')}</span>
             </div>
             <div class="spec-item">
               <span class="spec-lbl">Автор</span>
-              <span class="spec-val">${escapeHtml(m.workerName || 'Не назначен')}</span>
+              <span class="spec-val">${escapeHtml(o.worker?.name || 'Не назначен')}</span>
             </div>
           </div>
 
@@ -1572,10 +1279,10 @@
           ${resFilesHtml}
 
           <div class="links-bar">
-            ${m.materialsUrl ? `<a href="${m.materialsUrl}" target="_blank" class="btn-link primary">📁 Облако с методичкой</a>` : ''}
-            ${m.resultUrl ? `<a href="${m.resultUrl}" target="_blank" class="btn-link purple">🎓 Облако с готовой работой</a>` : ''}
+            ${o.materials_url ? `<a href="${o.materials_url}" target="_blank" class="btn-link primary">📁 Облако с методичкой</a>` : ''}
+            ${o.result_url ? `<a href="${o.result_url}" target="_blank" class="btn-link purple">🎓 Облако с готовой работой</a>` : ''}
             ${role !== 'worker' ? `<button class="btn-link" onclick="copyClientMessage(${o.id})">📤 Для студента</button>` : ''}
-            <button class="btn-link" onclick="copyOrderDetails(${o.id}, '${escapeHtml(o.title)}', '${escapeHtml(m.workType)}', '${m.deadline || ''}')">📋 Копия</button>
+            <button class="btn-link" onclick="copyOrderDetails(${o.id}, '${escapeHtml(o.title)}', '${escapeHtml(o.work_type)}', '${o.deadline || ''}')">📋 Копия</button>
           </div>
 
           ${o.instruction ? `<div style="font-size:12px; background:var(--surface-2); padding:8px 10px; border-radius:10px; margin-bottom:8px; white-space:pre-wrap;"><b>Задание:</b> ${escapeHtml(o.instruction)}</div>` : ''}
@@ -1586,37 +1293,37 @@
       `;
     }
 
-    // 1. ПЕРСОНАЛЬНАЯ ВЫПЛАТА АВТОРУ ПО КОНКРЕТНОМУ ЗАКАЗУ
+    // СКАЧИВАНИЕ ФАЙЛОВ ПО ЗАЩИЩЕННОЙ SIGNED ССЫЛКЕ
+    async function downloadSignedFile(filePath) {
+      try {
+        const { data, error } = await sb.storage.from('order-documents').createSignedUrl(filePath, 3600);
+        if (error) throw error;
+        window.open(data.signedUrl, '_blank');
+      } catch (err) {
+        showToast('Ошибка доступа к файлу: ' + err.message, 'error');
+      }
+    }
+
+    // ВЫПЛАТА АВТОРУ
     async function quickPayAuthor(orderId, amount, authorName) {
       const ok = await confirmAction(`Выплатить вознаграждение ${amount.toLocaleString('ru-RU')} ₽ автору ${authorName}?`);
       if (!ok) return;
 
-      await sbFetch(`orders?id=eq.${orderId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-        body: JSON.stringify({ payment_status: 'Выплачено' })
-      });
+      const { error } = await sb.from('orders').update({ payment_status: 'Выплачено' }).eq('id', orderId);
+      if (error) return showToast('Ошибка: ' + error.message, 'error');
 
       haptic('success');
-      showToast(`Вознаграждение ${amount} ₽ автору выплачено!`, 'success');
+      showToast(`Вознаграждение ${amount} ₽ выплачено!`, 'success');
       await fetchAllData(false);
     }
 
-    // 3. АРХИВИРОВАНИЕ ЗАКАЗА
-    async function quickToggleArchive(orderId) {
-      const o = allOrders.find(x => x.id === orderId);
-      if (!o) return;
-      const m = parseOrderMeta(o);
-      m.isArchived = !m.isArchived;
-
-      await sbFetch(`orders?id=eq.${orderId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-        body: JSON.stringify({ worker_comment: packOrderMeta(m) })
-      });
+    // АРХИВ
+    async function quickToggleArchive(orderId, currentArchived) {
+      const { error } = await sb.from('orders').update({ is_archived: !currentArchived }).eq('id', orderId);
+      if (error) return showToast('Ошибка: ' + error.message, 'error');
 
       haptic('light');
-      showToast(m.isArchived ? 'Заказ перемещён в архив' : 'Заказ восстановлен из архива', 'info');
+      showToast(!currentArchived ? 'Заказ перемещён в архив' : 'Заказ восстановлен из архива', 'info');
       await fetchAllData(false);
     }
 
@@ -1624,20 +1331,17 @@
     function copyClientMessage(id) {
       const o = allOrders.find(x => x.id === id);
       if (!o) return;
-      const m = parseOrderMeta(o);
-      const isFullPaid = m.prepaid && m.postpaid;
+      const isFullPaid = o.prepaid_received && o.postpaid_received;
 
       let paymentNote = isFullPaid
         ? '✅ Работа полностью оплачена. Успешной защиты!'
         : '⏳ Работа готова. Ждём вторую часть оплаты для отправки чистого итогового файла.';
 
       let text = `Здравствуйте! Ваша работа готова 🎓\n` +
-        `📌 Заказ #${o.id}: ${m.workType || 'Работа'} — "${o.title}"\n`;
+        `📌 Заказ #${o.id}: ${o.work_type || 'Работа'} — "${o.title}"\n`;
 
-      if (m.resultUrl) {
-        text += `📁 Ссылка на диск: ${m.resultUrl}\n`;
-      } else if (m.resultFiles && m.resultFiles.length > 0) {
-        text += `📁 Ссылка на файл: ${m.resultFiles[0].url}\n`;
+      if (o.result_url) {
+        text += `📁 Ссылка на диск: ${o.result_url}\n`;
       }
       text += `\n${paymentNote}`;
 
@@ -1659,20 +1363,14 @@
       }
     }
 
-    async function quickTogglePaymentStep(orderId, step) {
-      const o = allOrders.find(x => x.id === orderId);
-      if (!o) return;
-      const m = parseOrderMeta(o);
-      m[step] = !m[step];
+    async function quickTogglePaymentStep(orderId, field, nextVal) {
+      const updateData = {};
+      updateData[field] = nextVal;
+      const { error } = await sb.from('orders').update(updateData).eq('id', orderId);
+      if (error) return showToast('Ошибка: ' + error.message, 'error');
 
-      await sbFetch(`orders?id=eq.${orderId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-        body: JSON.stringify({ worker_comment: packOrderMeta(m) })
-      });
-
-      haptic(m[step] ? 'success' : 'light');
-      showToast(`${step === 'prepaid' ? 'Предоплата' : 'Доплата'} ${m[step] ? 'отмечена' : 'снята'}`, 'info');
+      haptic(nextVal ? 'success' : 'light');
+      showToast(nextVal ? 'Оплата отмечена' : 'Оплата снята', 'info');
       await fetchAllData(false);
     }
 
@@ -1688,7 +1386,6 @@
         workerPrice: document.getElementById('fWorkerPrice').value,
         volume: document.getElementById('fVolume').value,
         materialsUrl: document.getElementById('fMaterialsUrl').value,
-        avitoUrl: document.getElementById('fAvitoUrl').value,
         desc: document.getElementById('fDesc').value,
         isUrgent: document.getElementById('fUrgent').checked
       };
@@ -1710,7 +1407,6 @@
         document.getElementById('fWorkerPrice').value = d.workerPrice || '';
         document.getElementById('fVolume').value = d.volume || '';
         document.getElementById('fMaterialsUrl').value = d.materialsUrl || '';
-        document.getElementById('fAvitoUrl').value = d.avitoUrl || '';
         document.getElementById('fDesc').value = d.desc || '';
         document.getElementById('fUrgent').checked = !!d.isUrgent;
         document.getElementById('clearDraftBtn').style.display = 'block';
@@ -1737,64 +1433,43 @@
       document.getElementById('profitPreview').innerText = `${margin >= 0 ? '+' : ''}${margin.toLocaleString('ru-RU')} ₽`;
     }
 
-    // ФАЙЛЫ МЕНЕДЖЕРА
     function handleManagerFilesSelect(files) {
-      for (const f of Array.from(files)) {
-        stagedManagerFiles.push(f);
-      }
+      for (const f of Array.from(files)) stagedManagerFiles.push(f);
       renderManagerStagedFiles();
       haptic('light');
     }
 
     function renderManagerStagedFiles() {
       const box = document.getElementById('stagedManagerFilesList');
-      const ex = existingManagerFiles.map((f, i) => `
-        <div class="staged-file-item">
-          <span class="staged-file-name">${getFileIcon(f.name)} ${escapeHtml(f.name)}</span>
-          <button class="staged-remove-btn" onclick="existingManagerFiles.splice(${i},1); renderManagerStagedFiles();">✕</button>
-        </div>
-      `).join('');
-      const st = stagedManagerFiles.map((f, i) => `
+      box.innerHTML = stagedManagerFiles.map((f, i) => `
         <div class="staged-file-item">
           <span class="staged-file-name">${getFileIcon(f.name)} ${escapeHtml(f.name)} (${formatBytes(f.size)})</span>
           <button class="staged-remove-btn" onclick="stagedManagerFiles.splice(${i},1); renderManagerStagedFiles();">✕</button>
         </div>
       `).join('');
-      box.innerHTML = ex + st;
     }
 
-    // ФАЙЛЫ АВТОРА
     function handleWorkerFilesSelect(files) {
-      for (const f of Array.from(files)) {
-        stagedWorkerFiles.push(f);
-      }
+      for (const f of Array.from(files)) stagedWorkerFiles.push(f);
       renderWorkerStagedFiles();
       haptic('light');
     }
 
     function renderWorkerStagedFiles() {
       const box = document.getElementById('stagedWorkerFilesList');
-      const ex = existingWorkerFiles.map((f, i) => `
-        <div class="staged-file-item">
-          <span class="staged-file-name">${getFileIcon(f.name)} ${escapeHtml(f.name)}</span>
-          <button class="staged-remove-btn" onclick="existingWorkerFiles.splice(${i},1); renderWorkerStagedFiles();">✕</button>
-        </div>
-      `).join('');
-      const st = stagedWorkerFiles.map((f, i) => `
+      box.innerHTML = stagedWorkerFiles.map((f, i) => `
         <div class="staged-file-item">
           <span class="staged-file-name">${getFileIcon(f.name)} ${escapeHtml(f.name)} (${formatBytes(f.size)})</span>
           <button class="staged-remove-btn" onclick="stagedWorkerFiles.splice(${i},1); renderWorkerStagedFiles();">✕</button>
         </div>
       `).join('');
-      box.innerHTML = ex + st;
     }
 
-    function populateOrderWorkerSelect(selectedId = 'ALL') {
+    function populateOrderWorkerSelect(selectedId = null) {
       const sel = document.getElementById('fWorkerSelect');
-      const workers = getWorkersList();
-      sel.innerHTML = `<option value="ALL">🌐 Свободный заказ (любой автор)</option>` +
-        workers.map(w => `<option value="${w.id}">✍️ ${escapeHtml(w.name)} (@${escapeHtml(w.login)})</option>`).join('');
-      if ([...sel.options].some(o => o.value === selectedId)) sel.value = selectedId;
+      sel.innerHTML = `<option value="">🌐 Свободный заказ (любой автор)</option>` +
+        allAuthors.map(w => `<option value="${w.id}">✍️ ${escapeHtml(w.name)}</option>`).join('');
+      if (selectedId) sel.value = selectedId;
     }
 
     function openOrderSheet() {
@@ -1808,17 +1483,15 @@
       document.getElementById('fWorkerPrice').value = '';
       document.getElementById('fVolume').value = '';
       document.getElementById('fMaterialsUrl').value = '';
-      document.getElementById('fAvitoUrl').value = '';
       document.getElementById('fDesc').value = '';
       document.getElementById('fUrgent').checked = false;
       document.getElementById('clearDraftBtn').style.display = 'none';
 
-      existingManagerFiles = [];
       stagedManagerFiles = [];
       renderManagerStagedFiles();
 
       updateProfitPreview();
-      populateOrderWorkerSelect('ALL');
+      populateOrderWorkerSelect();
       restoreDraft();
       document.getElementById('orderSheet').classList.add('open');
       haptic('light');
@@ -1827,150 +1500,97 @@
     function openEditOrderSheet(id) {
       const o = allOrders.find(x => x.id === id);
       if (!o) return;
-      const m = parseOrderMeta(o);
 
       document.getElementById('editOrderId').value = o.id;
       document.getElementById('orderSheetTitle').innerText = `Изменить заказ #${o.id}`;
       document.getElementById('fTitle').value = o.title || '';
-      document.getElementById('fWorkType').value = m.workType || 'Курсовая';
-      document.getElementById('fDeadline').value = m.deadline || '';
-      document.getElementById('fClientPrice').value = o.initial_price || '';
-      document.getElementById('fPrepaidAmount').value = m.prepaidAmount !== undefined ? m.prepaidAmount : '';
-      document.getElementById('fWorkerPrice').value = o.final_price || '';
-      document.getElementById('fVolume').value = m.volume || '';
-      document.getElementById('fMaterialsUrl').value = m.materialsUrl || '';
-      document.getElementById('fAvitoUrl').value = o.avito_url || '';
+      document.getElementById('fWorkType').value = o.work_type || 'Курсовая';
+      document.getElementById('fDeadline').value = o.deadline ? o.deadline.substring(0, 16) : '';
+      document.getElementById('fClientPrice').value = o.client_price || '';
+      document.getElementById('fPrepaidAmount').value = o.prepaid_amount || '';
+      document.getElementById('fWorkerPrice').value = o.worker_price || '';
+      document.getElementById('fVolume').value = o.volume || '';
+      document.getElementById('fMaterialsUrl').value = o.materials_url || '';
       document.getElementById('fDesc').value = o.instruction || '';
-      document.getElementById('fUrgent').checked = !!m.isUrgent;
+      document.getElementById('fUrgent').checked = !!o.is_urgent;
       document.getElementById('clearDraftBtn').style.display = 'none';
 
-      existingManagerFiles = Array.isArray(m.materialFiles) ? [...m.materialFiles] : [];
       stagedManagerFiles = [];
       renderManagerStagedFiles();
 
       updateProfitPreview();
-      populateOrderWorkerSelect(m.workerId || 'ALL');
+      populateOrderWorkerSelect(o.worker_id);
       document.getElementById('orderSheet').classList.add('open');
       haptic('light');
     }
 
     function closeOrderSheet() { document.getElementById('orderSheet').classList.remove('open'); }
 
-    // СОХРАНЕНИЕ ЗАКАЗА С РУЧНОЙ ПРЕДОПЛАТОЙ
+    // СОХРАНЕНИЕ ЗАКАЗА В РЕЛЯЦИОННУЮ БАЗУ
     async function saveOrder() {
       const editId = document.getElementById('editOrderId').value;
       const title = document.getElementById('fTitle').value.trim();
       const workType = document.getElementById('fWorkType').value;
-      const workerId = document.getElementById('fWorkerSelect').value;
-      const deadline = document.getElementById('fDeadline').value;
+      const workerId = document.getElementById('fWorkerSelect').value || null;
+      const deadline = document.getElementById('fDeadline').value || null;
       const clientPrice = parseFloat(document.getElementById('fClientPrice').value) || 0;
       const prepaidAmount = parseFloat(document.getElementById('fPrepaidAmount').value) || Math.round(clientPrice / 2);
       const workerPrice = parseFloat(document.getElementById('fWorkerPrice').value) || 0;
       const volume = document.getElementById('fVolume').value.trim();
       const materialsUrl = document.getElementById('fMaterialsUrl').value.trim();
-      const avitoUrl = document.getElementById('fAvitoUrl').value.trim();
       const desc = document.getElementById('fDesc').value.trim();
       const isUrgent = document.getElementById('fUrgent').checked;
 
       if (!title) return showToast('Укажите тему работы!', 'error');
 
-      const workerObj = sysConfig.users.find(u => u.id === workerId);
-      const workerName = workerObj ? workerObj.name : 'Любой свободный автор';
-
       const btn = document.getElementById('saveOrderBtn');
-      btn.disabled = true; btn.innerText = 'Загрузка документов...';
+      btn.disabled = true; btn.innerText = 'Сохранение...';
 
       try {
-        const uploadedMaterialFiles = [...existingManagerFiles];
+        let orderId = editId;
+
+        if (editId) {
+          const { error } = await sb.from('orders').update({
+            title, work_type: workType, worker_id: workerId, deadline,
+            volume, materials_url: materialsUrl, is_urgent: isUrgent,
+            client_price: clientPrice, prepaid_amount: prepaidAmount,
+            worker_price: workerPrice, instruction: desc
+          }).eq('id', editId);
+          if (error) throw error;
+        } else {
+          const { data, error } = await sb.from('orders').insert({
+            title, work_type: workType, worker_id: workerId, deadline,
+            volume, materials_url: materialsUrl, is_urgent: isUrgent,
+            client_price: clientPrice, prepaid_amount: prepaidAmount,
+            worker_price: workerPrice, instruction: desc,
+            agent_id: currentAccount.id
+          }).select().single();
+          if (error) throw error;
+          orderId = data.id;
+          sessionStorage.removeItem('academ_crm_draft');
+        }
+
+        // Загрузка файлов в закрытый Storage
         for (let i = 0; i < stagedManagerFiles.length; i++) {
           const file = stagedManagerFiles[i];
           btn.innerText = `Загрузка файла (${i + 1}/${stagedManagerFiles.length})...`;
-          const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-          const fname = `mat_${Date.now()}_${Math.random().toString(36).substring(2,6)}_${cleanName}`;
-          const pubUrl = await storageUploadAnyFile(fname, file);
-          uploadedMaterialFiles.push({
-            name: file.name,
-            url: pubUrl,
-            size: file.size
-          });
-        }
-
-        btn.innerText = 'Сохранение...';
-
-        if (editId) {
-          const old = allOrders.find(x => x.id === Number(editId));
-          const oldMeta = old ? parseOrderMeta(old) : {};
-          const meta = packOrderMeta({
-            ...oldMeta,
-            workType, workerId, workerName, deadline, volume, materialsUrl, isUrgent,
-            prepaidAmount,
-            materialFiles: uploadedMaterialFiles
-          });
-
-          await sbFetch(`orders?id=eq.${editId}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-            body: JSON.stringify({
-              title,
-              avito_url: avitoUrl,
-              instruction: desc,
-              initial_price: clientPrice,
-              final_price: workerPrice,
-              worker_comment: meta
-            })
-          });
-          showToast('Заказ обновлен!', 'success');
-        } else {
-          const meta = packOrderMeta({
-            workType, workerId, workerName, deadline, volume, materialsUrl, isUrgent,
-            prepaidAmount,
-            materialFiles: uploadedMaterialFiles,
-            resultFiles: [],
-            agentId: currentAccount.id, agentName: currentAccount.name,
-            prepaid: false, postpaid: false, isArchived: false, revisions: [], resultUrl: '', note: ''
-          });
-
-          const postRes = await sbFetch('orders', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Prefer': 'return=representation' },
-            body: JSON.stringify({
-              title,
-              avito_url: avitoUrl,
-              instruction: desc,
-              initial_price: clientPrice,
-              final_price: workerPrice,
-              status: 'В работе',
-              payment_status: 'Не выплачено',
-              worker_comment: meta
-            })
-          });
-          const insertedRows = await postRes.json();
-          const newId = insertedRows?.[0]?.id || '';
-
-          sessionStorage.removeItem('academ_crm_draft');
-
-          // Авто-оповещение автору в Telegram
-          if (workerId && workerId !== 'ALL') {
-            const alertMsg = `🎓 <b>Вам назначен новый заказ #${newId}!</b>\n\n` +
-              `📌 <b>${workType}:</b> ${title}\n` +
-              `⏰ <b>Дедлайн:</b> ${deadline ? new Date(deadline).toLocaleString('ru-RU') : 'Не указан'}\n` +
-              `💰 <b>Ваша выплата:</b> ${workerPrice} ₽\n` +
-              `💼 <b>Менеджер:</b> ${currentAccount.name}` +
-              (materialsUrl ? `\n📁 <b>Методичка:</b> ${materialsUrl}` : '');
-
-            const alertRes = await sendTelegramAlert(workerId, alertMsg);
-            if (alertRes.ok) {
-              showToast('Заказ создан и отправлен автору в Telegram!', 'success');
-            } else {
-              showToast('Заказ успешно создан!', 'success');
-            }
-          } else {
-            showToast('Заказ успешно создан!', 'success');
+          const filePath = `${orderId}/mat_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+          const { error: upErr } = await sb.storage.from('order-documents').upload(filePath, file);
+          if (!upErr) {
+            await sb.from('order_files').insert({
+              order_id: orderId,
+              uploaded_by: currentAccount.id,
+              file_name: file.name,
+              file_path: filePath,
+              file_size: file.size,
+              file_category: 'material'
+            });
           }
         }
 
         closeOrderSheet();
         haptic('success');
+        showToast('Заказ сохранён!', 'success');
         await fetchAllData(false);
       } catch (e) {
         showToast('Ошибка: ' + e.message, 'error');
@@ -1993,51 +1613,38 @@
       const text = document.getElementById('revComment').value.trim();
       if (!text) return showToast('Введите замечания!', 'error');
 
-      const o = allOrders.find(x => x.id === id);
-      const m = o ? parseOrderMeta(o) : {};
+      const btn = document.getElementById('sendRevBtn');
+      btn.disabled = true;
 
-      const now = new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
-      m.revisions.push({
-        sender: currentAccount.name + ' (Менеджер)',
-        date: now,
-        text: text
-      });
+      try {
+        await sb.from('orders').update({ status: 'Правки' }).eq('id', id);
+        await sb.from('order_revisions').insert({
+          order_id: id,
+          sender_id: currentAccount.id,
+          comment: text
+        });
 
-      await sbFetch(`orders?id=eq.${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-        body: JSON.stringify({
-          status: 'Правки',
-          worker_comment: packOrderMeta(m)
-        })
-      });
-
-      if (m.workerId && m.workerId !== 'ALL') {
-        const revMsg = `🟠 <b>Заказ #${id} возвращён на доработку!</b>\n\n` +
-          `📌 <b>Тема:</b> ${o.title}\n` +
-          `📝 <b>Замечания научного руководителя:</b>\n${text}\n\n` +
-          `💼 <b>Менеджер:</b> ${currentAccount.name}`;
-        sendTelegramAlert(m.workerId, revMsg);
+        closeRevisionSheet();
+        haptic('warning');
+        showToast('Заказ отправлен на доработку', 'info');
+        await fetchAllData(false);
+      } catch (err) {
+        showToast('Ошибка: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
       }
-
-      closeRevisionSheet();
-      haptic('warning');
-      showToast('Заказ отправлен автору на правки', 'info');
-      await fetchAllData(false);
     }
 
     // СДАЧА АВТОРА
     function openWorkerSheet(id) {
       const o = allOrders.find(x => x.id === id);
       if (!o) return;
-      const m = parseOrderMeta(o);
 
       document.getElementById('wOrderId').value = o.id;
       document.getElementById('wStatus').value = o.status || 'В работе';
-      document.getElementById('wResultUrl').value = m.resultUrl || '';
+      document.getElementById('wResultUrl').value = o.result_url || '';
       document.getElementById('wComment').value = '';
 
-      existingWorkerFiles = Array.isArray(m.resultFiles) ? [...m.resultFiles] : [];
       stagedWorkerFiles = [];
       renderWorkerStagedFiles();
 
@@ -2049,61 +1656,44 @@
 
     async function saveWorkerUpdate() {
       const id = Number(document.getElementById('wOrderId').value);
-      const o = allOrders.find(x => x.id === id);
-      const oldMeta = o ? parseOrderMeta(o) : {};
-
       const status = document.getElementById('wStatus').value;
       const resultUrl = document.getElementById('wResultUrl').value.trim();
       const note = document.getElementById('wComment').value.trim();
 
       const btn = document.getElementById('workerSaveBtn');
-      btn.disabled = true; btn.innerText = 'Загрузка файлов...';
+      btn.disabled = true; btn.innerText = 'Загрузка...';
 
       try {
-        const uploadedResultFiles = [...existingWorkerFiles];
+        // Если заказ был свободным, автор берет его на себя
+        await sb.from('orders').update({
+          status: status,
+          result_url: resultUrl,
+          worker_id: currentAccount.id
+        }).eq('id', id);
+
+        if (note) {
+          await sb.from('order_revisions').insert({
+            order_id: id,
+            sender_id: currentAccount.id,
+            comment: note
+          });
+        }
+
         for (let i = 0; i < stagedWorkerFiles.length; i++) {
           const file = stagedWorkerFiles[i];
           btn.innerText = `Загрузка работы (${i + 1}/${stagedWorkerFiles.length})...`;
-          const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-          const fname = `res_${Date.now()}_${Math.random().toString(36).substring(2,6)}_${cleanName}`;
-          const pubUrl = await storageUploadAnyFile(fname, file);
-          uploadedResultFiles.push({
-            name: file.name,
-            url: pubUrl,
-            size: file.size
-          });
-        }
-
-        if (note) {
-          const now = new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
-          oldMeta.revisions.push({
-            sender: currentAccount.name + ' (Автор)',
-            date: now,
-            text: note
-          });
-        }
-
-        const updatedMeta = packOrderMeta({
-          ...oldMeta,
-          resultUrl,
-          resultFiles: uploadedResultFiles,
-          workerId: oldMeta.workerId === 'ALL' && currentAccount.role === 'worker' ? currentAccount.id : oldMeta.workerId,
-          workerName: oldMeta.workerId === 'ALL' && currentAccount.role === 'worker' ? currentAccount.name : oldMeta.workerName
-        });
-
-        await sbFetch(`orders?id=eq.${id}`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-          body: JSON.stringify({ status, worker_comment: updatedMeta })
-        });
-
-        if (oldMeta.agentId) {
-          const doneMsg = `✅ <b>Автор ${currentAccount.name} сдал работу по заказу #${id}!</b>\n\n` +
-            `📌 <b>Тема:</b> ${o.title}\n` +
-            `📁 <b>Статус:</b> ${status}\n` +
-            (resultUrl ? `🔗 <b>Ссылка на диск:</b> ${resultUrl}\n` : '') +
-            (note ? `💬 <b>Комментарий автора:</b> ${note}` : '');
-          sendTelegramAlert(oldMeta.agentId, doneMsg);
+          const filePath = `${id}/res_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+          const { error: upErr } = await sb.storage.from('order-documents').upload(filePath, file);
+          if (!upErr) {
+            await sb.from('order_files').insert({
+              order_id: id,
+              uploaded_by: currentAccount.id,
+              file_name: file.name,
+              file_path: filePath,
+              file_size: file.size,
+              file_category: 'result'
+            });
+          }
         }
 
         closeWorkerSheet();
@@ -2117,153 +1707,39 @@
       }
     }
 
-    async function quickWorkerStatus(id) {
-      const o = allOrders.find(x => x.id === id);
-      if (!o) return;
-      const nextStatus = o.status === 'В работе' ? 'На проверке' : 'В работе';
-      await sbFetch(`orders?id=eq.${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-        body: JSON.stringify({ status: nextStatus })
-      });
+    async function quickWorkerStatus(id, currentStatus) {
+      const next = currentStatus === 'В работе' ? 'На проверке' : 'В работе';
+      await sb.from('orders').update({ status: next }).eq('id', id);
       haptic('light');
-      showToast(`Статус: ${nextStatus}`, 'info');
+      showToast(`Статус: ${next}`, 'info');
       await fetchAllData(false);
     }
 
     async function quickTogglePaid(id, currentPaid) {
       const next = currentPaid === 'Выплачено' ? 'Не выплачено' : 'Выплачено';
-      await sbFetch(`orders?id=eq.${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-        body: JSON.stringify({ payment_status: next })
-      });
+      await sb.from('orders').update({ payment_status: next }).eq('id', id);
       haptic(next === 'Выплачено' ? 'success' : 'light');
       showToast(`Статус выплаты: ${next}`, 'info');
       await fetchAllData(false);
     }
 
     async function removeOrder(id) {
-      const ok = await confirmAction(`Удалить студенческий заказ #${id}?`);
+      const ok = await confirmAction(`Удалить заказ #${id}?`);
       if (!ok) return;
 
-      await sbFetch(`orders?id=eq.${id}`, { method: 'DELETE' });
+      await sb.from('orders').delete().eq('id', id);
       haptic('warning');
-      showToast('Заказ удален', 'info');
+      showToast('Заказ удалён', 'info');
       await fetchAllData(false);
     }
 
-    // СТАТИСТИКА
     function renderAdminStats() {
-      const totalClient = allOrders.reduce((s, o) => s + (Number(o.initial_price) || 0), 0);
-      const totalAuthor = allOrders.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
+      const totalClient = allOrders.reduce((s, o) => s + (Number(o.client_price) || 0), 0);
+      const totalAuthor = allOrders.reduce((s, o) => s + (Number(o.worker_price) || 0), 0);
       const net = totalClient - totalAuthor;
 
       document.getElementById('stTotalVolume').innerText = totalClient.toLocaleString('ru-RU') + ' ₽';
       document.getElementById('stNetProfit').innerText = (net >= 0 ? '+' : '') + net.toLocaleString('ru-RU') + ' ₽';
-
-      const agents = getAgentsList();
-      const aBox = document.getElementById('statsByAgents');
-      aBox.innerHTML = agents.length === 0 ? '<div style="color:var(--muted); font-size:12px;">Менеджеров нет</div>' :
-        agents.map(a => {
-          const aOrders = allOrders.filter(o => parseOrderMeta(o).agentId === a.id);
-          const aRev = aOrders.reduce((s, o) => s + (Number(o.initial_price) || 0), 0);
-          const aCost = aOrders.reduce((s, o) => s + (Number(o.final_price) || 0), 0);
-          return `
-            <div style="background:var(--surface-2); padding:10px; border-radius:12px; margin-bottom:6px; font-size:12px;">
-              <div style="display:flex; justify-content:space-between; font-weight:800;">
-                <span>💼 ${escapeHtml(a.name)}</span>
-                <span style="color:var(--success);">+${(aRev - aCost).toLocaleString('ru-RU')} ₽</span>
-              </div>
-              <div style="color:var(--muted); margin-top:2px;">Заказов: ${aOrders.length} • Оборот: ${aRev.toLocaleString('ru-RU')} ₽</div>
-            </div>
-          `;
-        }).join('');
-
-      const workers = getWorkersList();
-      const wBox = document.getElementById('statsByWorkers');
-      wBox.innerHTML = workers.length === 0 ? '<div style="color:var(--muted); font-size:12px;">Авторов нет</div>' :
-        workers.map(w => {
-          const wOrders = allOrders.filter(o => parseOrderMeta(o).workerId === w.id);
-          const active = wOrders.filter(o => o.status === 'В работе' || o.status === 'Правки').length;
-          const done = wOrders.filter(o => o.status === 'Сдан').length;
-          return `
-            <div style="background:var(--surface-2); padding:10px; border-radius:12px; margin-bottom:6px; font-size:12px;">
-              <div style="display:flex; justify-content:space-between; font-weight:800;">
-                <span>✍️ ${escapeHtml(w.name)}</span>
-                <span>${wOrders.length} работ</span>
-              </div>
-              <div style="color:var(--muted); margin-top:2px;">В работе: <b>${active}</b> • Сдано: <b>${done}</b></div>
-            </div>
-          `;
-        }).join('');
-    }
-
-    // УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ И БОТОМ
-    function renderAdminUsers() {
-      const box = document.getElementById('adminUsersList');
-      const roleBadges = { admin: '👑 Админ', agent: '💼 Менеджер', worker: '✍️ Автор' };
-      if (document.getElementById('admBotToken')) {
-        document.getElementById('admBotToken').value = sysConfig.botToken || '';
-      }
-      box.innerHTML = sysConfig.users.map(u => `
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:var(--surface-2); border-radius:12px; margin-bottom:6px; font-size:13px;">
-          <div>
-            <b>${escapeHtml(u.name)}</b> <span style="font-size:11px; color:var(--primary);">(${roleBadges[u.role] || u.role})</span>
-            <div style="font-size:11px; color:var(--muted);">Логин: ${escapeHtml(u.login)} • TG: ${u.tgId ? '✅ ' + u.tgId : 'не привязан ⚠️'}</div>
-          </div>
-          ${u.login !== DEFAULT_ADMIN.login ? `
-            <button class="c-btn danger" style="padding:6px 10px;" onclick="adminDeleteUser('${u.id}')">🗑</button>
-          ` : ''}
-        </div>
-      `).join('');
-    }
-
-    async function saveBotToken() {
-      const token = document.getElementById('admBotToken').value.trim();
-      sysConfig.botToken = token;
-      await saveConfigToSupabase();
-      haptic('success');
-      showToast('Токен бота успешно сохранен!', 'success');
-    }
-
-    async function adminCreateUser() {
-      const name = document.getElementById('admNewName').value.trim();
-      const login = document.getElementById('admNewLogin').value.trim().toLowerCase();
-      const pass = document.getElementById('admNewPass').value.trim();
-      const role = document.getElementById('admNewRole').value;
-      const tgIdInput = document.getElementById('admNewTgId').value.trim();
-
-      if (!name || !login || !pass) return showToast('Заполните все обязательные поля!', 'error');
-      if (sysConfig.users.some(u => u.login.toLowerCase() === login)) {
-        return showToast('Логин уже занят!', 'error');
-      }
-
-      sysConfig.users.push({
-        id: 'usr_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
-        name, login, pass: await hashPassword(pass), role,
-        tgId: tgIdInput ? Number(tgIdInput) : null
-      });
-
-      await saveConfigToSupabase();
-      document.getElementById('admNewName').value = '';
-      document.getElementById('admNewLogin').value = '';
-      document.getElementById('admNewPass').value = '';
-      document.getElementById('admNewTgId').value = '';
-      haptic('success');
-      showToast('Пользователь создан', 'success');
-      renderAll();
-    }
-
-    async function adminDeleteUser(uid) {
-      const ok = await confirmAction('Удалить этого пользователя навсегда?');
-      if (!ok) return;
-
-      sysConfig.users = sysConfig.users.filter(u => u.id !== uid);
-      await saveConfigToSupabase();
-      haptic('warning');
-      showToast('Пользователь удален', 'info');
-      renderAll();
     }
 
     function escapeHtml(str) {
@@ -2271,9 +1747,8 @@
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // СТАРТ
-    renderAll();
-    fetchAllData(false);
+    // СТАРТ: Автоматическая сессия Supabase
+    syncCurrentUser();
   </script>
 </body>
 </html>
