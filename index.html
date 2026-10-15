@@ -74,6 +74,13 @@
       padding-bottom: calc(90px + env(safe-area-inset-bottom, 16px));
     }
 
+    /* БЛОКИРОВКА СКРОЛЛА ЗАДНЕГО ФОНА ПРИ ОТКРЫТОЙ ШТОРКЕ */
+    body.modal-open {
+      overflow: hidden !important;
+      touch-action: none !important;
+      height: 100vh !important;
+    }
+
     .app-shell {
       max-width: 500px;
       margin: 0 auto;
@@ -176,7 +183,7 @@
     }
     .admin-nav-btn.active { background: var(--primary); color: #fff; }
 
-    /* ФИНАНСОВЫЙ БАННЕР (ФОКУС НА ВЫПЛАТАХ АВТОРАМ) */
+    /* ФИНАНСОВЫЙ БАННЕР */
     .hero-card {
       background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
       color: #fff; border-radius: var(--radius-lg); padding: 18px; margin-bottom: 12px;
@@ -237,7 +244,7 @@
     }
     .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
 
-    /* ЯРКИЙ ШИФР ЗАКАЗА (К-21, Д-29) */
+    /* ШИФР ЗАКАЗА */
     .order-code-badge {
       font-size: 14px; font-weight: 900; background: linear-gradient(135deg, #4f46e5, #06b6d4);
       color: #fff; padding: 4px 10px; border-radius: 10px; letter-spacing: 0.5px;
@@ -268,21 +275,47 @@
     .st-revision { background: rgba(239, 68, 68, 0.15); color: #dc2626; border: 1px dashed var(--danger); }
     .st-done { background: var(--success-soft); color: var(--success); }
 
-    .spec-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-bottom: 10px; }
-    .spec-item {
-      background: var(--surface-2); padding: 7px 10px; border-radius: 10px; font-size: 12px;
-      display: flex; flex-direction: column; gap: 2px;
-    }
-    .spec-lbl { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
-    .spec-val { font-weight: 800; color: var(--text); }
-
-    /* ПЛАШКА ВЫПЛАТЫ АВТОРУ (БЕЗ ЛИШНИХ ЦЕН) */
+    /* ПЛАШКА ВЫПЛАТЫ АВТОРУ */
     .price-box {
       background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px;
       padding: 11px 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
     }
     .price-label { font-size: 12px; font-weight: 700; color: var(--muted); }
     .price-val { font-size: 19px; font-weight: 900; color: var(--primary); }
+
+    /* БЛОК СОГЛАСОВАНИЯ ИЗМЕНЕНИЯ ЦЕНЫ */
+    .price-proposal-box {
+      background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: 14px; padding: 12px; margin-bottom: 10px; font-size: 13px;
+    }
+    .price-proposal-box.waiting {
+      background: var(--surface-2); border-color: var(--border); color: var(--muted);
+      display: flex; justify-content: space-between; align-items: center; font-size: 12px;
+    }
+    .prop-title { font-weight: 800; color: var(--text); margin-bottom: 8px; }
+    .prop-actions { display: flex; gap: 8px; }
+    .prop-btn {
+      flex: 1; border: none; padding: 9px 12px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer;
+    }
+    .prop-btn.accept { background: var(--success); color: #fff; }
+    .prop-btn.reject { background: var(--danger-soft); color: var(--danger); }
+    .prop-btn-cancel { background: none; border: none; color: var(--danger); font-size: 11px; font-weight: 700; text-decoration: underline; cursor: pointer; }
+
+    /* ФАЙЛЫ В КАРТОЧКЕ */
+    .file-group-box {
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;
+      padding: 9px 11px; margin-bottom: 8px;
+    }
+    .file-group-title { font-size: 11px; font-weight: 800; color: var(--muted); margin-bottom: 6px; }
+    .file-download-chip {
+      display: flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border);
+      padding: 8px 10px; border-radius: 9px; text-decoration: none; color: var(--text); font-size: 12px;
+      font-weight: 700; margin-bottom: 5px; cursor: pointer;
+    }
+    .file-download-chip:last-child { margin-bottom: 0; }
+    .file-name-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .file-size-text { font-size: 10px; color: var(--muted); }
+    .dl-btn-icon { color: var(--primary); font-size: 13px; }
 
     .links-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
     .btn-link {
@@ -305,12 +338,12 @@
     .rev-meta { font-size: 10px; color: var(--muted); margin-bottom: 2px; }
 
     .card-footer {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 6px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px;
       padding-top: 10px; border-top: 1px solid var(--border);
     }
     .c-btn {
       border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
-      padding: 9px 5px; border-radius: 11px; font-size: 12px; font-weight: 700; cursor: pointer;
+      padding: 10px 6px; border-radius: 11px; font-size: 12px; font-weight: 700; cursor: pointer;
       display: flex; align-items: center; justify-content: center; gap: 4px; text-align: center;
     }
     .c-btn.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
@@ -334,12 +367,14 @@
     .sheet-backdrop {
       position: fixed; inset: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.65);
       z-index: 200; display: none; align-items: flex-end; justify-content: center; overflow-x: hidden !important;
+      touch-action: none !important; /* Блокирует прокрутку заднего фона */
     }
     .sheet-backdrop.open { display: flex; }
     .bottom-sheet {
       background: var(--surface); width: 100% !important; max-width: 100vw !important; box-sizing: border-box !important;
-      overflow-x: hidden !important; overscroll-behavior-y: contain; border-radius: 26px 26px 0 0;
+      overflow-x: hidden !important; overscroll-behavior-y: contain !important; border-radius: 26px 26px 0 0;
       padding: 18px 16px calc(24px + env(safe-area-inset-bottom, 12px)); max-height: 90vh; overflow-y: auto;
+      touch-action: pan-y !important;
     }
     .sheet-handle { width: 38px; height: 5px; background: var(--border); border-radius: 10px; margin: 0 auto 12px; }
     .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
@@ -369,6 +404,17 @@
     select.f-input { text-overflow: ellipsis !important; white-space: nowrap !important; overflow: hidden !important; }
     input[type="datetime-local"] { max-width: 100% !important; min-width: 0 !important; box-sizing: border-box !important; }
 
+    .drop-area {
+      border: 2px dashed var(--border); background: var(--surface-2); border-radius: 14px;
+      padding: 12px; text-align: center; cursor: pointer; margin-bottom: 8px; font-size: 12px; color: var(--muted);
+    }
+    .staged-file-item {
+      display: flex; justify-content: space-between; align-items: center; background: var(--surface);
+      border: 1px solid var(--border); padding: 7px 10px; border-radius: 10px; margin-bottom: 4px; font-size: 12px; font-weight: 700;
+    }
+    .staged-file-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 80%; }
+    .staged-remove-btn { background: none; border: none; color: var(--danger); font-size: 14px; cursor: pointer; font-weight: 800; }
+
     .empty-state {
       background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius-lg);
       padding: 34px 20px; text-align: center; color: var(--muted); font-size: 14px; line-height: 1.5;
@@ -384,7 +430,7 @@
     <div class="auth-card">
       <div class="auth-logo">🎓</div>
       <div class="auth-title">Академ CRM</div>
-      <div class="auth-sub">Система учёта студенческих заказов</div>
+      <div class="auth-sub">Система студенческих заказов</div>
 
       <div class="auth-tabs">
         <button class="auth-tab active" id="authTabLogin" onclick="switchAuthTab('login')">🔑 Вход</button>
@@ -452,7 +498,7 @@
 
     <!-- СЕКЦИЯ 1: СПИСОК ЗАКАЗОВ -->
     <div id="sectionOrders">
-      <!-- Финансовый дашборд (ВЫПЛАТЫ АВТОРАМ) -->
+      <!-- Финансовый дашборд -->
       <div class="hero-card" id="heroCard">
         <div class="hero-top">
           <div>
@@ -485,7 +531,7 @@
       <!-- Поиск по шифру (#К-21) или теме -->
       <div class="search-input-wrap">
         <span class="search-icon">🔍</span>
-        <input type="text" class="search-input" id="orderSearchInput" placeholder="Поиск по шифру (#К-21, #Д-29), теме или автору..." oninput="renderOrdersSection()">
+        <input type="text" class="search-input" id="orderSearchInput" placeholder="Поиск по шифру (#К-21, #Д-29) или теме..." oninput="renderOrdersSection()">
       </div>
 
       <!-- 5 Вкладок -->
@@ -503,7 +549,7 @@
       </div>
     </div>
 
-    <!-- СЕКЦИЯ 2: СТАТИСТИКА ВЫПЛАТ (АДМИН) -->
+    <!-- СЕКЦИЯ 2: СТАТИСТИКА ВЫПЛАТ -->
     <div class="stats-section" id="sectionStats" style="display:none;">
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
         <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:12px;">
@@ -525,16 +571,17 @@
     </button>
   </div>
 
-  <!-- ЭКСПРЕСС-ШТОРКА СОЗДАНИЯ (ТОЛЬКО ЦЕНА АВТОРУ) -->
+  <!-- ШТОРКА СОЗДАНИЯ (ТОЛЬКО ЦЕНА АВТОРУ + ФАЙЛЫ) -->
   <div class="sheet-backdrop" id="orderSheet" onclick="closeOrderSheet()">
     <div class="bottom-sheet" onclick="event.stopPropagation()">
       <div class="sheet-handle"></div>
       <div class="sheet-header">
-        <div class="sheet-title" id="orderSheetTitle">Новый экспресс-заказ</div>
+        <div class="sheet-title" id="orderSheetTitle">Новый заказ</div>
         <button class="sheet-close" onclick="closeOrderSheet()">✕</button>
       </div>
 
       <input type="hidden" id="editOrderId">
+      <input type="hidden" id="editOldPrice">
 
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
         <label style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:800; color:var(--danger); cursor:pointer;">
@@ -543,7 +590,7 @@
         <button id="clearDraftBtn" style="display:none; background:none; border:none; color:var(--muted); font-size:11px; text-decoration:underline; cursor:pointer;" onclick="clearDraft()">Сбросить черновик</button>
       </div>
 
-      <!-- РЯД 1: ТИП РАБОТЫ И ШИФР ЗАКАЗА -->
+      <!-- РЯД 1: ТИП И ШИФР -->
       <div class="f-row">
         <div class="form-group">
           <label class="form-label">Тип работы *</label>
@@ -567,31 +614,35 @@
       <!-- РЯД 2: ТЕМА РАБОТЫ -->
       <div class="form-group">
         <label class="form-label">Тема / Предмет *</label>
-        <input type="text" id="fTitle" class="f-input" placeholder="Например: Механика или Гражданское право" oninput="saveDraft()">
+        <input type="text" id="fTitle" class="f-input" placeholder="Например: Механика или Право" oninput="saveDraft()">
       </div>
 
-      <!-- РЯД 3: АВТОР И ДЕДЛАЙН -->
+      <!-- РЯД 3: ДЕДЛАЙН И ВЫПЛАТА АВТОРУ -->
       <div class="f-row">
-        <div class="form-group">
-          <label class="form-label">Назначить автора</label>
-          <select id="fWorkerSelect" class="f-input" onchange="saveDraft()"></select>
-        </div>
         <div class="form-group">
           <label class="form-label">⏰ Срок сдачи (Дедлайн)</label>
           <input type="datetime-local" id="fDeadline" class="f-input" onchange="saveDraft()">
         </div>
+        <div class="form-group">
+          <label class="form-label">Оплата автору (₽) *</label>
+          <input type="number" id="fWorkerPrice" class="f-input" placeholder="1500" style="font-size:18px !important; font-weight:800; color:var(--primary);" oninput="saveDraft()">
+        </div>
       </div>
 
-      <!-- РЯД 4: ТОЛЬКО ОПЛАТА АВТОРУ -->
-      <div class="form-group">
-        <label class="form-label">Оплата автору (₽) *</label>
-        <input type="number" id="fWorkerPrice" class="f-input" placeholder="Например: 1500" style="font-size:18px !important; font-weight:800; color:var(--primary);" oninput="saveDraft()">
-      </div>
-
-      <!-- ССЫЛКА НА ОБЛАКО (ЕСЛИ ЕСТЬ) -->
+      <!-- ССЫЛКА НА ДИСК -->
       <div class="form-group">
         <label class="form-label">Ссылка на диск / материалы (если есть)</label>
         <input type="url" id="fMaterialsUrl" class="f-input" placeholder="https://disk.yandex.ru/..." oninput="saveDraft()">
+      </div>
+
+      <!-- ПРИКРЕПЛЕНИЕ ФАЙЛОВ ДЛЯ АВТОРА -->
+      <div class="form-group">
+        <label class="form-label">📎 Прикрепить методички / файлы (DOCX, PDF, ZIP...)</label>
+        <div class="drop-area" onclick="document.getElementById('fDocFiles').click()">
+          📂 Нажмите для выбора файлов
+          <input type="file" id="fDocFiles" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip,.rar,image/*" style="display:none" onchange="handleManagerFilesSelect(this.files)">
+        </div>
+        <div id="stagedManagerFilesList"></div>
       </div>
 
       <!-- ЗАМЕТКА -->
@@ -600,7 +651,7 @@
         <textarea id="fDesc" class="f-input" placeholder="Объём, методичка или комментарий..." oninput="saveDraft()"></textarea>
       </div>
 
-      <button class="main-add-btn" id="saveOrderBtn" onclick="saveOrder()">Создать заказ</button>
+      <button class="main-add-btn" id="saveOrderBtn" onclick="saveOrder()">Сохранить заказ</button>
     </div>
   </div>
 
@@ -617,7 +668,7 @@
         <label class="form-label">Замечания научрука / правки *</label>
         <textarea id="revComment" class="f-input" placeholder="Список правок..."></textarea>
       </div>
-      <button class="main-add-btn" id="sendRevBtn" onclick="submitRevision()">Отправить автору на правки</button>
+      <button class="main-add-btn" id="sendRevBtn" onclick="submitRevision()">Отправить на правки</button>
     </div>
   </div>
 
@@ -697,7 +748,7 @@
     document.addEventListener('touchstart', (e) => {
       const active = document.activeElement;
       if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT')) {
-        const isInteractive = e.target.closest('input, textarea, select, button, a, label');
+        const isInteractive = e.target.closest('input, textarea, select, button, a, label, .drop-area');
         if (!isInteractive) {
           active.blur();
         }
@@ -710,6 +761,15 @@
         active.blur();
       }
     }, { passive: true });
+
+    // 4. ЗАЩИТА ОТ СКРОЛЛА ЗАДНЕГО ФОНА ПРИ ОТКРЫТОЙ ШТОРКЕ
+    document.querySelectorAll('.sheet-backdrop').forEach(backdrop => {
+      backdrop.addEventListener('touchmove', (e) => {
+        if (e.target === backdrop) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+    });
 
     function haptic(type = 'light') {
       try {
@@ -748,9 +808,11 @@
     let currentOrderFilter = 'active';
     let currentDeadlineFilter = 'all';
     let allOrders = [];
-    let allAuthors = [];
+    let defaultAuthor = null;
 
-    // ГЕНЕРАТОР ПРЕФИКСОВ ШИФРА
+    let stagedManagerFiles = [];
+
+    // ШИФРЫ ЗАКАЗОВ
     const PREFIX_MAP = {
       'Курсовая': 'К',
       'Диплом / ВКР': 'Д',
@@ -763,9 +825,7 @@
       'Другое': 'З'
     };
 
-    function getTypePrefix(type) {
-      return PREFIX_MAP[type] || 'З';
-    }
+    function getTypePrefix(type) { return PREFIX_MAP[type] || 'З'; }
 
     function getNextOrderNumber(prefix) {
       let maxNum = 0;
@@ -795,16 +855,30 @@
       return { code: `${getTypePrefix(workType)}-${orderId}`, cleanTitle: title || '' };
     }
 
+    function getFileIcon(filename) {
+      const ext = (filename || '').split('.').pop().toLowerCase();
+      if (['pdf'].includes(ext)) return '📕';
+      if (['doc', 'docx'].includes(ext)) return '📘';
+      if (['ppt', 'pptx'].includes(ext)) return '📙';
+      if (['xls', 'xlsx'].includes(ext)) return '📗';
+      if (['zip', 'rar', '7z'].includes(ext)) return '🗂️';
+      if (['png', 'jpg', 'jpeg', 'webp'].includes(ext)) return '🖼️';
+      return '📄';
+    }
+
+    function formatBytes(bytes) {
+      if (!bytes || bytes === 0) return '';
+      const k = 1024;
+      const sizes = ['Б', 'КБ', 'МБ', 'ГБ'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
     // ОТПРАВКА СООБЩЕНИЯ В TELEGRAM
     async function sendTelegramAlert(toUserId, textHtml) {
       if (!TELEGRAM_BOT_TOKEN) return;
       try {
-        const { data: profile } = await sb
-          .from('profiles')
-          .select('tg_id, name')
-          .eq('id', toUserId)
-          .single();
-
+        const { data: profile } = await sb.from('profiles').select('tg_id').eq('id', toUserId).single();
         if (!profile?.tg_id) return;
 
         await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
@@ -827,15 +901,14 @@
       try {
         if (!currentAccount) return;
 
-        const { data: authors } = await sb
-          .from('profiles')
-          .select('id, name, role');
-        allAuthors = authors || [];
+        const { data: authors } = await sb.from('profiles').select('id, name, tg_id').eq('role', 'worker');
+        defaultAuthor = authors && authors.length > 0 ? authors[0] : null;
 
         const { data: orders, error } = await sb
           .from('orders')
           .select(`
             *,
+            order_files (*),
             order_revisions (*, sender:sender_id(name, role)),
             worker:worker_id(name),
             agent:agent_id(name)
@@ -932,12 +1005,7 @@
         return;
       }
 
-      const { data: profile } = await sb
-        .from('profiles')
-        .select('*')
-        .eq('id', session.user.id)
-        .single();
-
+      const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
       currentAccount = profile || { id: session.user.id, name: 'Пользователь', role: 'worker' };
 
       if (tg?.initDataUnsafe?.user?.id && currentAccount.tg_id !== tg.initDataUnsafe.user.id) {
@@ -1014,7 +1082,7 @@
       if (showStats) renderAdminStats();
     }
 
-    // РЕНДЕР КАРТОЧЕК С ПОИСКОМ ПО ШИФРУ
+    // РЕНДЕР КАРТОЧЕК
     function renderOrdersSection() {
       const role = currentAccount.role;
       const searchVal = (document.getElementById('orderSearchInput')?.value || '').toLowerCase().trim();
@@ -1039,12 +1107,10 @@
       const filteredBySearch = filteredByDeadline.filter(o => {
         if (!searchVal) return true;
         const { code, cleanTitle } = parseOrderCode(o.title, o.work_type, o.id);
-        const wName = o.worker?.name || '';
         return code.toLowerCase().includes(searchVal) ||
                `#${code.toLowerCase()}`.includes(searchVal) ||
                cleanTitle.toLowerCase().includes(searchVal) ||
                String(o.id).includes(searchVal) ||
-               wName.toLowerCase().includes(searchVal) ||
                (o.work_type || '').toLowerCase().includes(searchVal);
       });
 
@@ -1073,7 +1139,6 @@
       box.innerHTML = displayList.map(o => renderOrderCardHtml(o, role)).join('');
     }
 
-    // ФИНАНСОВЫЙ ДАШБОРД (ТОЛЬКО ВЫПЛАТЫ АВТОРАМ)
     function renderHeroDashboard(orders) {
       const doneOrders = orders.filter(o => o.status === 'Сдан');
       const inWorkOrders = orders.filter(o => o.status === 'В работе' || o.status === 'Правки');
@@ -1086,7 +1151,7 @@
 
       document.getElementById('heroLabel').innerText = 'К ВЫПЛАТЕ АВТОРАМ';
       document.getElementById('heroAmount').innerText = debtToAuthors.toLocaleString('ru-RU') + ' ₽';
-      document.getElementById('heroSub').innerText = debtToAuthors > 0 ? 'Сдано и ожидает перевода авторам' : 'Все сданные работы оплачены ✨';
+      document.getElementById('heroSub').innerText = debtToAuthors > 0 ? 'Сдано и ожидает перевода автору' : 'Все сданные работы оплачены ✨';
       document.getElementById('heroStat1Lbl').innerText = 'В работе сейчас';
       document.getElementById('heroStat1Val').innerText = `${inWorkOrders.length} шт. • ${inWorkSum.toLocaleString('ru-RU')} ₽`;
       document.getElementById('heroStat2Lbl').innerText = 'Уже выплачено авторам';
@@ -1107,13 +1172,14 @@
       return `<span class="deadline-pill deadline-ok">📅 Дедлайн: ${dt}</span>`;
     }
 
-    // КАРТОЧКА ЗАКАЗА (С ШИФРОМ И ТОЛЬКО ЦЕНОЙ АВТОРА)
+    // КАРТОЧКА ЗАКАЗА
     function renderOrderCardHtml(o, role) {
       const isDone = o.status === 'Сдан';
       const isPaid = o.payment_status === 'Выплачено';
 
       const { code, cleanTitle } = parseOrderCode(o.title, o.work_type, o.id);
       const workerP = Number(o.worker_price) || 0;
+      const propPrice = o.proposed_worker_price !== null && o.proposed_worker_price !== undefined ? Number(o.proposed_worker_price) : null;
 
       const statusClasses = {
         'В работе': 'st-work',
@@ -1122,6 +1188,7 @@
         'Сдан': 'st-done'
       };
 
+      // КНОПКИ ДЛЯ МЕНЕДЖЕРА И АВТОРА
       let footerBtns = '';
       if (role === 'worker') {
         footerBtns = `
@@ -1129,12 +1196,15 @@
           <button class="c-btn" onclick="quickWorkerStatus(${o.id}, '${o.status}')">🔄 Сменить статус</button>
         `;
       } else if (role === 'agent' || role === 'admin') {
-        let payAuthorBtn = '';
-        if (isDone) {
-          payAuthorBtn = isPaid
-            ? `<button class="c-btn" onclick="quickTogglePaid(${o.id}, '${o.payment_status}')">↩ Снять оплату</button>`
-            : `<button class="c-btn success" onclick="quickPayAuthor(${o.id}, ${workerP}, '${escapeHtml(o.worker?.name || 'Автор')}')">💳 Выплатить ${workerP.toLocaleString('ru-RU')} ₽</button>`;
-        }
+        // Кнопка приёмки работы (Сдан / В работу)
+        const acceptWorkBtn = isDone
+          ? `<button class="c-btn" onclick="quickSetStatus(${o.id}, 'В работе')">↩ В работу</button>`
+          : `<button class="c-btn success" onclick="quickSetStatus(${o.id}, 'Сдан')">✅ Принять (Сдан)</button>`;
+
+        // Кнопка выплаты автору
+        const payAuthorBtn = isPaid
+          ? `<button class="c-btn" onclick="quickTogglePaid(${o.id}, '${o.payment_status}')">✓ Выплачено (Снять)</button>`
+          : `<button class="c-btn success" onclick="quickPayAuthor(${o.id}, ${workerP})">💳 Оплатить ${workerP.toLocaleString('ru-RU')} ₽</button>`;
 
         let archiveBtn = '';
         if (isDone && isPaid) {
@@ -1142,6 +1212,7 @@
         }
 
         footerBtns = `
+          ${acceptWorkBtn}
           ${payAuthorBtn}
           <button class="c-btn warn" onclick="openRevisionSheet(${o.id})">🟠 На правки</button>
           <button class="c-btn" onclick="openEditOrderSheet(${o.id})">⚙️ Изменить</button>
@@ -1150,13 +1221,52 @@
         `;
       }
 
-      // ЧИСТАЯ ПЛАШКА ВЫПЛАТЫ АВТОРУ
+      // ПЛАШКА ВЫПЛАТЫ АВТОРУ
       const priceHtml = `
         <div class="price-box">
           <div class="price-label">Выплата автору:</div>
           <div class="price-val">${workerP.toLocaleString('ru-RU')} ₽</div>
         </div>
       `;
+
+      // БЛОК СОГЛАСОВАНИЯ ИЗМЕНЕНИЯ ЦЕНЫ
+      let proposalHtml = '';
+      if (propPrice !== null) {
+        if (role === 'worker') {
+          proposalHtml = `
+            <div class="price-proposal-box">
+              <div class="prop-title">⚠️ Менеджер предложил новую цену: <b>${propPrice.toLocaleString('ru-RU')} ₽</b> (сейчас: ${workerP.toLocaleString('ru-RU')} ₽)</div>
+              <div class="prop-actions">
+                <button class="prop-btn accept" onclick="acceptPriceProposal(${o.id}, ${propPrice})">✅ Согласен (${propPrice.toLocaleString('ru-RU')} ₽)</button>
+                <button class="prop-btn reject" onclick="rejectPriceProposal(${o.id})">❌ Отклонить</button>
+              </div>
+            </div>
+          `;
+        } else {
+          proposalHtml = `
+            <div class="price-proposal-box waiting">
+              <span>⏳ Предложена новая цена: <b>${propPrice.toLocaleString('ru-RU')} ₽</b> (ждёт ответа автора)</span>
+              <button class="prop-btn-cancel" onclick="rejectPriceProposal(${o.id})">Отменить</button>
+            </div>
+          `;
+        }
+      }
+
+      // ФАЙЛЫ В КАРТОЧКЕ
+      const files = o.order_files || [];
+      const matFilesHtml = (files.length > 0) ? `
+        <div class="file-group-box">
+          <div class="file-group-title">📎 Прикреплённые файлы (${files.length}):</div>
+          ${files.map(f => `
+            <div class="file-download-chip" onclick="downloadSignedFile('${f.file_path}', '${escapeHtml(f.file_name)}')">
+              <span>${getFileIcon(f.file_name)}</span>
+              <span class="file-name-text">${escapeHtml(f.file_name)}</span>
+              <span class="file-size-text">${formatBytes(f.file_size)}</span>
+              <span class="dl-btn-icon">⬇ Скачать</span>
+            </div>
+          `).join('')}
+        </div>
+      ` : '';
 
       const revisions = o.order_revisions || [];
       const revTimelineHtml = (revisions.length > 0) ? `
@@ -1186,21 +1296,12 @@
           <div class="card-title">${escapeHtml(cleanTitle)}</div>
           <div style="margin-bottom:8px;">${formatDeadline(o.deadline, isDone)}</div>
 
-          <div class="spec-grid">
-            <div class="spec-item">
-              <span class="spec-lbl">Автор</span>
-              <span class="spec-val">${escapeHtml(o.worker?.name || 'Не назначен')}</span>
-            </div>
-            <div class="spec-item">
-              <span class="spec-lbl">Менеджер</span>
-              <span class="spec-val">${escapeHtml(o.agent?.name || 'Менеджер')}</span>
-            </div>
-          </div>
-
+          ${proposalHtml}
           ${priceHtml}
+          ${matFilesHtml}
 
           <div class="links-bar">
-            <!-- КНОПКА СКОПИРОВАТЬ ДЛЯ ЧАТА TELEGRAM -->
+            <!-- КНОПКА ДЛЯ ЧАТА ТЕЛЕГРАМ -->
             <button class="btn-link chat-btn" onclick="copyOrderForChat(${o.id})">📋 Для чата Telegram</button>
             ${o.materials_url ? `<a href="${o.materials_url}" target="_blank" class="btn-link primary">📁 Облако</a>` : ''}
             ${o.result_url ? `<a href="${o.result_url}" target="_blank" class="btn-link purple">🎓 Готовая работа</a>` : ''}
@@ -1214,7 +1315,7 @@
       `;
     }
 
-    // 📋 БЫСТРОЕ КОПИРОВАНИЕ ДЛЯ ЧАТА С КИРИЛЛОМ/АВТОРОМ
+    // 📋 БЫСТРОЕ КОПИРОВАНИЕ ДЛЯ ЧАТА TELEGRAM
     function copyOrderForChat(id) {
       const o = allOrders.find(x => x.id === id);
       if (!o) return;
@@ -1232,9 +1333,55 @@
       }
     }
 
-    // ВЫПЛАТА АВТОРУ
-    async function quickPayAuthor(orderId, amount, authorName) {
-      const ok = await confirmAction(`Выплатить ${amount.toLocaleString('ru-RU')} ₽ автору ${authorName}?`);
+    // СКАЧИВАНИЕ ФАЙЛОВ
+    async function downloadSignedFile(filePath, fileName) {
+      try {
+        showToast('Открытие файла...', 'info');
+        const { data, error } = await sb.storage.from('order-documents').createSignedUrl(filePath, 3600);
+        if (error || !data?.signedUrl) throw new Error(error?.message || 'Ссылка не сформирована');
+
+        if (tg?.openLink) {
+          tg.openLink(data.signedUrl);
+        } else {
+          const a = document.createElement('a');
+          a.href = data.signedUrl;
+          a.download = fileName || 'document';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        }
+      } catch (err) {
+        showToast('Ошибка скачивания: ' + err.message, 'error');
+      }
+    }
+
+    // ✅ СМЕНА СТАТУСА МЕНЕДЖЕРОМ («ПРИНЯТЬ» / «В РАБОТУ»)
+    async function quickSetStatus(orderId, nextStatus) {
+      const o = allOrders.find(x => x.id === orderId);
+      if (!o) return;
+
+      const { error } = await sb.from('orders').update({ status: nextStatus }).eq('id', orderId);
+      if (error) return showToast('Ошибка: ' + error.message, 'error');
+
+      haptic(nextStatus === 'Сдан' ? 'success' : 'light');
+      showToast(`Статус заказа: ${nextStatus}`, 'info');
+
+      // Уведомление автору о приёмке
+      if (nextStatus === 'Сдан' && o.worker_id) {
+        const { code, cleanTitle } = parseOrderCode(o.title, o.work_type, o.id);
+        const alertText = `🎉 <b>Менеджер принял заказ #${code}!</b>\n\n` +
+          `📌 <b>${o.work_type}:</b> ${cleanTitle}\n` +
+          `✅ <b>Статус:</b> Сдан и зачтён\n` +
+          `💰 <b>К выплате:</b> ${o.worker_price} ₽`;
+        sendTelegramAlert(o.worker_id, alertText);
+      }
+
+      await fetchAllData(false);
+    }
+
+    // 💳 ВЫПЛАТА АВТОРУ
+    async function quickPayAuthor(orderId, amount) {
+      const ok = await confirmAction(`Выплатить ${amount.toLocaleString('ru-RU')} ₽ автору?`);
       if (!ok) return;
 
       const { error } = await sb.from('orders').update({ payment_status: 'Выплачено' }).eq('id', orderId);
@@ -1242,6 +1389,48 @@
 
       haptic('success');
       showToast(`Выплата ${amount} ₽ сохранена!`, 'success');
+      await fetchAllData(false);
+    }
+
+    // СОГЛАСОВАНИЕ ИЗМЕНЕНИЯ ЦЕНЫ АВТОРОМ
+    async function acceptPriceProposal(orderId, newPrice) {
+      const { error } = await sb.from('orders').update({
+        worker_price: newPrice,
+        proposed_worker_price: null
+      }).eq('id', orderId);
+
+      if (error) return showToast('Ошибка: ' + error.message, 'error');
+
+      haptic('success');
+      showToast(`Новая цена ${newPrice} ₽ принята!`, 'success');
+
+      // Уведомление менеджеру
+      const o = allOrders.find(x => x.id === orderId);
+      if (o?.agent_id) {
+        const { code } = parseOrderCode(o.title, o.work_type, o.id);
+        sendTelegramAlert(o.agent_id, `✅ <b>Автор согласился с новой ценой!</b>\n\n📌 Заказ #${code}\n💰 Новая выплата: <b>${newPrice} ₽</b>`);
+      }
+
+      await fetchAllData(false);
+    }
+
+    async function rejectPriceProposal(orderId) {
+      const { error } = await sb.from('orders').update({
+        proposed_worker_price: null
+      }).eq('id', orderId);
+
+      if (error) return showToast('Ошибка: ' + error.message, 'error');
+
+      haptic('warning');
+      showToast('Предложение цены отклонено', 'info');
+
+      // Уведомление менеджеру
+      const o = allOrders.find(x => x.id === orderId);
+      if (o?.agent_id) {
+        const { code } = parseOrderCode(o.title, o.work_type, o.id);
+        sendTelegramAlert(o.agent_id, `❌ <b>Автор отклонил изменение цены</b> по заказу #${code}.\nОсталась прежняя цена: <b>${o.worker_price} ₽</b>`);
+      }
+
       await fetchAllData(false);
     }
 
@@ -1297,15 +1486,32 @@
       showToast('Черновик сброшен', 'info');
     }
 
-    function populateOrderWorkerSelect(selectedId = null) {
-      const sel = document.getElementById('fWorkerSelect');
-      sel.innerHTML = `<option value="">🌐 Свободный заказ (любой автор)</option>` +
-        allAuthors.map(w => `<option value="${w.id}">✍️ ${escapeHtml(w.name)}</option>`).join('');
-      if (selectedId) sel.value = selectedId;
+    function handleManagerFilesSelect(files) {
+      for (const f of Array.from(files)) {
+        if (f.size === 0) {
+          showToast(`Файл "${f.name}" пустой (0 КБ) и не прикреплён!`, 'error');
+          continue;
+        }
+        stagedManagerFiles.push(f);
+      }
+      renderManagerStagedFiles();
+      haptic('light');
+    }
+
+    function renderManagerStagedFiles() {
+      const box = document.getElementById('stagedManagerFilesList');
+      box.innerHTML = stagedManagerFiles.map((f, i) => `
+        <div class="staged-file-item">
+          <span class="staged-file-name">${getFileIcon(f.name)} ${escapeHtml(f.name)} (${formatBytes(f.size)})</span>
+          <button class="staged-remove-btn" onclick="stagedManagerFiles.splice(${i},1); renderManagerStagedFiles();">✕</button>
+        </div>
+      `).join('');
     }
 
     function openOrderSheet() {
+      document.body.classList.add('modal-open');
       document.getElementById('editOrderId').value = '';
+      document.getElementById('editOldPrice').value = '';
       document.getElementById('orderSheetTitle').innerText = 'Новый заказ';
       document.getElementById('fTitle').value = '';
       document.getElementById('fWorkType').value = 'Курсовая';
@@ -1316,8 +1522,10 @@
       document.getElementById('fUrgent').checked = false;
       document.getElementById('clearDraftBtn').style.display = 'none';
 
+      stagedManagerFiles = [];
+      renderManagerStagedFiles();
+
       onWorkTypeChange();
-      populateOrderWorkerSelect();
       restoreDraft();
       document.getElementById('orderSheet').classList.add('open');
       haptic('light');
@@ -1327,9 +1535,11 @@
       const o = allOrders.find(x => x.id === id);
       if (!o) return;
 
+      document.body.classList.add('modal-open');
       const { code, cleanTitle } = parseOrderCode(o.title, o.work_type, o.id);
 
       document.getElementById('editOrderId').value = o.id;
+      document.getElementById('editOldPrice').value = o.worker_price || 0;
       document.getElementById('orderSheetTitle').innerText = `Изменить #${code}`;
       document.getElementById('fOrderCode').value = code;
       document.getElementById('fTitle').value = cleanTitle;
@@ -1341,86 +1551,137 @@
       document.getElementById('fUrgent').checked = !!o.is_urgent;
       document.getElementById('clearDraftBtn').style.display = 'none';
 
-      populateOrderWorkerSelect(o.worker_id);
+      stagedManagerFiles = [];
+      renderManagerStagedFiles();
+
       document.getElementById('orderSheet').classList.add('open');
       haptic('light');
     }
 
-    function closeOrderSheet() { document.getElementById('orderSheet').classList.remove('open'); }
+    function closeOrderSheet() {
+      document.body.classList.remove('modal-open');
+      document.getElementById('orderSheet').classList.remove('open');
+    }
 
-    // СОХРАНЕНИЕ ЗАКАЗА (ТОЛЬКО ЦЕНА АВТОРУ, 0.05 СЕК)
+    // СОХРАНЕНИЕ ЗАКАЗА (С СОГЛАСОВАНИЕМ ИЗМЕНЕНИЯ ЦЕНЫ)
     async function saveOrder() {
       const editId = document.getElementById('editOrderId').value;
+      const oldPrice = parseFloat(document.getElementById('editOldPrice').value);
       const orderCode = document.getElementById('fOrderCode').value.trim() || 'З-1';
       const cleanTitle = document.getElementById('fTitle').value.trim();
       const workType = document.getElementById('fWorkType').value;
-      const workerId = document.getElementById('fWorkerSelect').value || null;
       const deadline = document.getElementById('fDeadline').value || null;
-      const workerPrice = parseFloat(document.getElementById('fWorkerPrice').value) || 0;
+      const newWorkerPrice = parseFloat(document.getElementById('fWorkerPrice').value) || 0;
       const materialsUrl = document.getElementById('fMaterialsUrl').value.trim();
       const desc = document.getElementById('fDesc').value.trim();
       const isUrgent = document.getElementById('fUrgent').checked;
 
       if (!cleanTitle) return showToast('Укажите тему работы!', 'error');
 
+      const targetWorkerId = defaultAuthor ? defaultAuthor.id : null;
       const fullTitle = `[${orderCode}] ${cleanTitle}`;
+
       const btn = document.getElementById('saveOrderBtn');
       btn.disabled = true; btn.innerText = 'Сохранение...';
 
       try {
+        let orderId = editId;
+
         if (editId) {
-          const { error } = await sb.from('orders').update({
-            title: fullTitle, work_type: workType, worker_id: workerId, deadline,
+          // Если менеджер изменил цену — отправляем на согласование автору!
+          const isPriceChanged = !isNaN(oldPrice) && oldPrice !== newWorkerPrice;
+          const updateData = {
+            title: fullTitle, work_type: workType, deadline,
             materials_url: materialsUrl, is_urgent: isUrgent,
-            client_price: 0, prepaid_amount: 0,
-            worker_price: workerPrice, instruction: desc
-          }).eq('id', editId);
+            instruction: desc
+          };
+
+          if (isPriceChanged && targetWorkerId) {
+            updateData.proposed_worker_price = newWorkerPrice; // На согласование автору!
+          } else {
+            updateData.worker_price = newWorkerPrice;
+          }
+
+          const { error } = await sb.from('orders').update(updateData).eq('id', editId);
           if (error) throw error;
+
+          if (isPriceChanged && targetWorkerId) {
+            // Оповещение автору о предложении новой цены
+            const alertText = `💰 <b>Менеджер предложил изменить цену по заказу #${orderCode}!</b>\n\n` +
+              `📌 <b>Новая цена:</b> ${newWorkerPrice} ₽ (сейчас: ${oldPrice} ₽)\n\n` +
+              `👉 <i>Подтвердите или отклоните в приложении!</i>`;
+            sendTelegramAlert(targetWorkerId, alertText);
+            showToast('Новая цена отправлена автору на согласование!', 'info');
+          } else {
+            showToast('Заказ обновлен!', 'success');
+          }
         } else {
-          const { error } = await sb.from('orders').insert({
-            title: fullTitle, work_type: workType, worker_id: workerId, deadline,
+          // Создание нового заказа
+          const { data, error } = await sb.from('orders').insert({
+            title: fullTitle, work_type: workType, worker_id: targetWorkerId, deadline,
             materials_url: materialsUrl, is_urgent: isUrgent,
             client_price: 0, prepaid_amount: 0,
-            worker_price: workerPrice, instruction: desc,
+            worker_price: newWorkerPrice, instruction: desc,
             agent_id: currentAccount.id
-          });
+          }).select().single();
           if (error) throw error;
+          orderId = data.id;
 
           sessionStorage.removeItem('academ_crm_draft_fast');
 
-          // Авто-оповещение автору с шифром
-          if (workerId) {
+          if (targetWorkerId) {
             const alertText = `🎓 <b>Вам назначен новый заказ #${orderCode}!</b>\n\n` +
               `📌 <b>${workType}:</b> ${cleanTitle}\n` +
               `⏰ <b>Дедлайн:</b> ${deadline ? new Date(deadline).toLocaleString('ru-RU') : 'Не указан'}\n` +
-              `💰 <b>Выплата:</b> ${workerPrice} ₽\n` +
-              `💼 <b>Менеджер:</b> ${currentAccount.name}` +
-              (materialsUrl ? `\n\n🔗 <b>Ссылка на диск:</b>\n${materialsUrl}` : '') +
-              `\n\n💬 <i>Файлы и обсуждение в чате Telegram с тегом #${orderCode}</i>`;
+              `💰 <b>Выплата:</b> ${newWorkerPrice} ₽\n` +
+              (materialsUrl ? `\n🔗 <b>Ссылка на диск:</b>\n${materialsUrl}\n` : '') +
+              `\n💬 <i>Обсуждение и файлы в чате Telegram с тегом #${orderCode}</i>`;
 
-            sendTelegramAlert(workerId, alertText);
+            sendTelegramAlert(targetWorkerId, alertText);
+          }
+          showToast(`Заказ #${orderCode} создан!`, 'success');
+        }
+
+        // Загрузка методичек в Storage
+        for (let i = 0; i < stagedManagerFiles.length; i++) {
+          const file = stagedManagerFiles[i];
+          btn.innerText = `Загрузка файла (${i + 1}/${stagedManagerFiles.length})...`;
+          const filePath = `${orderId}/mat_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+          const { error: upErr } = await sb.storage.from('order-documents').upload(filePath, file);
+          if (!upErr) {
+            await sb.from('order_files').insert({
+              order_id: orderId,
+              uploaded_by: currentAccount.id,
+              file_name: file.name,
+              file_path: filePath,
+              file_size: file.size,
+              file_category: 'material'
+            });
           }
         }
 
         closeOrderSheet();
         haptic('success');
-        showToast(`Заказ #${orderCode} сохранён!`, 'success');
         await fetchAllData(false);
       } catch (e) {
         showToast('Ошибка: ' + e.message, 'error');
       } finally {
-        btn.disabled = false; btn.innerText = 'Создать заказ';
+        btn.disabled = false; btn.innerText = 'Сохранить заказ';
       }
     }
 
     // ПРАВКИ
     function openRevisionSheet(id) {
+      document.body.classList.add('modal-open');
       document.getElementById('revOrderId').value = id;
       document.getElementById('revComment').value = '';
       document.getElementById('revisionSheet').classList.add('open');
       haptic('light');
     }
-    function closeRevisionSheet() { document.getElementById('revisionSheet').classList.remove('open'); }
+    function closeRevisionSheet() {
+      document.body.classList.remove('modal-open');
+      document.getElementById('revisionSheet').classList.remove('open');
+    }
 
     async function submitRevision() {
       const id = Number(document.getElementById('revOrderId').value);
@@ -1444,7 +1705,7 @@
           const revText = `🟠 <b>Заказ #${code} возвращён на доработку!</b>\n\n` +
             `📌 <b>Тема:</b> ${cleanTitle}\n` +
             `📝 <b>Замечания:</b>\n${text}\n\n` +
-            `💼 <b>Менеджер:</b> ${currentAccount.name}`;
+            `💬 <i>Тег в переписке: #${code}</i>`;
 
           sendTelegramAlert(orderObj.worker_id, revText);
         }
@@ -1465,6 +1726,7 @@
       const o = allOrders.find(x => x.id === id);
       if (!o) return;
 
+      document.body.classList.add('modal-open');
       document.getElementById('wOrderId').value = o.id;
       document.getElementById('wStatus').value = o.status || 'В работе';
       document.getElementById('wResultUrl').value = o.result_url || '';
@@ -1473,7 +1735,10 @@
       haptic('light');
     }
 
-    function closeWorkerSheet() { document.getElementById('workerSheet').classList.remove('open'); }
+    function closeWorkerSheet() {
+      document.body.classList.remove('modal-open');
+      document.getElementById('workerSheet').classList.remove('open');
+    }
 
     async function saveWorkerUpdate() {
       const id = Number(document.getElementById('wOrderId').value);
@@ -1548,7 +1813,7 @@
       await fetchAllData(false);
     }
 
-    // СТАТИСТИКА ВЫПЛАТ АВТОРАМ
+    // СТАТИСТИКА
     function renderAdminStats() {
       const doneOrders = allOrders.filter(o => o.status === 'Сдан');
       const paidSum = allOrders.filter(o => o.payment_status === 'Выплачено')
