@@ -32,7 +32,6 @@
       --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
       --radius-lg: 20px;
       --radius-md: 14px;
-      /* Отступ под Dynamic Island (54px) + панель Telegram '✕ Закрыть' (48px) + запас (16px) = 118px */
       --app-top-pad: 118px;
     }
 
@@ -60,7 +59,6 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-    /* НАМЕРТВО БЛОКИРУЕМ СДВИГ ВБОК */
     html, body {
       width: 100% !important;
       max-width: 100vw !important;
@@ -75,7 +73,6 @@
       padding-bottom: calc(90px + env(safe-area-inset-bottom, 16px));
     }
 
-    /* АДАПТИВНАЯ ОБОЛОЧКА: опускается строго ниже '✕ Закрыть' */
     .app-shell {
       max-width: 500px;
       margin: 0 auto;
@@ -216,7 +213,7 @@
     }
     .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--muted); }
 
-    /* АДАПТИВНЫЕ ВКЛАДКИ */
+    /* ВКЛАДКИ */
     .tabs-grid {
       display: flex !important; gap: 5px; background: var(--surface); padding: 4px;
       border-radius: 14px; border: 1px solid var(--border); margin-bottom: 14px;
@@ -727,7 +724,7 @@
   </div>
 
   <script>
-    // 🔑 ВАШ ТОКЕН ИЗ @BotFather (УЖЕ ВШИТ)
+    // 🔑 ТОКЕН ВАШЕГО БОТА
     const TELEGRAM_BOT_TOKEN = '8821460045:AAEGJohQFwDOtbBc-8U9BeYfFAtZH6PkRBo';
 
     // 1. ИНИЦИАЛИЗАЦИЯ SUPABASE SDK V2
@@ -828,7 +825,6 @@
     let stagedManagerFiles = [];
     let stagedWorkerFiles = [];
 
-    // ФАЙЛЫ
     function getFileIcon(filename) {
       const ext = (filename || '').split('.').pop().toLowerCase();
       if (['pdf'].includes(ext)) return '📕';
@@ -848,7 +844,7 @@
       return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     }
 
-    // НАСТОЯЩЕЕ АВТО-ОПОВЕЩЕНИЕ В TELEGRAM ЧЕРЕЗ ВАШ БОТ
+    // ОТПРАВКА ТЕКСТОВОГО ОПОВЕЩЕНИЯ В TELEGRAM
     async function sendTelegramAlert(toUserId, textHtml) {
       if (!TELEGRAM_BOT_TOKEN) return;
       try {
@@ -858,10 +854,7 @@
           .eq('id', toUserId)
           .single();
 
-        if (!profile?.tg_id) {
-          console.warn('У пользователя нет привязанного Telegram ID');
-          return;
-        }
+        if (!profile?.tg_id) return;
 
         await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
           method: 'POST',
@@ -873,11 +866,38 @@
           })
         });
       } catch (err) {
-        console.error('Ошибка отправки уведомления Telegram:', err);
+        console.error('Ошибка отправки сообщения Telegram:', err);
       }
     }
 
-    // ЗАГРУЗКА ДАННЫХ ИЗ НАСТОЯЩИХ ТАБЛИЦ С УЧЕТОМ RLS
+    // 📤 ОТПРАВКА САМОГО ФАЙЛА (ДОКУМЕНТА) ПРЯМО В ЧАТ TELEGRAM
+    async function sendTelegramFile(toUserId, fileUrl, fileName, caption = '') {
+      if (!TELEGRAM_BOT_TOKEN) return;
+      try {
+        const { data: profile } = await sb
+          .from('profiles')
+          .select('tg_id')
+          .eq('id', toUserId)
+          .single();
+
+        if (!profile?.tg_id) return;
+
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: profile.tg_id,
+            document: fileUrl,
+            caption: caption || fileName,
+            parse_mode: 'HTML'
+          })
+        });
+      } catch (err) {
+        console.error('Ошибка отправки документа в Telegram:', err);
+      }
+    }
+
+    // ЗАГРУЗКА ДАННЫХ
     async function fetchAllData(showToastAlert = false) {
       try {
         if (!currentAccount) return;
@@ -910,7 +930,7 @@
       }
     }
 
-    // ФОНОВОЕ АВТООБНОВЛЕНИЕ КАЖДЫЕ 15 СЕКУНД
+    // АВТООБНОВЛЕНИЕ КАЖДЫЕ 15 СЕКУНД
     setInterval(() => {
       const isSheetOpen = document.querySelector('.sheet-backdrop.open');
       if (currentAccount && !isSheetOpen) {
@@ -996,7 +1016,6 @@
 
       currentAccount = profile || { id: session.user.id, name: 'Пользователь', role: 'worker' };
 
-      // Привязка Telegram ID
       if (tg?.initDataUnsafe?.user?.id && currentAccount.tg_id !== tg.initDataUnsafe.user.id) {
         await sb.from('profiles').update({ tg_id: tg.initDataUnsafe.user.id }).eq('id', currentAccount.id);
         currentAccount.tg_id = tg.initDataUnsafe.user.id;
@@ -1577,7 +1596,7 @@
 
     function closeOrderSheet() { document.getElementById('orderSheet').classList.remove('open'); }
 
-    // СОХРАНЕНИЕ ЗАКАЗА С АВТО-ОПОВЕЩЕНИЕМ В TELEGRAM БОТ
+    // СОХРАНЕНИЕ ЗАКАЗА С ОТПРАВКОЙ СООБЩЕНИЯ И САМИХ ФАЙЛОВ АВТОРУ
     async function saveOrder() {
       const editId = document.getElementById('editOrderId').value;
       const title = document.getElementById('fTitle').value.trim();
@@ -1619,21 +1638,10 @@
           if (error) throw error;
           orderId = data.id;
           sessionStorage.removeItem('academ_crm_draft');
-
-          // 🤖 АВТОМАТИЧЕСКАЯ ОТПРАВКА АВТОРУ В ЧАТ С БОТОМ
-          if (workerId) {
-            const alertText = `🎓 <b>Вам назначен новый заказ #${orderId}!</b>\n\n` +
-              `📌 <b>${workType}:</b> ${title}\n` +
-              `⏰ <b>Дедлайн:</b> ${deadline ? new Date(deadline).toLocaleString('ru-RU') : 'Не указан'}\n` +
-              `💰 <b>Ваша выплата:</b> ${workerPrice} ₽\n` +
-              `💼 <b>Менеджер:</b> ${currentAccount.name}` +
-              (materialsUrl ? `\n📁 <b>Методичка:</b> ${materialsUrl}` : '');
-
-            sendTelegramAlert(workerId, alertText);
-          }
         }
 
-        // Загрузка файлов в закрытый Storage
+        // Загрузка файлов методички в Storage
+        const uploadedFilesForBot = [];
         for (let i = 0; i < stagedManagerFiles.length; i++) {
           const file = stagedManagerFiles[i];
           btn.innerText = `Загрузка файла (${i + 1}/${stagedManagerFiles.length})...`;
@@ -1648,12 +1656,37 @@
               file_size: file.size,
               file_category: 'material'
             });
+
+            // Получаем подписанную ссылку, чтобы Telegram бот мог переслать файл документом
+            const { data: signData } = await sb.storage.from('order-documents').createSignedUrl(filePath, 3600);
+            if (signData?.signedUrl) {
+              uploadedFilesForBot.push({ name: file.name, url: signData.signedUrl });
+            }
+          }
+        }
+
+        // 🤖 АВТОМАТИЧЕСКАЯ ОТПРАВКА АВТОРУ: СООБЩЕНИЕ + ССЫЛКИ + САМИ ФАЙЛЫ
+        if (workerId) {
+          btn.innerText = 'Отправка в Telegram...';
+          const alertText = `🎓 <b>Вам назначен новый заказ #${orderId}!</b>\n\n` +
+            `📌 <b>${workType}:</b> ${title}\n` +
+            `⏰ <b>Дедлайн:</b> ${deadline ? new Date(deadline).toLocaleString('ru-RU') : 'Не указан'}\n` +
+            `💰 <b>Ваша выплата:</b> ${workerPrice} ₽\n` +
+            `💼 <b>Менеджер:</b> ${currentAccount.name}` +
+            (materialsUrl ? `\n\n🔗 <b>Материалы на Диске:</b> <a href="${materialsUrl}">Открыть облако</a>` : '') +
+            (uploadedFilesForBot.length > 0 ? `\n\n📎 <i>Прикреплено файлов: ${uploadedFilesForBot.length} шт. (отправляю следом...)</i>` : '');
+
+          await sendTelegramAlert(workerId, alertText);
+
+          // Отправляем прикреплённые методички прямо в чат автору
+          for (const f of uploadedFilesForBot) {
+            await sendTelegramFile(workerId, f.url, f.name, `📎 Методичка к заказу #${orderId}: ${f.name}`);
           }
         }
 
         closeOrderSheet();
         haptic('success');
-        showToast('Заказ сохранён и отправлен!', 'success');
+        showToast('Заказ сохранён и отправлен автору!', 'success');
         await fetchAllData(false);
       } catch (e) {
         showToast('Ошибка: ' + e.message, 'error');
@@ -1687,7 +1720,7 @@
           comment: text
         });
 
-        // 🤖 АВТОМАТИЧЕСКАЯ ОТПРАВКА ЗАМЕЧАНИЙ АВТОРУ В TELEGRAM
+        // 🤖 ОТПРАВКА ЗАМЕЧАНИЙ АВТОРУ
         const orderObj = allOrders.find(x => x.id === id);
         if (orderObj?.worker_id) {
           const revText = `🟠 <b>Заказ #${id} возвращён на доработку!</b>\n\n` +
@@ -1709,7 +1742,7 @@
       }
     }
 
-    // СДАЧА АВТОРА
+    // СДАЧА АВТОРА С ОТПРАВКОЙ ГОТОВЫХ ФАЙЛОВ МЕНЕДЖЕРУ
     function openWorkerSheet(id) {
       const o = allOrders.find(x => x.id === id);
       if (!o) return;
@@ -1752,6 +1785,7 @@
           });
         }
 
+        const uploadedResultFilesForBot = [];
         for (let i = 0; i < stagedWorkerFiles.length; i++) {
           const file = stagedWorkerFiles[i];
           btn.innerText = `Загрузка работы (${i + 1}/${stagedWorkerFiles.length})...`;
@@ -1766,24 +1800,37 @@
               file_size: file.size,
               file_category: 'result'
             });
+
+            // Получаем подписанную ссылку для отправки менеджеру документом
+            const { data: signData } = await sb.storage.from('order-documents').createSignedUrl(filePath, 3600);
+            if (signData?.signedUrl) {
+              uploadedResultFilesForBot.push({ name: file.name, url: signData.signedUrl });
+            }
           }
         }
 
-        // 🤖 АВТОМАТИЧЕСКАЯ ОТПРАВКА МЕНЕДЖЕРУ В TELEGRAM О СДАЧЕ
+        // 🤖 АВТОМАТИЧЕСКАЯ ОТПРАВКА МЕНЕДЖЕРУ: СООБЩЕНИЕ + ССЫЛКА НА ОБЛАКО + САМИ ФАЙЛЫ
         const orderObj = allOrders.find(x => x.id === id);
         if (orderObj?.agent_id) {
+          btn.innerText = 'Отправка менеджеру...';
           const doneText = `✅ <b>Автор ${currentAccount.name} сдал заказ #${id}!</b>\n\n` +
             `📌 <b>Тема:</b> ${orderObj.title}\n` +
             `📁 <b>Статус:</b> ${status}\n` +
-            (resultUrl ? `🔗 <b>Ссылка на диск:</b> ${resultUrl}\n` : '') +
-            (note ? `💬 <b>Комментарий:</b> ${note}` : '');
+            (resultUrl ? `\n🔗 <b>Ссылка на диск:</b> <a href="${resultUrl}">Открыть готовый диск</a>` : '') +
+            (note ? `\n💬 <b>Комментарий автора:</b> ${note}` : '') +
+            (uploadedResultFilesForBot.length > 0 ? `\n\n🎓 <i>Готовая работа прикреплена файлами (отправляю следом...)</i>` : '');
 
-          sendTelegramAlert(orderObj.agent_id, doneText);
+          await sendTelegramAlert(orderObj.agent_id, doneText);
+
+          // Отправляем готовые файлы работы прямо в чат менеджеру
+          for (const f of uploadedResultFilesForBot) {
+            await sendTelegramFile(orderObj.agent_id, f.url, f.name, `🎓 Готовая работа по заказу #${id}: ${f.name}`);
+          }
         }
 
         closeWorkerSheet();
         haptic('success');
-        showToast('Работа успешно сдана!', 'success');
+        showToast('Работа успешно сдана и отправлена менеджеру!', 'success');
         await fetchAllData(false);
       } catch (e) {
         showToast('Ошибка: ' + e.message, 'error');
