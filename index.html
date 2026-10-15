@@ -1125,7 +1125,7 @@
       if (diffHours <= 72) return `<span class="deadline-pill deadline-warn">⏳ ${Math.round(diffHours / 24)} дн. (${dt})</span>`;
       return `<span class="deadline-pill deadline-ok">📅 Дедлайн: ${dt}</span>`;
     }
-
+    
     // КАРТОЧКА ЗАКАЗА
     function renderOrderCardHtml(o, role) {
       const isDone = o.status === 'Сдан';
@@ -1292,7 +1292,23 @@
         </div>
       `;
     }
-
+    document.addEventListener('touchstart', (e) => {
+      const active = document.activeElement;
+      if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT')) {
+        // Если тапнули НЕ по кнопке, ссылке или другому полю ввода — прячем клавиатуру
+        const isInteractive = e.target.closest('input, textarea, select, button, a, .drop-area, label');
+        if (!isInteractive) {
+          active.blur();
+        }
+      }
+    }, { passive: true });
+    // 2. Скрываем клавиатуру, как только вы начинаете листать (скроллить) шторку
+    document.addEventListener('touchmove', () => {
+      const active = document.activeElement;
+      if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) {
+        active.blur();
+      }
+    }, { passive: true });
     // СКАЧИВАНИЕ ФАЙЛОВ ПО ЗАЩИЩЕННОЙ SIGNED ССЫЛКЕ
     async function downloadSignedFile(filePath) {
       try {
