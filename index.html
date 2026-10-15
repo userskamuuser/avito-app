@@ -59,7 +59,7 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-    /* БЛОКИРОВКА СДВИГА СТРАНИЦЫ ВЛЕВО/ВПРАВО */
+    /* БЛОКИРОВКА СДВИГА СТРАНИЦЫ ВБОК */
     html, body {
       width: 100% !important;
       max-width: 100vw !important;
@@ -74,7 +74,7 @@
       padding-bottom: calc(90px + env(safe-area-inset-bottom, 16px));
     }
 
-    /* АДАПТИВНАЯ ОБОЛОЧКА: опускается строго ниже кнопки '✕ Закрыть' */
+    /* АДАПТИВНАЯ ОБОЛОЧКА: опускается строго ниже '✕ Закрыть' */
     .app-shell {
       max-width: 500px;
       margin: 0 auto;
@@ -873,29 +873,24 @@
       }
     }
 
-    // 📤 ПРЯМАЯ ОТПРАВКА САМОГО ФАЙЛА В ТЕЛЕГРАМ (ЧЕРЕЗ FORMDATA БЕЗ СБОЕВ)
-    async function sendTelegramFileDirect(toUserId, file, caption = '') {
-      if (!TELEGRAM_BOT_TOKEN) return;
+    // 📤 ПРЯМАЯ ОТПРАВКА САМОГО ФАЙЛА В ТЕЛЕГРАМ ЧЕРЕЗ FORMDATA
+    async function sendTelegramFileDirect(chatId, file, caption = '') {
+      if (!TELEGRAM_BOT_TOKEN || !chatId) return false;
       try {
-        const { data: profile } = await sb
-          .from('profiles')
-          .select('tg_id')
-          .eq('id', toUserId)
-          .single();
-
-        if (!profile?.tg_id) return;
-
         const fd = new FormData();
-        fd.append('chat_id', profile.tg_id);
+        fd.append('chat_id', chatId);
         fd.append('document', file, file.name);
         if (caption) fd.append('caption', caption);
 
-        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`, {
+        const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendDocument`, {
           method: 'POST',
           body: fd
         });
-      } catch (err) {
-        console.error('Ошибка отправки файла в Telegram:', err);
+        const data = await res.json();
+        return data.ok;
+      } catch (e) {
+        console.error('Сбой отправки файла:', e);
+        return false;
       }
     }
 
@@ -1201,7 +1196,7 @@
       return `<span class="deadline-pill deadline-ok">📅 Дедлайн: ${dt}</span>`;
     }
 
-    // ГЕНЕРАТОР КАРТОЧКИ
+    // КАРТОЧКА ЗАКАЗА
     function renderOrderCardHtml(o, role) {
       const isDone = o.status === 'Сдан';
       const isPaid = o.payment_status === 'Выплачено';
@@ -1368,24 +1363,26 @@
       `;
     }
 
-    // ⬇️ СКАЧИВАНИЕ ФАЙЛОВ НАПРЯМУЮ ЧЕРЕЗ TELEGRAM ИЛИ БРАУЗЕР
+    // ⬇️ ИСПРАВЛЕННОЕ СКАЧИВАНИЕ ФАЙЛОВ НА IPHONE (БЕЗ ОШИБКИ 912 И ЗАВИСАНИЯ 0 КБ)
     async function downloadSignedFile(filePath, fileName) {
       try {
-        showToast('Открытие файла...', 'info');
+        showToast('Подготовка файла...', 'info');
+        // Запрашиваем прямую подписанную ссылку без передачи кириллицы в параметры
         const { data, error } = await sb.storage
           .from('order-documents')
-          .createSignedUrl(filePath, 3600, { download: fileName || true });
+          .createSignedUrl(filePath, 3600);
 
-        if (error) throw error;
-        if (!data?.signedUrl) throw new Error('Не удалось получить ссылку');
+        if (error || !data?.signedUrl) {
+          throw new Error(error?.message || 'Ссылка не сформирована');
+        }
 
-        // В Telegram WebApp окно window.open заблокировано — открываем через tg.openLink
+        // Открываем через безопасный браузер Telegram
         if (tg?.openLink) {
           tg.openLink(data.signedUrl);
         } else {
           const a = document.createElement('a');
           a.href = data.signedUrl;
-          a.download = fileName || 'file';
+          a.download = fileName || 'document';
           document.body.appendChild(a);
           a.click();
           a.remove();
@@ -1418,7 +1415,7 @@
       await fetchAllData(false);
     }
 
-    // ГЕНЕРАТОР СООБЩЕНИЯ СТУДЕНТУ
+    // ГЕНЕРАТОР СООБЩЕНИЯ СТУДЕНТУ С ПОЛНОЙ ССЫЛКОЙ
     function copyClientMessage(id) {
       const o = allOrders.find(x => x.id === id);
       if (!o) return;
@@ -1617,7 +1614,7 @@
 
     function closeOrderSheet() { document.getElementById('orderSheet').classList.remove('open'); }
 
-    // СОХРАНЕНИЕ ЗАКАЗА С ОТПРАВКОЙ ПОЛНОЙ ССЫЛКИ И САМИХ ФАЙЛОВ АВТОРУ
+    // СОХРАНЕНИЕ ЗАКАЗА С ОТПРАВКОЙ ВСЕХ ФАЙЛОВ И ПАУЗОЙ ДЛЯ TELEGRAM
     async function saveOrder() {
       const editId = document.getElementById('editOrderId').value;
       const title = document.getElementById('fTitle').value.trim();
@@ -1679,22 +1676,32 @@
           }
         }
 
-        // 🤖 ОТПРАВКА АВТОРУ В TELEGRAM: СООБЩЕНИЕ С ПОЛНОЙ ССЫЛКОЙ + ПРЯМЫЕ ФАЙЛЫ
+        // 🤖 ОТПРАВКА АВТОРУ В TELEGRAM: ТЕКСТ + ВСЕ ПРИКРЕПЛЕННЫЕ ФАЙЛЫ
         if (workerId) {
           btn.innerText = 'Отправка в Telegram...';
+
+          // 1. Получаем tg_id автора один раз перед циклом
+          const { data: workerProf } = await sb.from('profiles').select('tg_id').eq('id', workerId).single();
+          const workerChatId = workerProf?.tg_id;
+
           const alertText = `🎓 <b>Вам назначен новый заказ #${orderId}!</b>\n\n` +
             `📌 <b>${workType}:</b> ${title}\n` +
             `⏰ <b>Дедлайн:</b> ${deadline ? new Date(deadline).toLocaleString('ru-RU') : 'Не указан'}\n` +
             `💰 <b>Ваша выплата:</b> ${workerPrice} ₽\n` +
             `💼 <b>Менеджер:</b> ${currentAccount.name}` +
             (materialsUrl ? `\n\n🔗 <b>Материалы на Диске:</b>\n${materialsUrl}` : '') +
-            (stagedManagerFiles.length > 0 ? `\n\n📎 <i>Прикреплено файлов: ${stagedManagerFiles.length} шт. (отправляю следом...)</i>` : '');
+            (stagedManagerFiles.length > 0 ? `\n\n📎 <i>Прикреплено файлов: ${stagedManagerFiles.length} шт. (отправляю...)</i>` : '');
 
           await sendTelegramAlert(workerId, alertText);
 
-          // 📤 Отправляем сами документы прямо в чат Telegram автору
-          for (const file of stagedManagerFiles) {
-            await sendTelegramFileDirect(workerId, file, `📎 Методичка к заказу #${orderId}: ${file.name}`);
+          // 2. Отправляем ВСЕ файлы с паузой в 1.2 секунды для обхода спам-лимита Telegram
+          if (workerChatId && stagedManagerFiles.length > 0) {
+            for (let i = 0; i < stagedManagerFiles.length; i++) {
+              const file = stagedManagerFiles[i];
+              btn.innerText = `Отправка файла (${i + 1}/${stagedManagerFiles.length})...`;
+              await new Promise(r => setTimeout(r, 1200));
+              await sendTelegramFileDirect(workerChatId, file, `📎 Файл (${i + 1}/${stagedManagerFiles.length}): ${file.name}`);
+            }
           }
         }
 
@@ -1820,18 +1827,25 @@
         const orderObj = allOrders.find(x => x.id === id);
         if (orderObj?.agent_id) {
           btn.innerText = 'Отправка менеджеру...';
+          const { data: agentProf } = await sb.from('profiles').select('tg_id').eq('id', orderObj.agent_id).single();
+          const agentChatId = agentProf?.tg_id;
+
           const doneText = `✅ <b>Автор ${currentAccount.name} сдал заказ #${id}!</b>\n\n` +
             `📌 <b>Тема:</b> ${orderObj.title}\n` +
             `📁 <b>Статус:</b> ${status}\n` +
             (resultUrl ? `\n🔗 <b>Ссылка на диск с работой:</b>\n${resultUrl}\n` : '') +
             (note ? `\n💬 <b>Комментарий автора:</b>\n${note}\n` : '') +
-            (stagedWorkerFiles.length > 0 ? `\n🎓 <i>Готовая работа прикреплена файлами (${stagedWorkerFiles.length} шт., отправляю следом...)</i>` : '');
+            (stagedWorkerFiles.length > 0 ? `\n🎓 <i>Готовая работа прикреплена файлами (${stagedWorkerFiles.length} шт., отправляю...)</i>` : '');
 
           await sendTelegramAlert(orderObj.agent_id, doneText);
 
-          // 📤 Отправляем готовые документы прямо в чат менеджеру
-          for (const file of stagedWorkerFiles) {
-            await sendTelegramFileDirect(orderObj.agent_id, file, `🎓 Готовая работа по заказу #${id}: ${file.name}`);
+          if (agentChatId && stagedWorkerFiles.length > 0) {
+            for (let i = 0; i < stagedWorkerFiles.length; i++) {
+              const file = stagedWorkerFiles[i];
+              btn.innerText = `Отправка работы (${i + 1}/${stagedWorkerFiles.length})...`;
+              await new Promise(r => setTimeout(r, 1200));
+              await sendTelegramFileDirect(agentChatId, file, `🎓 Готовая работа по заказу #${id} (${i + 1}/${stagedWorkerFiles.length}): ${file.name}`);
+            }
           }
         }
 
