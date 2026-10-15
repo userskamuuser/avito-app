@@ -32,6 +32,7 @@
       --shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
       --radius-lg: 20px;
       --radius-md: 14px;
+      /* Отступ под Dynamic Island (54px) + панель Telegram '✕ Закрыть' (48px) + запас (16px) = 118px */
       --app-top-pad: 118px;
     }
 
@@ -59,6 +60,7 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
+    /* НАМЕРТВО БЛОКИРУЕМ СДВИГ ВБОК */
     html, body {
       width: 100% !important;
       max-width: 100vw !important;
@@ -73,6 +75,7 @@
       padding-bottom: calc(90px + env(safe-area-inset-bottom, 16px));
     }
 
+    /* АДАПТИВНАЯ ОБОЛОЧКА: опускается строго ниже '✕ Закрыть' */
     .app-shell {
       max-width: 500px;
       margin: 0 auto;
@@ -192,7 +195,7 @@
     .mini-stat-lbl { font-size: 11px; opacity: 0.75; }
     .mini-stat-val { font-size: 14px; font-weight: 800; margin-top: 2px; }
 
-    /* ЧИПСЫ ФИЛЬТРОВ СРОКОВ */
+    /* ЧИПСЫ СРОКОВ */
     .chip-scroll {
       display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 8px;
       touch-action: pan-x !important; overscroll-behavior-x: contain !important; scrollbar-width: none;
@@ -426,7 +429,7 @@
       <div id="loginBox">
         <div class="form-group">
           <label class="form-label">Email для входа</label>
-          <input type="email" id="loginEmail" class="f-input" placeholder="Email" autocapitalize="none">
+          <input type="email" id="loginEmail" class="f-input" placeholder="danil.danilka2003@list.ru" autocapitalize="none">
         </div>
         <div class="form-group">
           <label class="form-label">Пароль</label>
@@ -724,12 +727,15 @@
   </div>
 
   <script>
+    // 🔑 ВАШ ТОКЕН ИЗ @BotFather (УЖЕ ВШИТ)
+    const TELEGRAM_BOT_TOKEN = '8821460045:AAEGJohQFwDOtbBc-8U9BeYfFAtZH6PkRBo';
+
     // 1. ИНИЦИАЛИЗАЦИЯ SUPABASE SDK V2
     const SUPABASE_URL = 'https://vzsbdvwtwcvbqhcbssfi.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_yeu1O6x7OfgNi7sRhpV8SA_s3uxOGaU';
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // 2. ИНИЦИАЛИЗАЦИЯ TELEGRAM
+    // 2. ИНИЦИАЛИЗАЦИЯ TELEGRAM НА ВЕСЬ ЭКРАН И ОТСТУП 118px
     const tg = window.Telegram?.WebApp;
     if (tg) {
       try {
@@ -761,6 +767,24 @@
         tg.enableClosingConfirmation();
       } catch (e) {}
     }
+
+    // 3. АВТОМАТИЧЕСКОЕ СКРЫТИЕ КЛАВИАТУРЫ НА IPHONE
+    document.addEventListener('touchstart', (e) => {
+      const active = document.activeElement;
+      if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT')) {
+        const isInteractive = e.target.closest('input, textarea, select, button, a, .drop-area, label');
+        if (!isInteractive) {
+          active.blur();
+        }
+      }
+    }, { passive: true });
+
+    document.addEventListener('touchmove', () => {
+      const active = document.activeElement;
+      if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) {
+        active.blur();
+      }
+    }, { passive: true });
 
     function haptic(type = 'light') {
       try {
@@ -824,19 +848,46 @@
       return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     }
 
+    // НАСТОЯЩЕЕ АВТО-ОПОВЕЩЕНИЕ В TELEGRAM ЧЕРЕЗ ВАШ БОТ
+    async function sendTelegramAlert(toUserId, textHtml) {
+      if (!TELEGRAM_BOT_TOKEN) return;
+      try {
+        const { data: profile } = await sb
+          .from('profiles')
+          .select('tg_id, name')
+          .eq('id', toUserId)
+          .single();
+
+        if (!profile?.tg_id) {
+          console.warn('У пользователя нет привязанного Telegram ID');
+          return;
+        }
+
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: profile.tg_id,
+            text: textHtml,
+            parse_mode: 'HTML'
+          })
+        });
+      } catch (err) {
+        console.error('Ошибка отправки уведомления Telegram:', err);
+      }
+    }
+
     // ЗАГРУЗКА ДАННЫХ ИЗ НАСТОЯЩИХ ТАБЛИЦ С УЧЕТОМ RLS
     async function fetchAllData(showToastAlert = false) {
       try {
         if (!currentAccount) return;
 
-        // Загружаем авторов для выбора в заказах
         const { data: authors } = await sb
           .from('profiles')
           .select('id, name, role')
           .eq('role', 'worker');
         allAuthors = authors || [];
 
-        // База данных САМА фильтрует заказы по RLS в зависимости от роли
         const { data: orders, error } = await sb
           .from('orders')
           .select(`
@@ -867,7 +918,7 @@
       }
     }, 15000);
 
-    // АВТОРИЗАЦИЯ SUPABASE AUTH
+    // АВТОРИЗАЦИЯ
     function switchAuthTab(tab) {
       document.getElementById('authTabLogin').classList.toggle('active', tab === 'login');
       document.getElementById('authTabReg').classList.toggle('active', tab === 'register');
@@ -1125,7 +1176,7 @@
       if (diffHours <= 72) return `<span class="deadline-pill deadline-warn">⏳ ${Math.round(diffHours / 24)} дн. (${dt})</span>`;
       return `<span class="deadline-pill deadline-ok">📅 Дедлайн: ${dt}</span>`;
     }
-    
+
     // КАРТОЧКА ЗАКАЗА
     function renderOrderCardHtml(o, role) {
       const isDone = o.status === 'Сдан';
@@ -1292,24 +1343,8 @@
         </div>
       `;
     }
-    document.addEventListener('touchstart', (e) => {
-      const active = document.activeElement;
-      if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT')) {
-        // Если тапнули НЕ по кнопке, ссылке или другому полю ввода — прячем клавиатуру
-        const isInteractive = e.target.closest('input, textarea, select, button, a, .drop-area, label');
-        if (!isInteractive) {
-          active.blur();
-        }
-      }
-    }, { passive: true });
-    // 2. Скрываем клавиатуру, как только вы начинаете листать (скроллить) шторку
-    document.addEventListener('touchmove', () => {
-      const active = document.activeElement;
-      if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) {
-        active.blur();
-      }
-    }, { passive: true });
-    // СКАЧИВАНИЕ ФАЙЛОВ ПО ЗАЩИЩЕННОЙ SIGNED ССЫЛКЕ
+
+    // СКАЧИВАНИЕ ФАЙЛОВ
     async function downloadSignedFile(filePath) {
       try {
         const { data, error } = await sb.storage.from('order-documents').createSignedUrl(filePath, 3600);
@@ -1542,7 +1577,7 @@
 
     function closeOrderSheet() { document.getElementById('orderSheet').classList.remove('open'); }
 
-    // СОХРАНЕНИЕ ЗАКАЗА В РЕЛЯЦИОННУЮ БАЗУ
+    // СОХРАНЕНИЕ ЗАКАЗА С АВТО-ОПОВЕЩЕНИЕМ В TELEGRAM БОТ
     async function saveOrder() {
       const editId = document.getElementById('editOrderId').value;
       const title = document.getElementById('fTitle').value.trim();
@@ -1584,6 +1619,18 @@
           if (error) throw error;
           orderId = data.id;
           sessionStorage.removeItem('academ_crm_draft');
+
+          // 🤖 АВТОМАТИЧЕСКАЯ ОТПРАВКА АВТОРУ В ЧАТ С БОТОМ
+          if (workerId) {
+            const alertText = `🎓 <b>Вам назначен новый заказ #${orderId}!</b>\n\n` +
+              `📌 <b>${workType}:</b> ${title}\n` +
+              `⏰ <b>Дедлайн:</b> ${deadline ? new Date(deadline).toLocaleString('ru-RU') : 'Не указан'}\n` +
+              `💰 <b>Ваша выплата:</b> ${workerPrice} ₽\n` +
+              `💼 <b>Менеджер:</b> ${currentAccount.name}` +
+              (materialsUrl ? `\n📁 <b>Методичка:</b> ${materialsUrl}` : '');
+
+            sendTelegramAlert(workerId, alertText);
+          }
         }
 
         // Загрузка файлов в закрытый Storage
@@ -1606,7 +1653,7 @@
 
         closeOrderSheet();
         haptic('success');
-        showToast('Заказ сохранён!', 'success');
+        showToast('Заказ сохранён и отправлен!', 'success');
         await fetchAllData(false);
       } catch (e) {
         showToast('Ошибка: ' + e.message, 'error');
@@ -1640,9 +1687,20 @@
           comment: text
         });
 
+        // 🤖 АВТОМАТИЧЕСКАЯ ОТПРАВКА ЗАМЕЧАНИЙ АВТОРУ В TELEGRAM
+        const orderObj = allOrders.find(x => x.id === id);
+        if (orderObj?.worker_id) {
+          const revText = `🟠 <b>Заказ #${id} возвращён на доработку!</b>\n\n` +
+            `📌 <b>Тема:</b> ${orderObj.title}\n` +
+            `📝 <b>Замечания научрука:</b>\n${text}\n\n` +
+            `💼 <b>Менеджер:</b> ${currentAccount.name}`;
+
+          sendTelegramAlert(orderObj.worker_id, revText);
+        }
+
         closeRevisionSheet();
         haptic('warning');
-        showToast('Заказ отправлен на доработку', 'info');
+        showToast('Заказ отправлен на доработку автору', 'info');
         await fetchAllData(false);
       } catch (err) {
         showToast('Ошибка: ' + err.message, 'error');
@@ -1680,7 +1738,6 @@
       btn.disabled = true; btn.innerText = 'Загрузка...';
 
       try {
-        // Если заказ был свободным, автор берет его на себя
         await sb.from('orders').update({
           status: status,
           result_url: resultUrl,
@@ -1710,6 +1767,18 @@
               file_category: 'result'
             });
           }
+        }
+
+        // 🤖 АВТОМАТИЧЕСКАЯ ОТПРАВКА МЕНЕДЖЕРУ В TELEGRAM О СДАЧЕ
+        const orderObj = allOrders.find(x => x.id === id);
+        if (orderObj?.agent_id) {
+          const doneText = `✅ <b>Автор ${currentAccount.name} сдал заказ #${id}!</b>\n\n` +
+            `📌 <b>Тема:</b> ${orderObj.title}\n` +
+            `📁 <b>Статус:</b> ${status}\n` +
+            (resultUrl ? `🔗 <b>Ссылка на диск:</b> ${resultUrl}\n` : '') +
+            (note ? `💬 <b>Комментарий:</b> ${note}` : '');
+
+          sendTelegramAlert(orderObj.agent_id, doneText);
         }
 
         closeWorkerSheet();
@@ -1763,7 +1832,7 @@
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // СТАРТ: Автоматическая сессия Supabase
+    // СТАРТ
     syncCurrentUser();
   </script>
 </body>
