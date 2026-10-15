@@ -986,7 +986,11 @@
         email,
         password: pass,
         options: {
-          data: { name: name, role: selectedRegRole }
+          data: { 
+            name: name, 
+            role: selectedRegRole,
+            tg_id: tg?.initDataUnsafe?.user?.id || null // Сразу передаёт Telegram ID при регистрации!
+          }
         }
       });
 
